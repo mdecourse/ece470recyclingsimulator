@@ -23,19 +23,45 @@ Install these guys:
 * [CoppeliaSim](https://www.coppeliarobotics.com/) - The simulation thing
 * [Python](https://python.org) - Python 3
 
-Start CoppeliaSim. Open the scene (ece470_sim.ttt)
+Python requirements:
+* numpy
+* scipy
+* matplotlib (for now, for visualizing/debugging the mapper)
 
-Run the simulation:
+Install these by running:
 
 ```
-python example.py
+pip install numpy scipy matplotlib
 ```
 
 or
 
 ```
-python3 example.py
+pip3 install numpy scipy matplotlib
 ```
 
+Start CoppeliaSim. Open the scene (robot_lidar_test.ttt)
+
+Run the simulation:
+
+```
+python example_moving.py
+```
+
+or
+
+```
+python3 example_moving.py
+```
+
+## Current script files:
+
+* example_moving.py: Moves the robot into the solid block.
+* example_mapping.py: Robot sits still and the "lidar" scans, and plots the data it sees.
+
+## TODO / next steps:
+* Interpret lidar data correctly
+* Make the arm move and pick up blocks
+* Map while moving :O
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
