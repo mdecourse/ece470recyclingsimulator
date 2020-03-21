@@ -1,9 +1,9 @@
-import vrep
+import support.vrep as vrep
 import time
 import numpy as np
 import math
 from scipy.linalg import expm,logm
-from robot_motion import *
+from scripts.robot_motion import *
 
 # Close all open connections (Clear bad cache)
 vrep.simxFinish(-1)
@@ -43,6 +43,11 @@ for i in range(5):
 vrep.simxStartSimulation(clientID, vrep.simx_opmode_oneshot)
 
 robot_motion = robot_motion(clientID, wheelJoints)
+forwBackVel = 2
+leftRightVel = 0
+rotVel = 0
+robot_motion.set_move(forwBackVel, leftRightVel, rotVel)
+time.sleep(2)
 
 # ======================================================================================================= #
 # ======================================== End Simulation =============================================== #

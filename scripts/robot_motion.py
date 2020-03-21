@@ -1,4 +1,4 @@
-import vrep
+import support.vrep as vrep
 import time
 import numpy as np
 import math
@@ -19,7 +19,7 @@ class robot_motion:
 		# min and max wheel rotation vel. for left/right rotation movement
 		self.rotVelRange = [-240*math.pi/180, 240*math.pi/180]
 
-	def set_move(forwBackVel, leftRightVel, rotVel):
+	def set_move(self, forwBackVel, leftRightVel, rotVel):
 		""" Move at a given velocity. """
 		if forwBackVel < self.forwBackVelRange[0] or forwBackVel > self.forwBackVelRange[1]:
 			print("SET_MOVE ERROR: Forward Backward Velocity value out of range.\n")
