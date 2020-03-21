@@ -35,16 +35,6 @@ lidar_motor     = get_handle_blocking('Tower_Turning_Joint')
 armJoints = [-1] * 5
 for i in range(5):
     armJoints[i] = get_handle_blocking('youBotArmJoint{}'.format(i))
-
-# ======================================= Helper Functions ============================================== #
-
-# Move at a given velocity
-def set_move(forwBackVel, leftRightVel, rotVel):
-    vrep.simxSetJointTargetVelocity(clientID, wheelJoints[0],-forwBackVel-leftRightVel-rotVel, vrep.simx_opmode_blocking)
-    vrep.simxSetJointTargetVelocity(clientID, wheelJoints[1],-forwBackVel+leftRightVel-rotVel, vrep.simx_opmode_blocking)
-    vrep.simxSetJointTargetVelocity(clientID, wheelJoints[2],-forwBackVel-leftRightVel+rotVel, vrep.simx_opmode_blocking)
-    vrep.simxSetJointTargetVelocity(clientID, wheelJoints[3],-forwBackVel+leftRightVel+rotVel, vrep.simx_opmode_blocking)
-
 # ======================================================================================================= #
 # ======================================= Start Simulation ============================================== #
 # ======================================================================================================= #
