@@ -46,20 +46,25 @@ vrep.simxSynchronous(clientID, 1)
 vrep.simxStartSimulation(clientID, vrep.simx_opmode_blocking)
 vrep.simxSynchronousTrigger(clientID)
 
-robot_motion = robot_motion(clientID, youBotRef, wheelJoints)
+robot_motion = robot_motion(clientID, youBotRef, wheelJoints, armJoints[0])
 robot_lidar = robot_lidar(clientID, prox_sensor, lidar_motor)
 robot_lidar.set_lidar_velocity(np.pi)
 
 pos = robot_motion.get_global_position()
+ori = robot_motion.get_global_orientation()
 endpos = [0,0,0]
-endpos[0] = pos[0]
+endpos[0] = pos[0] + 1
 endpos[1] = pos[1] - 1
 endpos[2] = pos[2]
-# robot_motion.move_global_position(pos, endpos, 0.01)
+
+robot_motion.move_global_position(pos, endpos, 0.01)
 # robot_motion.set_move(0,0,math.pi)
-# time.sleep(1.5)
-# time.sleep(3)
+# time.sleep((360/240)*1-0.1)
+# robot_motion.get_global_orientation()
+# robot_motion.set_move(0,0,0)
+time.sleep(3)
 robot_motion.get_global_position()
+robot_motion.get_global_orientation()
 robot_motion.set_move(1,0,0)
 
 # Simulation dt is 50ms (0.05s)
