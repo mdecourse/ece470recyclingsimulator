@@ -1,6 +1,7 @@
 import support.vrep as vrep
 import time
 import numpy as np
+import numpy.linalg as la
 import math
 from scipy.linalg import expm,logm
 
@@ -17,6 +18,13 @@ class arm_motion:
         self.youBot = youBot
         self.arms = arms
         self.gripper = gripper
+        
+        for arm in arms:
+            vrep.simxGetJointPosition(self.clientID, arm, vrep.simx_opmode_streaming)
+        
+        self.update_func = lambda: False
+        
+    def zero(self):
 
         # forward kinematics for arm joints
         # zero position, relative to youBot frame
@@ -28,8 +36,31 @@ class arm_motion:
             r = self.get_any_ref_position(arm, self.youBot)
             self.r.append(r)
             self.v.append(np.cross(-w,r))
-        pos = self.get_any_ref_position(gripper, self.youBot)
+            
+        pos = self.get_any_ref_position(self.gripper, self.youBot)
         self.M = np.array([[-1,0,0,pos[0]],[0,0,1,pos[1]],[0,1,0,pos[2]],[0,0,0,1]])
+        
+    def motion_update(self):
+        return self.update_func()
+
+    def get_arm_angles(self):
+        angles = []
+        for arm_joint in self.arms:
+            angles.append(vrep.simxGetJointPosition(self.clientID, arm_joint, vrep.simx_opmode_buffer)[1])
+        print(angles)
+        return np.array(angles)
+        
+    def set_target_arm_angles(self, target, tolerance=0.01):
+        target = np.array(target)
+        def set_angle_loop(target, tolerance):
+            for arm_joint, theta in zip(self.arms, target):
+                vrep.simxSetJointPosition(self.clientID, arm_joint, theta, vrep.simx_opmode_oneshot)
+            if la.norm(self.get_arm_angles() - target) < la.norm(np.ones(len(self.arms)) * 0.01):
+                self.update_func = lambda: False
+                print("Arm target angle reached")
+                return True
+            return True
+        self.update_func = lambda: set_angle_loop(target, tolerance)
 
     def get_any_ref_position(self, handle, reference):
         error,position = vrep.simxGetObjectPosition(self.clientID, handle, reference, vrep.simx_opmode_blocking)
@@ -60,4 +91,4 @@ class arm_motion:
 
     def SetJointPosition(self, thetas):
         for arm, theta in zip(self.arms, thetas):
-            vrep.simxSetJointPosition(self.clientID, arm, theta, vrep.simx_opmode_blocking)
+            vrep.simxSetJointPosition(self.clientID, arm, theta, vrep.simx_opmode_oneshot)

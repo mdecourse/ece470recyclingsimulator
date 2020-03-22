@@ -46,12 +46,14 @@ for i in range(5):
 
 vrep.simxSynchronous(clientID, 1)
 vrep.simxStartSimulation(clientID, vrep.simx_opmode_blocking)
-vrep.simxSynchronousTrigger(clientID)
 
 robot_motion = robot_motion(clientID, youBotRef, wheelJoints, armJoints[0])
-robot_lidar = robot_lidar(clientID, prox_sensor, lidar_motor)
-robot_lidar.set_lidar_velocity(np.pi)
 
+arm_motion = arm_motion(clientID, youBotRef, armJoints, youBot, gripper)
+
+robot_lidar = robot_lidar(clientID, prox_sensor, lidar_motor)
+
+robot_lidar.set_lidar_velocity(np.pi)
 vrep.simxSynchronousTrigger(clientID)
 vrep.simxGetPingTime(clientID)
 
@@ -66,17 +68,36 @@ robot_motion.set_move_global_position(endpos, 0.01)
 # robot_motion.set_move(0,0,math.pi)
 # time.sleep((360/240)*1-0.1)
 # robot_motion.get_global_orientation()
-# robot_motion.set_move(0,0,0)
-robot_motion.get_global_position()
-robot_motion.get_global_orientation()
+robot_motion.set_move(0,0,0)
+# robot_motion.get_global_position()
+# robot_motion.get_global_orientation()
 
-arm_motion = arm_motion(clientID, youBotRef, armJoints, youBot, gripper)
+thetas = [0, 0, 0, 0, 0]
+
+arm_motion.set_target_arm_angles(thetas)
+while True:
+    # Trigger a "tick"
+    vrep.simxSynchronousTrigger(clientID)
+    vrep.simxGetPingTime(clientID)
+    if not arm_motion.motion_update():
+        arm_motion.zero()
+        break
+
 thetas = [math.pi/2, -math.pi/4, math.pi/4, math.pi/4, math.pi/4]
+# thetas = [math.pi/2, 0, 0, 0, 0]
+
 prediction = arm_motion.forw_kin(thetas)
 print("PREDICTION")
 print(prediction)
 print()
-arm_motion.SetJointPosition(thetas)
+arm_motion.set_target_arm_angles(thetas)
+while True:
+    # Trigger a "tick"
+    vrep.simxSynchronousTrigger(clientID)
+    vrep.simxGetPingTime(clientID)
+    if not arm_motion.motion_update():
+        break
+
 print("ACTUAL")
 read_pos = arm_motion.get_any_ref_position(gripper, youBot)
 print()

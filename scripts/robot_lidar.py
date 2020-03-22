@@ -36,6 +36,7 @@ class robot_lidar:
         # 3: Object handle of the detected object.
         # 4: Surface normal vector of the detected point.
         result = vrep.simxReadProximitySensor(self.clientID, self.prox_sensor, vrep.simx_opmode_buffer)
+        print(result)
         if result[1]:
             angle = self.get_lidar_angle()
             depth = result[2][2] * np.random.normal(loc=1.0, scale=self.noise_stdev)
