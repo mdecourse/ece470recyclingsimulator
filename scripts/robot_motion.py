@@ -1,6 +1,7 @@
 import support.vrep as vrep
 import time
 import numpy as np
+import numpy.linalg as la
 import math
 from scipy.linalg import expm, logm
 
@@ -23,89 +24,99 @@ class robot_motion:
         # min and max wheel rotation vel. for left/right rotation movement
         self.rotVelRange = [-240*math.pi/180, 240*math.pi/180]
         
-        self.update_func = lambda: True
+        self.update_func = lambda: False
         
         vrep.simxGetObjectPosition(self.clientID, self.youBotRef, absolute_position, vrep.simx_opmode_streaming)
         vrep.simxGetObjectOrientation(self.clientID, self.youBotRef, absolute_position, vrep.simx_opmode_streaming)
 
     def motion_update(self):
-        self.update_func()
+        return self.update_func()
 
     def get_global_position(self):
         error,position = vrep.simxGetObjectPosition(self.clientID, self.youBotRef, absolute_position, vrep.simx_opmode_buffer)
         if error:
             print("get_global_position ERROR")
-        print("POSITION: x="+str(position[0])+" y="+str(position[1])+" z="+str(position[2])+"\n")
+        # print("POSITION: x="+str(position[0])+" y="+str(position[1])+" z="+str(position[2])+"\n")
         return position
 
     def get_any_global_position(self, handle):
         error,position = vrep.simxGetObjectPosition(self.clientID, handle, absolute_position, vrep.simx_opmode_blocking)
         if error:
             print("get_global_position ERROR")
-        print("POSITION: x="+str(position[0])+" y="+str(position[1])+" z="+str(position[2])+"\n")
+        # print("POSITION: x="+str(position[0])+" y="+str(position[1])+" z="+str(position[2])+"\n")
         return position
 
     def get_global_orientation(self):
         error,euler = vrep.simxGetObjectOrientation(self.clientID, self.youBotRef, absolute_position, vrep.simx_opmode_buffer)
         if error:
             print("get_global_position ERROR")
-        print("EULER ANGLES: x="+str(euler[0])+" y="+str(euler[1])+" z="+str(euler[2])+"\n")
+        # print("EULER ANGLES: x="+str(euler[0])+" y="+str(euler[1])+" z="+str(euler[2])+"\n")
         return euler
 
-    def move_global_position(self, curr_pos, end_pos, tolerance):
-        curr_pos = np.array(self.get_global_position())
-        curr_pos_arm = np.array(self.get_any_global_position(self.baseArm))
-
-        base_vector = curr_pos_arm - curr_pos
-        dest_vector = end_pos - curr_pos
-
-        theta = (base_vector[0]*dest_vector[0]+base_vector[1]*dest_vector[1])
-        theta = theta / ((base_vector[0]**2+base_vector[1]**2)**0.5 * (dest_vector[0]**2+dest_vector[1]**2)**0.5)
-        theta = np.arccos(theta)
-
-        distance = ((curr_pos[0]-end_pos[0])**2+(curr_pos[1]-end_pos[1])**2)**0.5
-
-        while abs(theta) > tolerance and \
-              ((base_vector[0] != dest_vector[0]) or \
-               (base_vector[1] != dest_vector[1])):
-               
-            vrep.simxSynchronousTrigger(self.clientID)
-            vrep.simxGetPingTime(self.clientID)
-            
+    def set_move_global_position(self, end_pos, tolerance):
+        def rotate_command(end_pos):
             curr_pos = np.array(self.get_global_position())
             curr_pos_arm = np.array(self.get_any_global_position(self.baseArm))
+
             base_vector = curr_pos_arm - curr_pos
             dest_vector = end_pos - curr_pos
+
             theta = (base_vector[0]*dest_vector[0]+base_vector[1]*dest_vector[1])
-            theta = theta / ((base_vector[0]**2+base_vector[1]**2)**0.5 * (dest_vector[0]**2+dest_vector[1]**2)**0.5)
+            theta = theta / (la.norm(base_vector[0:2]) * la.norm(dest_vector[0:2]))
             theta = np.arccos(theta)
-            print("THETA "+str(theta))
-            if theta > 0:
-                self.set_move(0, 0, 10*theta/math.pi)
-                # time.sleep(0.1)
-            else:
-                self.set_move(0, 0, -10*theta/math.pi)
-        self.set_move(0,0,0)
 
-        prev_dist = distance
-        vel = 5*distance/math.pi
-        while distance > tolerance*3:
-
-            vrep.simxSynchronousTrigger(self.clientID)
-            vrep.simxGetPingTime(self.clientID)
-
-            curr_pos = np.array(self.get_global_position())
-            distance = ((curr_pos[0]-end_pos[0])**2+(curr_pos[1]-end_pos[1])**2)**0.5
-            print("DISTANCE "+str(distance))
-            print("prev: "+str(prev_dist))
-            if distance > prev_dist:
-                if vel < 0:
-                    vel = 4*distance/math.pi
+            if abs(theta) > tolerance and \
+                  ((base_vector[0] != dest_vector[0]) or \
+                   (base_vector[1] != dest_vector[1])):
+                   
+                # vrep.simxSynchronousTrigger(self.clientID)
+                # vrep.simxGetPingTime(self.clientID)
+                
+                # curr_pos = np.array(self.get_global_position())
+                # curr_pos_arm = np.array(self.get_any_global_position(self.baseArm))
+                # base_vector = curr_pos_arm - curr_pos
+                # dest_vector = end_pos - curr_pos
+                # theta = (base_vector[0]*dest_vector[0]+base_vector[1]*dest_vector[1])
+                # theta = theta / ((base_vector[0]**2+base_vector[1]**2)**0.5 * (dest_vector[0]**2+dest_vector[1]**2)**0.5)
+                # theta = np.arccos(theta)
+                # print("THETA "+str(theta))
+                if theta > 0:
+                    self.set_move(0, 0, min(10*theta/math.pi, self.rotVelRange[1]))
+                    # time.sleep(0.1)
                 else:
-                    vel = -4*distance/math.pi
-            self.set_move(vel, 0, 0)
-            prev_dist = distance
-        self.set_move(0,0,0)
+                    self.set_move(0, 0, max(-10*theta/math.pi, self.rotVelRange[0]))
+            else:
+                print("Done Angles")
+                self.set_move(0,0,0)
+                def move_command(end_pos):
+                    curr_pos = np.array(self.get_global_position())
+                    curr_pos_arm = np.array(self.get_any_global_position(self.baseArm))
+
+                    base_vector = curr_pos_arm - curr_pos
+                    dest_vector = end_pos - curr_pos
+                    # vel = 5*distance/math.pi
+                    distance = la.norm(dest_vector)
+                    if distance > tolerance*3:
+
+                        # vrep.simxSynchronousTrigger(self.clientID)
+                        # vrep.simxGetPingTime(self.clientID)
+
+                        # print("DISTANCE "+str(distance))
+                        # print("prev: "+str(prev_dist))
+                        if np.dot(base_vector, dest_vector) > 0:
+                            vel = 10*distance/math.pi
+                        else:
+                            vel = -10*distance/math.pi
+                        self.set_move(vel, 0, 0)
+                    else:
+                        print("Done Position")
+                        self.set_move(0,0,0)
+                        self.update_func = lambda: False
+                    return True
+                self.update_func = lambda: move_command(end_pos)
+            return True
+            
+        self.update_func = lambda: rotate_command(end_pos)
 
     def set_move(self, forwBackVel, leftRightVel, rotVel):
         """ Move at a given velocity. """

@@ -60,7 +60,7 @@ endpos[0] = pos[0] + 0.5
 endpos[1] = pos[1] - 0.5
 endpos[2] = pos[2]
 
-robot_motion.move_global_position(pos, endpos, 0.01)
+robot_motion.set_move_global_position(endpos, 0.01)
 # robot_motion.set_move(0,0,math.pi)
 # time.sleep((360/240)*1-0.1)
 # robot_motion.get_global_orientation()
@@ -70,6 +70,15 @@ robot_motion.get_global_orientation()
 
 # Simulation dt is 50ms (0.05s)
 dt = 0.05
+
+while True:
+    # Trigger a "tick"
+    vrep.simxSynchronousTrigger(clientID)
+    vrep.simxGetPingTime(clientID)
+    if not robot_motion.motion_update():
+        break
+
+print("Scanning...")
 points = []
 for i in range(100):
     # Trigger a "tick"
