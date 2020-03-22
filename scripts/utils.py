@@ -50,4 +50,5 @@ def segments_from_aabb(aabb):
     aabb_max = aabb[1]
     
 def quaternion_to_rotation(quaternion_vec):
-    
+    # Not implemented!
+    pass
