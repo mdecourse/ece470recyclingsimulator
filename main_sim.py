@@ -41,19 +41,21 @@ for i in range(5):
 # ======================================================================================================= #
 
 vrep.simxStartSimulation(clientID, vrep.simx_opmode_oneshot)
-
-robot_motion = robot_motion(clientID, youBotRef, wheelJoints)
+robot_motion = robot_motion(clientID, youBotRef, wheelJoints, armJoints[0])
 pos = robot_motion.get_global_position()
+ori = robot_motion.get_global_orientation()
 endpos = [0,0,0]
-endpos[0] = pos[0]
+endpos[0] = pos[0] + 1
 endpos[1] = pos[1] - 1
 endpos[2] = pos[2]
-# robot_motion.move_global_position(pos, endpos, 0.01)
-robot_motion.set_move(0,0,math.pi)
-time.sleep(1.5)
-robot_motion.set_move(0,0,0)
+robot_motion.move_global_position(pos, endpos, 0.01)
+# robot_motion.set_move(0,0,math.pi)
+# time.sleep((360/240)*1-0.1)
+# robot_motion.get_global_orientation()
+# robot_motion.set_move(0,0,0)
 time.sleep(3)
 robot_motion.get_global_position()
+robot_motion.get_global_orientation()
 
 # ======================================================================================================= #
 # ======================================== End Simulation =============================================== #
