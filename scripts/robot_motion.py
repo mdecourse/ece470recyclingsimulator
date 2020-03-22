@@ -2,7 +2,7 @@ import support.vrep as vrep
 import time
 import numpy as np
 import math
-from scipy.linalg import expm,logm
+from scipy.linalg import expm, logm
 
 absolute_position = -1
 
@@ -21,9 +21,10 @@ class robot_motion:
 		self.leftRightVelRange = [-240*math.pi/180, 240*math.pi/180]
 		# min and max wheel rotation vel. for left/right rotation movement
 		self.rotVelRange = [-240*math.pi/180, 240*math.pi/180]
+		vrep.simxGetObjectPosition(self.clientID, self.youBotRef, absolute_position, vrep.simx_opmode_streaming)
 
 	def get_global_position(self):
-		error,position = vrep.simxGetObjectPosition(self.clientID, self.youBotRef, absolute_position, vrep.simx_opmode_blocking)
+		error,position = vrep.simxGetObjectPosition(self.clientID, self.youBotRef, absolute_position, vrep.simx_opmode_buffer)
 		if error:
 			print("get_global_position ERROR")
 		print("POSITION: x="+str(position[0])+" y="+str(position[1])+" z="+str(position[2])+"\n")
@@ -73,7 +74,7 @@ class robot_motion:
 		if rotVel < self.rotVelRange[0] or rotVel > self.rotVelRange[1]:
 			print("set_move ERROR: Rotational Velocity value out of range.\n")
 			return
-		vrep.simxSetJointTargetVelocity(self.clientID, self.wheelJoints[0],-forwBackVel-leftRightVel-rotVel, vrep.simx_opmode_blocking)
-		vrep.simxSetJointTargetVelocity(self.clientID, self.wheelJoints[1],-forwBackVel+leftRightVel-rotVel, vrep.simx_opmode_blocking)
-		vrep.simxSetJointTargetVelocity(self.clientID, self.wheelJoints[2],-forwBackVel-leftRightVel+rotVel, vrep.simx_opmode_blocking)
-		vrep.simxSetJointTargetVelocity(self.clientID, self.wheelJoints[3],-forwBackVel+leftRightVel+rotVel, vrep.simx_opmode_blocking)
+		vrep.simxSetJointTargetVelocity(self.clientID, self.wheelJoints[0],-forwBackVel-leftRightVel-rotVel, vrep.simx_opmode_oneshot)
+		vrep.simxSetJointTargetVelocity(self.clientID, self.wheelJoints[1],-forwBackVel+leftRightVel-rotVel, vrep.simx_opmode_oneshot)
+		vrep.simxSetJointTargetVelocity(self.clientID, self.wheelJoints[2],-forwBackVel-leftRightVel+rotVel, vrep.simx_opmode_oneshot)
+		vrep.simxSetJointTargetVelocity(self.clientID, self.wheelJoints[3],-forwBackVel+leftRightVel+rotVel, vrep.simx_opmode_oneshot)

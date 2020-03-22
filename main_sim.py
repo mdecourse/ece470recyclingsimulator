@@ -2,8 +2,10 @@ import support.vrep as vrep
 import time
 import numpy as np
 import math
-from scipy.linalg import expm,logm
+from scipy.linalg import expm, logm
+import matplotlib.pyplot as plt
 from scripts.robot_motion import *
+from scripts.robot_lidar import *
 
 # Close all open connections (Clear bad cache)
 vrep.simxFinish(-1)
@@ -40,20 +42,46 @@ for i in range(5):
 # ======================================= Start Simulation ============================================== #
 # ======================================================================================================= #
 
-vrep.simxStartSimulation(clientID, vrep.simx_opmode_oneshot)
+vrep.simxSynchronous(clientID, 1)
+vrep.simxStartSimulation(clientID, vrep.simx_opmode_blocking)
+vrep.simxSynchronousTrigger(clientID)
 
 robot_motion = robot_motion(clientID, youBotRef, wheelJoints)
+robot_lidar = robot_lidar(clientID, prox_sensor, lidar_motor)
+robot_lidar.set_lidar_velocity(np.pi)
+
 pos = robot_motion.get_global_position()
 endpos = [0,0,0]
 endpos[0] = pos[0]
 endpos[1] = pos[1] - 1
 endpos[2] = pos[2]
 # robot_motion.move_global_position(pos, endpos, 0.01)
-robot_motion.set_move(0,0,math.pi)
-time.sleep(1.5)
-robot_motion.set_move(0,0,0)
-time.sleep(3)
+# robot_motion.set_move(0,0,math.pi)
+# time.sleep(1.5)
+# time.sleep(3)
 robot_motion.get_global_position()
+robot_motion.set_move(1,0,0)
+
+# Simulation dt is 50ms (0.05s)
+dt = 0.05
+points = []
+for i in range(50):
+    # Trigger a "tick"
+    vrep.simxSynchronousTrigger(clientID)
+    vrep.simxGetPingTime(clientID)
+    
+    pt = robot_lidar.read_lidar_point()
+    if pt:
+        points.append(pt)
+        
+robot_motion.set_move(0,0,0)
+vrep.simxSynchronousTrigger(clientID)
+
+
+points = np.array(points).T
+# print(points)
+plt.plot(points[0], points[1], 'o')
+plt.show()
 
 # ======================================================================================================= #
 # ======================================== End Simulation =============================================== #

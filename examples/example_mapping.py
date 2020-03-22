@@ -1,4 +1,4 @@
-import vrep
+import support.vrep as vrep
 import time
 import numpy as np
 from math import cos, sin
