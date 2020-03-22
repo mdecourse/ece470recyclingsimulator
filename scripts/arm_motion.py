@@ -23,6 +23,7 @@ class arm_motion:
         self.w = np.array([[1,0,0],[0,1,0],[0,1,0],[0,1,0],[1,0,0]])
         self.r = []
         self.v = []
+        self.SetJointPosition([0,0,0,0,0])
         for arm, w in zip(self.arms,self.w):
             r = self.get_any_ref_position(arm, self.youBot)
             self.r.append(r)
