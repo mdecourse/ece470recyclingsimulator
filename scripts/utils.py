@@ -1,4 +1,3 @@
-import time
 import numpy as np
 import numpy.linalg as la
 import math
@@ -11,6 +10,10 @@ def rot2D(theta):
 def rot2D_H(theta):
     """ 2D Rotation matrix. (homogenous transform) """
     return np.array([[np.cos(theta), -np.sin(theta), 0], [np.sin(theta), np.cos(theta), 0], [0, 0, 1]])
+    
+def axis2D(theta):
+    """ Ray in 2D at angle [theta] from horizontal """
+    return np.array([np.cos(theta), np.sin(theta)])
     
 def pose2D(pos, theta):
     """ 2D translation and rotation matrix. (homogenous transform) """
@@ -42,13 +45,20 @@ def ray_segment_intersection(start, ray, segment_a, segment_b):
     #   second time (time of segment) should be between 0 and 1.
     intersect_t = la.solve(np.array([ray, ray_2]).T, segment_a - start)
     if intersect_t[0] >= 0 and (intersect_t[1] >= 0 and intersect_t[1] <= 1):
-        return 
+        return start + ray * intersect_t[0]
     return None
     
 def segments_from_aabb(aabb):
     aabb_min = aabb[0]
     aabb_max = aabb[1]
+    segments = [(np.array(aabb_min), np.array([aabb_min[0], aabb_max[1]])),
+                (np.array([aabb_min[0], aabb_max[1]]), np.array(aabb_max)),
+                (np.array(aabb_max), np.array([aabb_max[0], aabb_min[1]])),
+                (np.array([aabb_max[0], aabb_min[1]]), np.array(aabb_min)),
+                ]
+    return segments
     
 def quaternion_to_rotation(quaternion_vec):
     # Not implemented!
-    pass
+    raise NotImplementedError("quaternion_to_rotation not implemented yet!")
+    
