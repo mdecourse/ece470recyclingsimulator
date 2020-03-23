@@ -61,16 +61,16 @@ plt.ion()
 plt.show()
 plt.pause(0.001)
 
-for i in range(1000):
+for i in range(600):
     # true_position.update(0, -0.05, 0.3, 0.05)
     true_position.update(0, 0, 0, 0.05)
     intersect_distance = pf.surroundings_map.sensor_model(true_position.pose, pf.lidar_angle)
-    true_position.add_sensor_input(intersect_distance)
+    true_position.add_sensor_input(intersect_distance * np.random.normal(loc=1, scale=0.05))
     
     # pf.update(0, -0.05, 0.3, 6, 0.05)
     pf.update(0, 0, 0, 6, 0.05)
     # if True:
-    if i % 50 == 49:
+    if i % 30 == 29:
         pf.resample(true_position.past_readings)
         visualize_pf(pf, true_position)
         plt.ion()

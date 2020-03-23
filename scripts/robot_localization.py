@@ -11,7 +11,7 @@ lidar_robot_pose = np.array([[1, 0, 0], [0, 1, -0.175], [0, 0, 1]])
 lidar_range = 2
 
 class robot_state:
-    def __init__(self, pose, past_readings=[], max_readings=50):
+    def __init__(self, pose, past_readings=[], max_readings=30):
         self.pose = pose
         self.past_readings = past_readings.copy()
         self.max_readings = max_readings
