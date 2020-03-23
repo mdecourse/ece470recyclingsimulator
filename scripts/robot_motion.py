@@ -81,10 +81,10 @@ class robot_motion:
                 # theta = np.arccos(theta)
                 # print("THETA "+str(theta))
                 if theta > 0:
-                    self.set_move(0, 0, min(10*theta/math.pi, self.rotVelRange[1]))
+                    self.set_move(0, 0, min(400*theta/math.pi, self.rotVelRange[1]))
                     # time.sleep(0.1)
                 else:
-                    self.set_move(0, 0, max(-10*theta/math.pi, self.rotVelRange[0]))
+                    self.set_move(0, 0, max(-400*theta/math.pi, self.rotVelRange[0]))
             else:
                 # print("Done Angles")
                 self.set_move(0,0,0)
@@ -104,9 +104,9 @@ class robot_motion:
                         # print("DISTANCE "+str(distance))
                         # print("prev: "+str(prev_dist))
                         if np.dot(base_vector, dest_vector) > 0:
-                            vel = 10*distance/math.pi
+                            vel = min(400*distance/math.pi, self.forwBackVelRange[1])
                         else:
-                            vel = -10*distance/math.pi
+                            vel = max(-400*distance/math.pi, self.forwBackVelRange[0])
                         self.set_move(vel, 0, 0)
                     else:
                         # print("Done Position")
@@ -119,7 +119,12 @@ class robot_motion:
         self.update_func = lambda: rotate_command(end_pos)
 
     def set_move(self, forwBackVel, leftRightVel, rotVel):
-        """ Move at a given velocity. """
+        """ Move at a given velocity. Velocity is in m/s for translational, and rad/sec for rotational. """
+        
+        forwBackVel *= 20
+        leftRightVel *= 20
+        rotVel *= -7.77
+        
         if forwBackVel < self.forwBackVelRange[0]:
             print("set_move TOO LOW: Forward Backward Velocity value out of range.\n")
             forwBackVel = self.forwBackVelRange[0]
