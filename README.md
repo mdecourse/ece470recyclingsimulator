@@ -45,7 +45,7 @@ Start CoppeliaSim. Open the scene (robot_lidar_test.ttt)
 Run the simulation:
 
 ```
-python example_moving.py
+python3 main_sim.py
 ```
 
 or
