@@ -51,13 +51,15 @@ python3 main_sim.py
 or
 
 ```
-python3 example_moving.py
+python3 main_sim.py
 ```
 
 ## Current script files:
 
-* example_moving.py: Moves the robot into the solid block.
-* example_mapping.py: Robot sits still and the "lidar" scans, and plots the data it sees.
+* robot_motion.py: Robot 2d base movement demonstrated here, can follow waypoints
+* arm_motion.py: Robot arm movement and foward kinematics to determine end effector state.
+* robot_lidar.py: Reading & interpreting sensor data for analysis.
+* robot_localization.py: Start on particle filter based localization leveraging lidar data.
 
 ## TODO / next steps:
 * Interpret lidar data correctly
