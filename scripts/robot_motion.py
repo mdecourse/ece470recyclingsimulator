@@ -23,9 +23,9 @@ class robot_motion:
         self.leftRightVelRange = [-240*math.pi/180, 240*math.pi/180]
         # min and max wheel rotation vel. for left/right rotation movement
         self.rotVelRange = [-240*math.pi/180, 240*math.pi/180]
-        
+
         self.update_func = lambda: False
-        
+
         vrep.simxGetObjectPosition(self.clientID, self.youBotRef, absolute_position, vrep.simx_opmode_streaming)
         vrep.simxGetObjectOrientation(self.clientID, self.youBotRef, absolute_position, vrep.simx_opmode_streaming)
 
@@ -68,10 +68,10 @@ class robot_motion:
             if abs(theta) > tolerance and \
                   ((base_vector[0] != dest_vector[0]) or \
                    (base_vector[1] != dest_vector[1])):
-                   
+
                 # vrep.simxSynchronousTrigger(self.clientID)
                 # vrep.simxGetPingTime(self.clientID)
-                
+
                 # curr_pos = np.array(self.get_global_position())
                 # curr_pos_arm = np.array(self.get_any_global_position(self.baseArm))
                 # base_vector = curr_pos_arm - curr_pos
@@ -86,7 +86,7 @@ class robot_motion:
                 else:
                     self.set_move(0, 0, max(-10*theta/math.pi, self.rotVelRange[0]))
             else:
-                print("Done Angles")
+                # print("Done Angles")
                 self.set_move(0,0,0)
                 def move_command(end_pos):
                     curr_pos = np.array(self.get_global_position())
@@ -109,13 +109,13 @@ class robot_motion:
                             vel = -10*distance/math.pi
                         self.set_move(vel, 0, 0)
                     else:
-                        print("Done Position")
+                        # print("Done Position")
                         self.set_move(0,0,0)
                         self.update_func = lambda: False
                     return True
                 self.update_func = lambda: move_command(end_pos)
             return True
-            
+
         self.update_func = lambda: rotate_command(end_pos)
 
     def set_move(self, forwBackVel, leftRightVel, rotVel):
