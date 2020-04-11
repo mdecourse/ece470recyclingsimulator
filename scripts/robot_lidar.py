@@ -29,17 +29,22 @@ class robot_lidar:
             raise Exception('could not get lidar angle')
         return theta
     
+    def get_lidar_raw(self):
+        result = vrep.simxReadProximitySensor(self.clientID, self.prox_sensor, vrep.simx_opmode_buffer)
+        if result[1]:
+            depth = result[2][2] * np.random.normal(loc=1.0, scale=self.noise_stdev)
+            return depth
+        return None
+    
     def read_lidar_point(self):
         """ Gets an (x, y) of a point the lidar detected, relative to its own center. """
         # 1: True if detected, False if not.
         # 2: 3D vector containing position of detected point.
         # 3: Object handle of the detected object.
         # 4: Surface normal vector of the detected point.
-        result = vrep.simxReadProximitySensor(self.clientID, self.prox_sensor, vrep.simx_opmode_buffer)
-        print(result)
-        if result[1]:
+        result = self.get_lidar_raw()
+        if result:
             angle = self.get_lidar_angle()
-            depth = result[2][2] * np.random.normal(loc=1.0, scale=self.noise_stdev)
-            return (depth * np.cos(angle), depth * np.sin(angle))
+            return (result * np.cos(angle), result * np.sin(angle))
         return None
         

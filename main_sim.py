@@ -5,8 +5,16 @@ import math
 from scipy.linalg import expm, logm
 import matplotlib.pyplot as plt
 from scripts.robot_motion import *
+from scripts.robot_localization import *
 from scripts.arm_motion import *
 from scripts.robot_lidar import *
+from pf_test import *
+import sys
+
+show_pf = False
+for arg in sys.argv:
+    if arg == "-show_pf":
+        show_pf = True
 
 # Close all open connections (Clear bad cache)
 vrep.simxFinish(-1)
@@ -53,7 +61,8 @@ robot_motion = robot_motion(clientID, youBotRef, wheelJoints, armJoints[0])
 arm_motion = arm_motion(clientID, youBotRef, armJoints, youBot, gripper)
 
 robot_lidar = robot_lidar(clientID, prox_sensor, lidar_motor)
-robot_lidar.set_lidar_velocity(6)
+lidar_v = 6
+robot_lidar.set_lidar_velocity(lidar_v)
 
 # Simulation dt is 50ms (0.05s)
 dt = 0.05
@@ -61,13 +70,67 @@ dt = 0.05
 pos = robot_motion.get_global_position()
 print(pos)
 theta = 0
-rot_v = math.pi / 10
-for i in range(200):
+
+pf = particle_filter(80, KNOWN_MAP)
+
+# Hack to do manual robot control
+import threading as th
+keep_going = True
+vfb = 0
+vlr = 0
+vt = 0
+def key_capture_thread():
+    global keep_going
+    global vfb
+    global vlr
+    global vt
+    while True:
+        in_str = input().strip()
+        for c in in_str:
+            if c == "q":
+                keep_going = False
+                break
+            elif c == "w":
+                vfb += 0.1
+            elif c == "s":
+                vfb -= 0.1
+            elif c == "d":
+                vlr += 0.1
+            elif c == "a":
+                vlr -= 0.1
+            elif c == "x":
+                vt -= 0.2
+            elif c == "z":
+                vt += 0.2
+
+th.Thread(target=key_capture_thread, args=(), name='key_capture_thread', daemon=True).start()
+i = 0
+readings = []
+while keep_going: # Running for 100s
+    robot_motion.set_move(vfb, vlr, vt)
+    
     # Trigger a "tick"
-    robot_motion.set_move(0.05 * (math.cos(theta) - math.sin(theta)), 0.05 * (math.cos(theta) + math.sin(theta)), rot_v)
-    theta += dt * rot_v
     vrep.simxSynchronousTrigger(clientID)
     vrep.simxGetPingTime(clientID)
+    
+    lidar_result = robot_lidar.get_lidar_raw();
+    if lidar_result:
+        readings.append(lidar_result)
+    else:
+        readings.append(5)
+    
+    pf.update(0, 0, 0, lidar_v, dt)
+    i += 1
+    if i == 30:
+        print(readings)
+        i = 0
+        pf.resample(readings)
+        visualize_pf(pf)
+        plt.ion()
+        plt.show()
+        plt.pause(0.001)
+        readings = []
+        
     robot_motion.motion_update()
     arm_motion.motion_update()
 
@@ -75,61 +138,6 @@ robot_motion.set_move(0,0,0)
 pos = robot_motion.get_global_position()
 print(pos)
 
-time.sleep(1)
-
-# print("\nATTEMPTING TO MOVE ROBOT +0.5 IN X AND -0.5 IN Y.\n")
-# pos = robot_motion.get_global_position()
-# endpos = [pos[0] + 0.5, pos[1] - 0.5, pos[2]]
-
-# robot_motion.set_move_global_position(endpos, 0.01)
-# robot_motion.get_global_position()
-
-# print("\nATTEMPTING TO MOVE ARM.\n")
-# thetas = [math.pi/2, -math.pi/4, math.pi/4, math.pi/4, math.pi/4]
-# prediction = arm_motion.forw_kin(thetas)
-# print("FORWARD KINEMATICS PREDICTED GRIPPER POSITION:")
-# print(prediction)
-# print()
-# arm_motion.set_target_arm_angles(thetas)
-
-# while True:
-    # # Trigger a "tick"
-    # vrep.simxSynchronousTrigger(clientID)
-    # vrep.simxGetPingTime(clientID)
-    # arm_motion.motion_update()
-    # if not robot_motion.motion_update():
-        # break
-
-# print("SIMULATOR READ GRIPPER POSITION")
-# read_pos = arm_motion.get_any_ref_position(gripper, youBot)
-# print()
-
-# robot_motion.set_move(0,0,0)
-# arm_motion.hold_position()
-
-# time.sleep(1)
-
-# print("\nATTEMPTING TO READ LIDAR SENSOR.\n")
-
-print("Scanning...")
-points = []
-for i in range(200):
-    # Trigger a "tick"
-    vrep.simxSynchronousTrigger(clientID)
-    vrep.simxGetPingTime(clientID)
-
-    robot_motion.motion_update()
-    arm_motion.motion_update()
-    
-    pt = robot_lidar.read_lidar_point()
-    if pt:
-        points.append(pt)
-
-
-points = np.array(points).T
-# print(points)
-plt.plot(points[0], points[1], 'o')
-plt.show()
 
 # ======================================================================================================= #
 # ======================================== End Simulation =============================================== #

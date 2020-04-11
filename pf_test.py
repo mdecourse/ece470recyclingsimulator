@@ -4,9 +4,6 @@ import math
 import matplotlib.pyplot as plt
 from scripts.robot_localization import *
 
-pf = particle_filter(80, KNOWN_MAP)
-true_position = robot_state(pose2D((3, 2), 0))
-
 def plot_single(pf, pose):
     pos = pose[:2, -1]
     pointer = pose @ np.array([0, 0.1, 1])
@@ -55,27 +52,31 @@ def visualize_pf(pf, true_pos = None, n=0):
     plt.ylim(-0.15, 3.15)
     pf.surroundings_map.draw()
 
-pf.particles[-1] = true_position.perturb(0.01, 0.01)
-visualize_pf(pf, true_position)
-plt.ion()
-plt.show()
-plt.pause(0.001)
+if __name__ == "__main__":
+    pf = particle_filter(80, KNOWN_MAP)
+    true_position = robot_state(pose2D((3, 2), 0))
 
-for i in range(600):
-    # true_position.update(0, -0.05, 0.3, 0.05)
-    true_position.update(0, 0, 0, 0.05)
-    intersect_distance = pf.surroundings_map.sensor_model(true_position.pose, pf.lidar_angle)
-    true_position.add_sensor_input(intersect_distance * np.random.normal(loc=1, scale=0.05))
-    
-    # pf.update(0, -0.05, 0.3, 6, 0.05)
-    pf.update(0, 0, 0, 6, 0.05)
-    # if True:
-    if i % 30 == 29:
-        pf.resample(true_position.past_readings)
-        visualize_pf(pf, true_position)
-        plt.ion()
-        plt.show()
-        plt.pause(0.001)
-        # pf.repopulate()
-        # visualize_pf(pf, true_position)
-        # plt.show()
+    pf.particles[-1] = true_position.perturb(0.01, 0.01)
+    visualize_pf(pf, true_position)
+    plt.ion()
+    plt.show()
+    plt.pause(0.001)
+
+    for i in range(600):
+        # true_position.update(0, -0.05, 0.3, 0.05)
+        true_position.update(0, 0, 0, 0.05)
+        intersect_distance = pf.surroundings_map.sensor_model(true_position.pose, pf.lidar_angle)
+        true_position.add_sensor_input(intersect_distance * np.random.normal(loc=1, scale=0.05))
+        
+        # pf.update(0, -0.05, 0.3, 6, 0.05)
+        pf.update(0, 0, 0, 6, 0.05)
+        # if True:
+        if i % 30 == 29:
+            pf.resample(true_position.past_readings)
+            visualize_pf(pf, true_position)
+            plt.ion()
+            plt.show()
+            plt.pause(0.001)
+            # pf.repopulate()
+            # visualize_pf(pf, true_position)
+            # plt.show()
