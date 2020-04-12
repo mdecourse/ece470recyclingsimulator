@@ -69,7 +69,7 @@ arm_motion = arm_motion(clientID, youBotRef, armJoints, youBot, gripper)
 dt = 0.05
 lidar_v = 6
 
-pf = particle_filter(400, KNOWN_MAP,perturb_pos_stdev=0.05, perturb_angle_stdev = 0.15,random_fraction=8)
+pf = particle_filter(400, KNOWN_MAP,perturb_pos_stdev=0.05, perturb_angle_stdev = 0.15,random_fraction=4)
 
 # initialize sensor classes
 vision_sensor = vision_sensor(clientID, vision_sens)

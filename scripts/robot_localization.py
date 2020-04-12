@@ -76,10 +76,10 @@ class particle_filter:
         paired = sorted(list(zip(weights, self.particles)), key=lambda x: x[0])
         # Resample
         newParticles = []
-        for i in range((self.resample_particles // 2)):
+        for i in range((self.resample_particles // 4)):
             target_particle = paired[-1-i][1] # Between 0 and 1
             newParticles.append(target_particle)
-            for j in range(2-1):
+            for j in range(4-1):
                 newParticles.append(target_particle.perturb(self.perturb_pos_stdev, self.perturb_angle_stdev))
         self.nParticles = self.resample_particles
         self.particles = newParticles
