@@ -16,7 +16,7 @@ import threading as th
 
 show_pf = False
 show_dijkstra = False
-manual_mode = False
+manual_mode = True
 for arg in sys.argv:
     if arg == "-show_pf":
         show_pf = True
@@ -118,7 +118,7 @@ if not manual_mode:
         global keep_going
         setup_dijkstras(show_dijkstra)
         keep_going = False
-        
+
     th.Thread(target=dijkstras_run_thread, args=(), name='dijkstras_run_thread', daemon=True).start()
     robot_motion.set_move(0, 0, 0)
     last_n_pf_updates = n_pf_updates
@@ -132,7 +132,7 @@ if not manual_mode:
             # last_n_pf_updates = n_pf_updates
         robot_motion.motion_update()
         arm_motion.motion_update()
-        
+
     pf.resample_particles = 40
 
     keep_going = True
@@ -146,7 +146,7 @@ if not manual_mode:
         update_pf()
         keep_going = robot_motion.motion_update()
         arm_motion.motion_update()
-    
+
 
 print("Manual mode")
 
@@ -175,12 +175,13 @@ def key_capture_thread():
             elif c == "x":
                 vt -= 0.2
             elif c == "z":
-                vt += 0.2
+                # vt += 0.2
+                arm_motion.inv_kin(None)
 
 th.Thread(target=key_capture_thread, args=(), name='key_capture_thread', daemon=True).start()
 while keep_going:
     robot_motion.set_move(vfb, vlr, vt)
-    vision_sensor.read_sensor()
+    vision_sensor.red_pixel_detection()
     # Trigger a "tick"
     vrep.simxSynchronousTrigger(clientID)
     vrep.simxGetPingTime(clientID)

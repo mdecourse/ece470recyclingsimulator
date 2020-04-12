@@ -35,6 +35,7 @@ class arm_motion:
         self.S = self.getS()
 
         self.update_func = lambda: False
+        vrep.simxGetJointMatrix(self.clientID, self.gripper, vrep.simx_opmode_streaming)
 
 
     def motion_update(self):
@@ -103,8 +104,28 @@ class arm_motion:
         for arm, theta in zip(self.arms, thetas):
             vrep.simxSetJointPosition(self.clientID, arm, theta, vrep.simx_opmode_oneshot)
 
+    def getTMatrix(self, handle):
+        returnCode, T = vrep.simxGetJointMatrix(self.clientID, handle, vrep.simx_opmode_buffer)
+        T_new = np.zeros((4,4))
+        T_new[3,3] = 1
+        T_new[0, 0:3] = [T[0], T[4], T[8]]
+        T_new[1, 0:3] = [T[1], T[5], T[9]]
+        T_new[2, 0:3] = [T[2], T[6], T[10]]
+        T_new[0:3, 3] = [T[3], T[7], T[11]]
+        return T_new@self.M
+
     def inv_kin(self, T_desired):
-        thetalist0 = [0]*self.num_joints
+        T = self.getTMatrix(self.gripper)
+        print(T)
+        T[2,3] -= 0.1
+        T[1,3] += 0.1
+        thetalist0 = self.get_arm_angles()
         e = 0.01
-        [thetalist,success] = IKinSpace(self.S,self.M,T_desired,thetalist0,e,e)
-        return list(thetalist)
+        print(T)
+        [thetalist,success] = IKinSpace(self.S,self.M,T,thetalist0,e,e)
+        if success:
+            print("YAY")
+        else:
+            print("FAIL")
+        # return list(thetalist)
+        self.set_target_arm_angles(thetalist)

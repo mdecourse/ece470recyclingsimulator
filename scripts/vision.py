@@ -20,7 +20,7 @@ class vision_sensor:
         self.avg_red = 0.389
         self.max_red = 0.891
 
-    def read_sensor(self):
+    def red_pixel_detection(self):
         # returnCode, detectionState, auxPackets = \
         #     vrep.simxReadVisionSensor(self.clientID, self.sensor, vrep.simx_opmode_buffer)
         returnCode, resolution, image = \
@@ -28,13 +28,12 @@ class vision_sensor:
         returnCode, resolution, depth = \
             vrep.simxGetVisionSensorDepthBuffer(self.clientID, self.sensor, vrep.simx_opmode_buffer)
         num_pixels = 0
+        avg_distance = 0
         if len(resolution) > 0:
             for x in range(0, resolution[0]):
                 for y in range(0, resolution[1]):
                     red = image[(x*resolution[0]+y)*3]& 0b000011111111
                     if red > 250:
                         num_pixels += 1
-                        d = depth[x*resolution[0]+y]
-                        # print("Cylinder is: "+str(d)+" meters away.")
-                        # print("yay red")
-            print("Number of red pixels: " + str(num_pixels))
+                        avg_distance += depth[x*resolution[0]+y]
+        return num_pixels, avg_distance
