@@ -4,7 +4,7 @@ import math
 import sys
 import matplotlib.pyplot as plt
 
-youbot_diameter = 0.7
+youbot_diameter = 0.6
 lines_map = [((0, 0), (4, 0)),
              ((4, 0), (4, 3)),
              ((0, 0), (0, 3)),
