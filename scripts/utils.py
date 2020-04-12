@@ -44,6 +44,40 @@ def rot3D(axis, angle):
     retval[:3, :3] = expm(cross_prod_matrix(axis) * angle)
     retval[3, 3] = 1
     return retval
+    
+def angle(a, b):
+    angle = math.atan2(b[1] - a[1], b[0] - a[0])
+    if angle < 0:
+        return angle + 2*np.pi
+    return angle
+
+def line_point_distance_simple(a, b, point):
+    """Distance between a point and a horizontal or vertical line."""
+    if a[0] == b[0]:
+        top = b
+        bot = a
+        if b[1] < a[1]:
+            top = a
+            bot = b
+        if point[1] > top[1]:
+            return la.norm(np.array(top) - point)
+        elif point[1] < bot[1]:
+            return la.norm(np.array(bot) - point)
+        return abs(point[0] - a[0])
+    elif a[1] == b[1]:
+        right = b
+        left = a
+        if b[0] < a[0]:
+            right = a
+            left = b
+        if point[0] > right[0]:
+            return la.norm(np.array(right) - point)
+        elif point[0] < left[0]:
+            return la.norm(np.array(left) - point)
+        return abs(point[1] - a[1])
+    else:
+        raise NotImplementedError("Too complicated :(")
+    
 
 def ray_segment_intersection(start, ray, range, segment_a, segment_b):
     # This is intentionally the negative of the ray from a to b - to avoid having to take negative later
@@ -64,8 +98,26 @@ def segments_from_aabb(aabb):
                 (np.array([aabb_max[0], aabb_min[1]]), np.array(aabb_min)),
                 ]
     return segments
-    
+
+def angle_delta(a, b):
+    """If I'm at angle A, how should I turn to get to angle B? Angles must be [0, 2pi)"""
+    hi = max(a, b)
+    lo = min(a, b)
+    if hi - lo > np.pi:
+        if a == hi:
+            return (2*np.pi + b) - a
+        return b - (a+2*np.pi)
+    return b-a
+
 def quaternion_to_rotation(quaternion_vec):
     # Not implemented!
     raise NotImplementedError("quaternion_to_rotation not implemented yet!")
+    
+# Manual angle_delta testing
+if __name__ == "__main__":
+    while True:
+        a = 2*np.pi * np.random.rand(1)
+        b = 2*np.pi * np.random.rand(1)
+        print(a, b, a-b, angle_delta(a, b))
+        input()
     

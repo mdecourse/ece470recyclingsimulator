@@ -9,14 +9,18 @@ from scripts.robot_localization import *
 from scripts.arm_motion import *
 from scripts.robot_lidar import *
 from scripts.vision import *
+from scripts.dijkstra_hardcode import setup_dijkstras, get_local_heading
 from pf_test import *
 import sys
 import threading as th
 
 show_pf = False
+show_dijkstra = False
 for arg in sys.argv:
     if arg == "-show_pf":
         show_pf = True
+    if arg == "-show_path_grid":
+        show_dijkstra = True
 
 # Close all open connections (Clear bad cache)
 vrep.simxFinish(-1)
@@ -60,22 +64,91 @@ vrep.simxStartSimulation(clientID, vrep.simx_opmode_blocking)
 # initialize motion classes
 robot_motion = robot_motion(clientID, youBotRef, wheelJoints, armJoints[0])
 arm_motion = arm_motion(clientID, youBotRef, armJoints, youBot, gripper)
-pf = particle_filter(80, KNOWN_MAP)
 
 # Simulation dt is 50ms (0.05s)
 dt = 0.05
 lidar_v = 6
+
+pf = particle_filter(400, KNOWN_MAP,perturb_pos_stdev=0.05, perturb_angle_stdev = 0.15,random_fraction=8)
 
 # initialize sensor classes
 vision_sensor = vision_sensor(clientID, vision_sens)
 robot_lidar = robot_lidar(clientID, prox_sensor, lidar_motor)
 robot_lidar.set_lidar_velocity(lidar_v)
 
-# Hack to do manual robot control
-keep_going = True
 vfb = 0
 vlr = 0
 vt = 0
+i = 0
+n_pf_updates = 0
+readings = []
+def update_pf():
+    global i
+    global n_pf_updates
+    global readings
+    lidar_result = robot_lidar.get_lidar_raw();
+    if lidar_result:
+        readings.append(lidar_result)
+    else:
+        readings.append(5)
+    
+    pf.update(robot_motion.velocities[0], robot_motion.velocities[1], robot_motion.velocities[2], robot_lidar.get_lidar_angle() + np.pi / 2, dt)
+    i += 1
+    if i == 30:
+        i = 0
+        n_pf_updates += 1
+        pf.resample(readings)
+        if show_pf:
+            visualize_pf(pf)
+            plt.ion()
+            plt.show()
+            plt.pause(0.001)
+        readings = []
+        print("Prediction:",pf.get_predicted_pose()[:2, -1])
+        pos = robot_motion.get_global_position()
+        print("Actual:[{} {}]".format(pos[0] + 2, pos[1] + 2))
+
+print("Localizing and preparing dijkstras tables...")
+keep_going = True
+def dijkstras_run_thread():
+    global keep_going
+    setup_dijkstras(show_dijkstra)
+    keep_going = False
+    
+th.Thread(target=dijkstras_run_thread, args=(), name='dijkstras_run_thread', daemon=True).start()
+robot_motion.set_move(0.2, 0, 0)
+last_n_pf_updates = n_pf_updates
+while keep_going or n_pf_updates < 12:
+    #break
+    vrep.simxSynchronousTrigger(clientID)
+    vrep.simxGetPingTime(clientID)
+    update_pf()
+    if n_pf_updates == last_n_pf_updates+4:
+        robot_motion.set_move(-robot_motion.velocities[0], 0, 0)
+        last_n_pf_updates = n_pf_updates
+    robot_motion.motion_update()
+    arm_motion.motion_update()
+    
+pf.resample_particles = 40
+
+keep_going = True
+target_point = (1, 2)
+print("Pathing mode: Going to {}".format(target_point))
+robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(), 0.25)
+while keep_going:
+    #break
+    vrep.simxSynchronousTrigger(clientID)
+    vrep.simxGetPingTime(clientID)
+    update_pf()
+    keep_going = robot_motion.motion_update()
+    arm_motion.motion_update()
+    
+
+print("Manual mode")
+
+# Hack to do manual robot control
+keep_going = True
+
 def key_capture_thread():
     global keep_going
     global vfb
@@ -99,37 +172,15 @@ def key_capture_thread():
                 vt -= 0.2
             elif c == "z":
                 vt += 0.2
-
+                
 th.Thread(target=key_capture_thread, args=(), name='key_capture_thread', daemon=True).start()
-i = 0
-readings = []
-while keep_going: # Running for 100s
+while keep_going:
     robot_motion.set_move(vfb, vlr, vt)
     vision_sensor.read_sensor()
     # Trigger a "tick"
     vrep.simxSynchronousTrigger(clientID)
     vrep.simxGetPingTime(clientID)
-
-    lidar_result = robot_lidar.get_lidar_raw();
-    if lidar_result:
-        readings.append(lidar_result)
-    else:
-        readings.append(5)
-
-    pf.update(vfb, vlr, vt, lidar_v, dt)
-    i += 1
-    if i == 30:
-        i = 0
-        pf.resample(readings)
-        if show_pf:
-            visualize_pf(pf)
-            plt.ion()
-            plt.show()
-            plt.pause(0.001)
-        readings = []
-        print("Prediction:",pf.get_predicted_pose()[:2, -1])
-        pos = robot_motion.get_global_position()
-        print("Actual:[{} {}]".format(pos[0] + 2, pos[1] + 2))
+    update_pf()
 
     robot_motion.motion_update()
     arm_motion.motion_update()
