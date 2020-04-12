@@ -4,6 +4,7 @@ import numpy as np
 import numpy.linalg as la
 import math
 from scipy.linalg import expm,logm
+from modern_robotics import IKinSpace
 
 absolute_position = -1
 
@@ -18,6 +19,7 @@ class arm_motion:
         self.youBot = youBot
         self.arms = arms
         self.gripper = gripper
+        self.num_joints = 5
 
         self.w = np.array([[1,0,0],[0,1,0],[0,1,0],[0,1,0],[1,0,0]])
         self.r = []
@@ -30,12 +32,20 @@ class arm_motion:
 
         pos = self.get_any_ref_position(self.gripper, self.youBot)
         self.M = np.array([[-1,0,0,pos[0]],[0,0,1,pos[1]],[0,1,0,pos[2]],[0,0,0,1]])
-        
+        self.S = self.getS()
+
         self.update_func = lambda: False
-        
+
 
     def motion_update(self):
         return self.update_func()
+
+    def getS(self):
+        BS = np.zeros((6,self.num_joints))
+        for i in range(self.num_joints):
+            BS[0:3,i] = self.w[i]
+            BS[3:,i] = self.v[i]
+        return BS
 
     def get_arm_angles(self):
         angles = []
@@ -92,3 +102,9 @@ class arm_motion:
     def SetJointPosition(self, thetas):
         for arm, theta in zip(self.arms, thetas):
             vrep.simxSetJointPosition(self.clientID, arm, theta, vrep.simx_opmode_oneshot)
+
+    def inv_kin(self, T_desired):
+        thetalist0 = [0]*self.num_joints
+        e = 0.01
+        [thetalist,success] = IKinSpace(self.S,self.M,T_desired,thetalist0,e,e)
+        return list(thetalist)

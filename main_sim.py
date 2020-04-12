@@ -8,6 +8,7 @@ from scripts.robot_motion import *
 from scripts.robot_localization import *
 from scripts.arm_motion import *
 from scripts.robot_lidar import *
+from scripts.vision import *
 from pf_test import *
 import sys
 
@@ -44,6 +45,7 @@ target          = get_handle_blocking('youBot_positionTarget')
 prox_sensor     = get_handle_blocking('Proximity_sensor')
 lidar_motor     = get_handle_blocking('Tower_Turning_Joint')
 gripper 		= get_handle_blocking('youBotGripperJoint1')
+vision_sens   = get_handle_blocking('Vision_sensor')
 
 armJoints = [-1] * 5
 for i in range(5):
@@ -57,8 +59,8 @@ vrep.simxStartSimulation(clientID, vrep.simx_opmode_blocking)
 
 # initialize motion classes
 robot_motion = robot_motion(clientID, youBotRef, wheelJoints, armJoints[0])
-
 arm_motion = arm_motion(clientID, youBotRef, armJoints, youBot, gripper)
+vision_sensor = vision_sensor(clientID, vision_sens)
 
 robot_lidar = robot_lidar(clientID, prox_sensor, lidar_motor)
 lidar_v = 6
@@ -108,16 +110,17 @@ i = 0
 readings = []
 while keep_going: # Running for 100s
     robot_motion.set_move(vfb, vlr, vt)
+    vision_sensor.read_sensor()
     # Trigger a "tick"
     vrep.simxSynchronousTrigger(clientID)
     vrep.simxGetPingTime(clientID)
-    
+
     lidar_result = robot_lidar.get_lidar_raw();
     if lidar_result:
         readings.append(lidar_result)
     else:
         readings.append(5)
-    
+
     pf.update(vfb, vlr, vt, lidar_v, dt)
     i += 1
     if i == 30:
@@ -132,13 +135,13 @@ while keep_going: # Running for 100s
         print("Prediction:",pf.get_predicted_pose()[:2, -1])
         pos = robot_motion.get_global_position()
         print("Actual:[{} {}]".format(pos[0] + 2, pos[1] + 2))
-        
+
     robot_motion.motion_update()
     arm_motion.motion_update()
 
-robot_motion.set_move(0,0,0)
-pos = robot_motion.get_global_position()
-print(pos)
+# robot_motion.set_move(0,0,0)
+# pos = robot_motion.get_global_position()
+# print(pos)
 
 
 # ======================================================================================================= #
