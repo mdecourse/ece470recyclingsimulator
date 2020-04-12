@@ -44,6 +44,37 @@ def rot3D(axis, angle):
     retval[:3, :3] = expm(cross_prod_matrix(axis) * angle)
     retval[3, 3] = 1
     return retval
+    
+def angle(a, b):
+    return math.atan2(b[1] - a[1], b[0] - a[0])
+
+def line_point_distance_simple(a, b, point):
+    """Distance between a point and a horizontal or vertical line."""
+    if a[0] == b[0]:
+        top = b
+        bot = a
+        if b[1] < a[1]:
+            top = a
+            bot = b
+        if point[1] > top[1]:
+            return la.norm(np.array(top) - point)
+        elif point[1] < bot[1]:
+            return la.norm(np.array(bot) - point)
+        return abs(point[0] - a[0])
+    elif a[1] == b[1]:
+        right = b
+        left = a
+        if b[0] < a[0]:
+            right = a
+            left = b
+        if point[0] > right[0]:
+            return la.norm(np.array(right) - point)
+        elif point[0] < left[0]:
+            return la.norm(np.array(left) - point)
+        return abs(point[1] - a[1])
+    else:
+        raise NotImplementedError("Too complicated :(")
+    
 
 def ray_segment_intersection(start, ray, range, segment_a, segment_b):
     # This is intentionally the negative of the ray from a to b - to avoid having to take negative later

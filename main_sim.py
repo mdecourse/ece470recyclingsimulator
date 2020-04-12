@@ -73,7 +73,7 @@ pos = robot_motion.get_global_position()
 print(pos)
 theta = 0
 
-pf = particle_filter(80, KNOWN_MAP)
+pf = particle_filter(50, KNOWN_MAP)
 
 # Hack to do manual robot control
 import threading as th

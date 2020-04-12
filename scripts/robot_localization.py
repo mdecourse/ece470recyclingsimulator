@@ -30,7 +30,7 @@ class robot_state:
         self.past_readings.append(reading)
 
 class particle_filter:
-    def __init__(self, nParticles, surroundings_map, perturb_pos_stdev=0.05, perturb_angle_stdev = 0.15):
+    def __init__(self, nParticles, surroundings_map, perturb_pos_stdev=0.05, perturb_angle_stdev = 0.15,random_fraction=10):
         self.nParticles = nParticles
         self.surroundings_map = surroundings_map
         self.lidar_angle = np.pi / 2
@@ -38,6 +38,7 @@ class particle_filter:
         self.perturb_pos_stdev = perturb_pos_stdev
         self.perturb_angle_stdev = perturb_angle_stdev
         self.predicted_pose = None
+        self.random_fraction = random_fraction
     
     def update(self, v_fb, v_rl, v_t, lidar_v, dt):
         
@@ -79,7 +80,7 @@ class particle_filter:
                 newParticles.append(target_particle.perturb(self.perturb_pos_stdev, self.perturb_angle_stdev))
         
         self.particles = newParticles
-        self.particles[-(self.nParticles // 8):] = self.surroundings_map.generate_particles(self.nParticles // 8)
+        self.particles[-(self.nParticles // self.random_fraction):] = self.surroundings_map.generate_particles(self.nParticles // self.random_fraction)
         
     def get_predicted_pose(self):
         """
