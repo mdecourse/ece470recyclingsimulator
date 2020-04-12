@@ -58,7 +58,7 @@ class robot_motion:
 
     def set_move_global_position2(self, end_pos, dijkstras_callback, get_pose_callback, tolerance):
         def everything_command(end_pos, dijkstras_callback, get_pose_callback):
-            trans_vel = 0.1
+            trans_vel = 0.2
             rot_vel = 0.4
             
             pos, angle = decompose_pose2D(get_pose_callback())
@@ -77,11 +77,15 @@ class robot_motion:
                 print(turn_angle)
                 turn_direction = angle_delta(angle, turn_angle)
                 print(turn_direction)
+                xyv = trans_vel
                 if abs(turn_direction) > 0.15:
-                    self.set_move(0, 0, np.clip(rot_vel*turn_direction, -2*rot_vel, 2*rot_vel))
-                else:
-                    # TODO turn angle
-                    self.set_move(trans_vel * math.cos(turn_direction), trans_vel * math.sin(turn_direction), 0)
+                    xyv *= 0.25
+                self.set_move(xyv * math.cos(turn_direction), -xyv * math.sin(turn_direction), np.clip(rot_vel*turn_direction, -0.4, 0.4))
+                # if abs(turn_direction) > 0.15:
+                    # self.set_move(0, 0, np.clip(rot_vel*turn_direction, -2*rot_vel, 2*rot_vel))
+                # else:
+                    # # TODO turn angle
+                    # self.set_move(trans_vel * math.cos(turn_direction), trans_vel * math.sin(turn_direction), 0)
             return True
         self.update_func = lambda: everything_command(end_pos, dijkstras_callback, get_pose_callback)
     

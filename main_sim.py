@@ -69,7 +69,7 @@ arm_motion = arm_motion(clientID, youBotRef, armJoints, youBot, gripper)
 dt = 0.05
 lidar_v = 6
 
-pf = particle_filter(400, KNOWN_MAP,perturb_pos_stdev=0.05, perturb_angle_stdev = 0.15,random_fraction=4)
+pf = particle_filter(400, KNOWN_MAP,perturb_pos_stdev=0.05, perturb_angle_stdev = 0.15,random_fraction=2)
 
 # initialize sensor classes
 vision_sensor = vision_sensor(clientID, vision_sens)
@@ -116,16 +116,16 @@ def dijkstras_run_thread():
     keep_going = False
     
 th.Thread(target=dijkstras_run_thread, args=(), name='dijkstras_run_thread', daemon=True).start()
-robot_motion.set_move(0.2, 0, 0)
+robot_motion.set_move(0, 0, 0)
 last_n_pf_updates = n_pf_updates
 while keep_going or n_pf_updates < 12:
     #break
     vrep.simxSynchronousTrigger(clientID)
     vrep.simxGetPingTime(clientID)
     update_pf()
-    if n_pf_updates == last_n_pf_updates+4:
-        robot_motion.set_move(-robot_motion.velocities[0], 0, 0)
-        last_n_pf_updates = n_pf_updates
+    # if n_pf_updates == last_n_pf_updates+4:
+        # robot_motion.set_move(-robot_motion.velocities[0], 0, 0)
+        # last_n_pf_updates = n_pf_updates
     robot_motion.motion_update()
     arm_motion.motion_update()
     
