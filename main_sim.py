@@ -11,6 +11,7 @@ from scripts.robot_lidar import *
 from scripts.vision import *
 from pf_test import *
 import sys
+import threading as th
 
 show_pf = False
 for arg in sys.argv:
@@ -41,7 +42,6 @@ wheelJoints[3]  = get_handle_blocking('rollingJoint_fr')
 youBot          = get_handle_blocking('youBot')
 youBotRef       = get_handle_blocking('youBot_ref')
 tip             = get_handle_blocking('youBot_positionTip')
-target          = get_handle_blocking('youBot_positionTarget')
 prox_sensor     = get_handle_blocking('Proximity_sensor')
 lidar_motor     = get_handle_blocking('Tower_Turning_Joint')
 gripper 		= get_handle_blocking('youBotGripperJoint1')
@@ -60,23 +60,18 @@ vrep.simxStartSimulation(clientID, vrep.simx_opmode_blocking)
 # initialize motion classes
 robot_motion = robot_motion(clientID, youBotRef, wheelJoints, armJoints[0])
 arm_motion = arm_motion(clientID, youBotRef, armJoints, youBot, gripper)
-vision_sensor = vision_sensor(clientID, vision_sens)
-
-robot_lidar = robot_lidar(clientID, prox_sensor, lidar_motor)
-lidar_v = 6
-robot_lidar.set_lidar_velocity(lidar_v)
+pf = particle_filter(80, KNOWN_MAP)
 
 # Simulation dt is 50ms (0.05s)
 dt = 0.05
+lidar_v = 6
 
-pos = robot_motion.get_global_position()
-print(pos)
-theta = 0
-
-pf = particle_filter(80, KNOWN_MAP)
+# initialize sensor classes
+vision_sensor = vision_sensor(clientID, vision_sens)
+robot_lidar = robot_lidar(clientID, prox_sensor, lidar_motor)
+robot_lidar.set_lidar_velocity(lidar_v)
 
 # Hack to do manual robot control
-import threading as th
 keep_going = True
 vfb = 0
 vlr = 0
