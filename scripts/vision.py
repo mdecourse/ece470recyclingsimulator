@@ -20,11 +20,12 @@ class vision_sensor:
         for i in range(5):
             returnCode, detectionState, auxPackets = \
                 vrep.simxReadVisionSensor(self.clientID, self.sensor, vrep.simx_opmode_buffer)
-            print(returnCode)
-            print(detectionState)
-            print(auxPackets)
-            returnCode, resolution, image = \
-                vrep.simxGetVisionSensorImage(self.clientID, self.sensor, 0, vrep.simx_opmode_buffer)
-            print(returnCode)
-            print(resolution)
-            print(image)
+            # print(returnCode)
+            # print(detectionState)
+            # print(auxPackets)
+            if returnCode == 0 and len(auxPackets) > 0:
+                # print(auxPackets)
+                avg_red = auxPackets[0][11]
+                # print("average red color: " + str(avg_red))
+            # returnCode, resolution, image = \
+            #     vrep.simxGetVisionSensorImage(self.clientID, self.sensor, 0, vrep.simx_opmode_buffer)

@@ -46,7 +46,10 @@ def rot3D(axis, angle):
     return retval
     
 def angle(a, b):
-    return math.atan2(b[1] - a[1], b[0] - a[0])
+    angle = math.atan2(b[1] - a[1], b[0] - a[0])
+    if angle < 0:
+        return angle + 2*np.pi
+    return angle
 
 def line_point_distance_simple(a, b, point):
     """Distance between a point and a horizontal or vertical line."""
@@ -95,8 +98,26 @@ def segments_from_aabb(aabb):
                 (np.array([aabb_max[0], aabb_min[1]]), np.array(aabb_min)),
                 ]
     return segments
-    
+
+def angle_delta(a, b):
+    """If I'm at angle A, how should I turn to get to angle B? Angles must be [0, 2pi)"""
+    hi = max(a, b)
+    lo = min(a, b)
+    if hi - lo > np.pi:
+        if a == hi:
+            return (2*np.pi + b) - a
+        return b - (a+2*np.pi)
+    return b-a
+
 def quaternion_to_rotation(quaternion_vec):
     # Not implemented!
     raise NotImplementedError("quaternion_to_rotation not implemented yet!")
+    
+# Manual angle_delta testing
+if __name__ == "__main__":
+    while True:
+        a = 2*np.pi * np.random.rand(1)
+        b = 2*np.pi * np.random.rand(1)
+        print(a, b, a-b, angle_delta(a, b))
+        input()
     

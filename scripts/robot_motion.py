@@ -4,6 +4,7 @@ import numpy as np
 import numpy.linalg as la
 import math
 from scipy.linalg import expm, logm
+from scripts.utils import *
 
 absolute_position = -1
 
@@ -23,6 +24,8 @@ class robot_motion:
         self.leftRightVelRange = [-240*math.pi/180, 240*math.pi/180]
         # min and max wheel rotation vel. for left/right rotation movement
         self.rotVelRange = [-240*math.pi/180, 240*math.pi/180]
+        
+        self.velocities = (0, 0, 0)
 
         self.update_func = lambda: False
 
@@ -53,6 +56,35 @@ class robot_motion:
         # print("EULER ANGLES: x="+str(euler[0])+" y="+str(euler[1])+" z="+str(euler[2])+"\n")
         return euler
 
+    def set_move_global_position2(self, end_pos, dijkstras_callback, get_pose_callback, tolerance):
+        def everything_command(end_pos, dijkstras_callback, get_pose_callback):
+            trans_vel = 0.1
+            rot_vel = 0.4
+            
+            pos, angle = decompose_pose2D(get_pose_callback())
+            angle = angle + np.pi / 2
+            if angle < 0:
+                angle = angle + 2 * np.pi
+            if la.norm(pos - end_pos) < tolerance:
+                self.update_func = lambda: False
+                self.set_move(0, 0, 0)
+                return True
+            my_gridpos = tuple(int(x*10) for x in pos)
+            target_gridpos = tuple(int(x*10) for x in end_pos)
+            print("Pathing from {} to {}".format(my_gridpos, target_gridpos))
+            turn_angle = dijkstras_callback(my_gridpos, target_gridpos)
+            if turn_angle != -1:
+                print(turn_angle)
+                turn_direction = angle_delta(angle, turn_angle)
+                print(turn_direction)
+                if abs(turn_direction) > 0.15:
+                    self.set_move(0, 0, np.clip(rot_vel*turn_direction, -2*rot_vel, 2*rot_vel))
+                else:
+                    # TODO turn angle
+                    self.set_move(trans_vel * math.cos(turn_direction), trans_vel * math.sin(turn_direction), 0)
+            return True
+        self.update_func = lambda: everything_command(end_pos, dijkstras_callback, get_pose_callback)
+    
     def set_move_global_position(self, end_pos, tolerance):
         def rotate_command(end_pos):
             curr_pos = np.array(self.get_global_position())
@@ -120,7 +152,7 @@ class robot_motion:
 
     def set_move(self, forwBackVel, leftRightVel, rotVel):
         """ Move at a given velocity. Velocity is in m/s for translational, and rad/sec for rotational. """
-        
+        self.velocities = (forwBackVel, leftRightVel, rotVel)
         forwBackVel *= 20
         leftRightVel *= 20
         rotVel *= -7.77

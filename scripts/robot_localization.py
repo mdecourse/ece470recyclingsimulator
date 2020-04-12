@@ -39,12 +39,15 @@ class particle_filter:
         self.perturb_angle_stdev = perturb_angle_stdev
         self.predicted_pose = None
         self.random_fraction = random_fraction
+        self.resample_particles = nParticles
     
-    def update(self, v_fb, v_rl, v_t, lidar_v, dt):
+    def update(self, v_fb, v_rl, v_t, lidar_angle, dt):
         
-        self.predicted_pose = None
+        if self.predicted_pose is not None:
+            predicted_pose_relative = pose2D((v_rl * dt, v_fb * dt), v_t * dt)
+            self.predicted_pose = self.predicted_pose @ predicted_pose_relative
         
-        self.lidar_angle += lidar_v * dt
+        self.lidar_angle = lidar_angle
         
         for particle in self.particles:
             particle.update(v_fb, v_rl, v_t, dt)
@@ -73,12 +76,12 @@ class particle_filter:
         paired = sorted(list(zip(weights, self.particles)), key=lambda x: x[0])
         # Resample
         newParticles = []
-        for i in range((self.nParticles // 4)):
+        for i in range((self.resample_particles // 2)):
             target_particle = paired[-1-i][1] # Between 0 and 1
             newParticles.append(target_particle)
-            for j in range(4-1):
+            for j in range(2-1):
                 newParticles.append(target_particle.perturb(self.perturb_pos_stdev, self.perturb_angle_stdev))
-        
+        self.nParticles = self.resample_particles
         self.particles = newParticles
         self.particles[-(self.nParticles // self.random_fraction):] = self.surroundings_map.generate_particles(self.nParticles // self.random_fraction)
         
