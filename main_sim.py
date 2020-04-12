@@ -108,7 +108,6 @@ i = 0
 readings = []
 while keep_going: # Running for 100s
     robot_motion.set_move(vfb, vlr, vt)
-    
     # Trigger a "tick"
     vrep.simxSynchronousTrigger(clientID)
     vrep.simxGetPingTime(clientID)
@@ -119,7 +118,7 @@ while keep_going: # Running for 100s
     else:
         readings.append(5)
     
-    pf.update(0, 0, 0, lidar_v, dt)
+    pf.update(vfb, vlr, vt, lidar_v, dt)
     i += 1
     if i == 30:
         print(readings)

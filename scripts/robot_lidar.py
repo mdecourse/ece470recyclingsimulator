@@ -9,7 +9,7 @@ from scipy.linalg import expm, logm
 class robot_lidar:
     """ Class for the lidar and proximity sensor. """
 
-    def __init__(self, clientID, prox_sensor, lidar_motor, noise_stdev = 0.05):
+    def __init__(self, clientID, prox_sensor, lidar_motor, noise_stdev = 0.00):
         self.clientID = clientID
         self.prox_sensor = prox_sensor
         self.lidar_motor = lidar_motor
