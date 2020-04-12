@@ -121,14 +121,17 @@ while keep_going: # Running for 100s
     pf.update(vfb, vlr, vt, lidar_v, dt)
     i += 1
     if i == 30:
-        print(readings)
         i = 0
         pf.resample(readings)
-        visualize_pf(pf)
-        plt.ion()
-        plt.show()
-        plt.pause(0.001)
+        if show_pf:
+            visualize_pf(pf)
+            plt.ion()
+            plt.show()
+            plt.pause(0.001)
         readings = []
+        print("Prediction:",pf.get_predicted_pose()[:2, -1])
+        pos = robot_motion.get_global_position()
+        print("Actual:[{} {}]".format(pos[0] + 2, pos[1] + 2))
         
     robot_motion.motion_update()
     arm_motion.motion_update()
