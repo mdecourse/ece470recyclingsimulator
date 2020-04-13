@@ -115,15 +115,13 @@ class arm_motion:
         return T_new@self.M
 
     def inv_kin(self, T_desired):
-        T = self.getTMatrix(self.gripper)
+        # T = self.getTMatrix(self.gripper)
+        T = self.forw_kin([np.pi/8]*5)
         print(T)
-        # T[2,3] -= 0.1
-        # T[1,3] += 0.1
-        T[0,3] += 0.2
         thetalist0 = [0]*5#self.get_arm_angles()
         e = 0.01
-        print(T)
         [thetalist,success] = IKinSpace(self.S,self.M,T,thetalist0,e,e)
+        print(thetalist)
         if success:
             print("YAY")
         else:
