@@ -57,7 +57,8 @@ class robot_motion:
         return euler
 
     def set_move_global_position2(self, end_pos, dijkstras_callback, get_pose_callback, tolerance):
-        def everything_command(end_pos, dijkstras_callback, get_pose_callback):
+        storage = []
+        def everything_command(end_pos, dijkstras_callback, get_pose_callback, storage):
             trans_vel = 0.2
             rot_vel = 0.4
             
@@ -66,9 +67,13 @@ class robot_motion:
             if angle < 0:
                 angle = angle + 2 * np.pi
             if la.norm(pos - end_pos) < tolerance:
-                self.update_func = lambda: False
-                self.set_move(0, 0, 0)
-                return True
+                storage.append(0)
+                if len(storage) >= 60:
+                    self.update_func = lambda: False
+                    self.set_move(0, 0, 0)
+                    return True
+            else:
+                storage.clear()
             my_gridpos = tuple(int(x*10) for x in pos)
             target_gridpos = tuple(int(x*10) for x in end_pos)
             print("Pathing from {} to {}".format(my_gridpos, target_gridpos))
@@ -87,7 +92,7 @@ class robot_motion:
                     # # TODO turn angle
                     # self.set_move(trans_vel * math.cos(turn_direction), trans_vel * math.sin(turn_direction), 0)
             return True
-        self.update_func = lambda: everything_command(end_pos, dijkstras_callback, get_pose_callback)
+        self.update_func = lambda: everything_command(end_pos, dijkstras_callback, get_pose_callback, storage)
     
     def set_move_global_position(self, end_pos, tolerance):
         def rotate_command(end_pos):

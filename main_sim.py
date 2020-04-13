@@ -16,7 +16,7 @@ import threading as th
 
 show_pf = False
 show_dijkstra = False
-manual_mode = True
+manual_mode = False
 for arg in sys.argv:
     if arg == "-show_pf":
         show_pf = True
@@ -136,15 +136,21 @@ if not manual_mode:
     pf.resample_particles = 40
 
     keep_going = True
-    target_point = (1, 2)
-    print("Pathing mode: Going to {}".format(target_point))
-    robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(), 0.25)
+    target_ind = 0
+    target_points = [(1, 2), (0.5, 0.5), (1, 1), (3, 2)]
+    print("Pathing mode: Visiting points {}".format(target_points))
     while keep_going:
         #break
         vrep.simxSynchronousTrigger(clientID)
         vrep.simxGetPingTime(clientID)
         update_pf()
         keep_going = robot_motion.motion_update()
+        if (not keep_going) and target_ind < len(target_points):
+            target_point = target_points[target_ind]
+            print("Pathing mode: Going to {}".format(target_point))
+            robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(), 0.25)
+            target_ind += 1
+            keep_going = True
         arm_motion.motion_update()
 
 
