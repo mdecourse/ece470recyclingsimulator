@@ -16,7 +16,7 @@ import threading as th
 
 show_pf = False
 show_dijkstra = False
-manual_mode = True
+manual_mode = False
 for arg in sys.argv:
     if arg == "-show_pf":
         show_pf = True
@@ -133,6 +133,9 @@ if not manual_mode:
         robot_motion.motion_update()
         arm_motion.motion_update()
 
+    if keep_going:
+        print("Warning, Dijkstra's unfinished!")
+
     pf.resample_particles = 40
 
     keep_going = True
@@ -144,13 +147,19 @@ if not manual_mode:
         vrep.simxSynchronousTrigger(clientID)
         vrep.simxGetPingTime(clientID)
         update_pf()
-        keep_going = robot_motion.motion_update()
-        if (not keep_going) and target_ind < len(target_points):
-            target_point = target_points[target_ind]
-            print("Pathing mode: Going to {}".format(target_point))
-            robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(), 0.25)
-            target_ind += 1
-            keep_going = True
+        avg_distance, avg_angle, any_red = vision_sensor.red_pixel_detection()
+        if any_red:
+            print("FOUND RED!")
+            robot_motion.set_move_get_can(avg_distance, avg_angle)
+            robot_motion.motion_update()
+        else:
+            keep_going = robot_motion.motion_update()
+            if (not keep_going) and target_ind < len(target_points):
+                target_point = target_points[target_ind]
+                print("Pathing mode: Going to {}".format(target_point))
+                robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(), 0.25)
+                target_ind += 1
+                keep_going = True
         arm_motion.motion_update()
 
 
@@ -198,7 +207,7 @@ def key_capture_thread():
 th.Thread(target=key_capture_thread, args=(), name='key_capture_thread', daemon=True).start()
 while keep_going:
     robot_motion.set_move(vfb, vlr, vt)
-    avg_distance, avg_angle = vision_sensor.red_pixel_detection()
+    avg_distance, avg_angle, any_read = vision_sensor.red_pixel_detection()
     # arm_motion.grab_red(avg_angle, avg_distance, vision_sensor)
     # Trigger a "tick"
     vrep.simxSynchronousTrigger(clientID)

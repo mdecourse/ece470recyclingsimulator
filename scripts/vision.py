@@ -32,6 +32,7 @@ class vision_sensor:
         avg_distance = 0
         avg_angle = 0
         neg_angle = 0
+        any_red = False
         if len(resolution) > 0:
             # print(resolution) # 64 x 64
             # center = (32,32) ish
@@ -50,9 +51,10 @@ class vision_sensor:
                         else:
                             neg_angle -= 1
         if num_pixels > 0:
+            any_red = True
             avg_distance /= num_pixels
             avg_angle /= num_pixels
             if neg_angle < 0:
                 avg_angle = -avg_angle
-            print("red: ", num_pixels, " dist: ", avg_distance, " angle: ", avg_angle)
-        return avg_distance, avg_angle
+            # print("red: ", num_pixels, " dist: ", avg_distance, " angle: ", avg_angle)
+        return avg_distance, avg_angle, any_red

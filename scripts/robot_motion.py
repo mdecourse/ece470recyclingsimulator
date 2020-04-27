@@ -56,6 +56,19 @@ class robot_motion:
         # print("EULER ANGLES: x="+str(euler[0])+" y="+str(euler[1])+" z="+str(euler[2])+"\n")
         return euler
 
+    def set_move_get_can(self, avg_distance, avg_angle):
+        def get_can_step(avg_distance, avg_angle):
+            trans_vel = 0.02
+            rot_vel = -0.04
+            target_dist = 0.1
+            vy = trans_vel*(avg_distance-target_dist)
+            vx = 0
+            vr = rot_vel*avg_angle
+            print("angle:", avg_angle, "dist:", avg_distance)
+            self.set_move(vy, vx, vr)
+            return None
+        self.update_func = lambda: get_can_step(avg_distance, avg_angle)
+
     def set_move_global_position2(self, end_pos, dijkstras_callback, get_pose_callback, tolerance):
         storage = []
         def everything_command(end_pos, dijkstras_callback, get_pose_callback, storage):
