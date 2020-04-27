@@ -5,6 +5,7 @@ import numpy.linalg as la
 import math
 from scipy.linalg import expm,logm
 from modern_robotics import IKinSpace
+import copy
 
 absolute_position = -1
 
@@ -24,18 +25,25 @@ class arm_motion:
         self.w = np.array([[1,0,0],[0,1,0],[0,1,0],[0,1,0],[1,0,0]])
         self.r = []
         self.v = []
+        i = 0
         for arm, w in zip(self.arms,self.w):
+            vrep.simxGetJointPosition(self.clientID, arm, vrep.simx_opmode_streaming)
             r = self.get_any_ref_position(arm, self.youBot)
+            if i == 4:
+                r = self.get_any_ref_position(self.gripper, self.youBot)
             self.r.append(r)
             self.v.append(np.cross(-w,r))
-            vrep.simxGetJointPosition(self.clientID, arm, vrep.simx_opmode_streaming)
+            i = i + 1
 
         pos = self.get_any_ref_position(self.gripper, self.youBot)
-        self.M = np.array([[-1,0,0,pos[0]],[0,0,1,pos[1]],[0,1,0,pos[2]],[0,0,0,1]])
+        # self.M = np.array([[-1,0,0,pos[0]],[0,0,1,pos[1]],[0,1,0,pos[2]],[0,0,0,1]])
+        # pos = self.get_any_ref_position(self.arms[4], self.youBot)
+        self.M = np.array([[0,0,1,pos[0]],[1,0,0,pos[1]],[0,1,0,pos[2]],[0,0,0,1]])
         self.S = self.getS()
 
         self.update_func = lambda: False
         vrep.simxGetJointMatrix(self.clientID, self.gripper, vrep.simx_opmode_streaming)
+        self.set_target_arm_angles([0]*5)
 
 
     def motion_update(self):
@@ -116,15 +124,51 @@ class arm_motion:
 
     def inv_kin(self, T_desired):
         # T = self.getTMatrix(self.gripper)
-        T = self.forw_kin([np.pi/8]*5)
-        print(T)
+        # T = self.forw_kin([0,np.pi/2,0,0,0])
+        # print(T)
+        # print(T)
+        T = T_desired
         thetalist0 = [0]*5#self.get_arm_angles()
-        e = 0.01
+        e = 0.1
         [thetalist,success] = IKinSpace(self.S,self.M,T,thetalist0,e,e)
         print(thetalist)
         if success:
             print("YAY")
+            # self.set_target_arm_angles(thetalist)
         else:
             print("FAIL")
-        # return list(thetalist)
         self.set_target_arm_angles(thetalist)
+        # return list(thetalist)
+
+    def grab_red(self, angle, distance, vision_sensor):
+        global absolute_position
+        # positive x to the right
+        # positive z is forwards
+        # positive angle right
+        # negative angle left
+        # T = self.getTMatrix(vision_sensor.sensor)
+        # T_grip = self.getTMatrix(self.gripper)
+        print("ma boi the T matrix of the vision sensor")
+
+        # print(T)
+        # T[0:3,0:3] = np.array([[-1,0,0],[0,0,-1],[0,-1,0]])#T_grip[0:3,0:3]
+        # positive y to the right
+        # positive z is forwards
+        # print(np.sin(-angle*(np.pi/180))*distance)
+        # print(np.cos(-angle*(np.pi/180))*distance)
+        # T[1,3] += np.sin(-angle*(np.pi/180))*distance
+        # T[2,3] += np.cos(-angle*(np.pi/180))*distance
+        # print(T)
+        T = copy.deepcopy(self.M)
+        p = self.get_any_ref_position(self.gripper, self.youBot)
+        # p = self.get_any_ref_position(vision_sensor.sensor, self.youBot)
+        T[0,3] = p[0]
+        T[1,3] = p[1]
+        T[2,3] = p[2]
+        T[1,3] += 0.2#np.sin(-angle*(np.pi/180))*distance
+        T[2,3] += 0.2#np.cos(-angle*(np.pi/180))*distance
+        print(T)
+
+        if angle != 0:
+            self.inv_kin(T)
+        self.inv_kin(T)

@@ -13,6 +13,7 @@ class vision_sensor:
         """ Initialize a motion object. """
         self.clientID = clientID
         self.sensor = sensor
+        vrep.simxGetJointPosition(self.clientID, self.sensor, vrep.simx_opmode_streaming)
         vrep.simxReadVisionSensor(self.clientID, self.sensor, vrep.simx_opmode_streaming)
         vrep.simxGetVisionSensorImage(self.clientID, self.sensor, 0, vrep.simx_opmode_streaming)
         vrep.simxGetVisionSensorDepthBuffer(self.clientID, self.sensor, vrep.simx_opmode_streaming)
@@ -29,11 +30,29 @@ class vision_sensor:
             vrep.simxGetVisionSensorDepthBuffer(self.clientID, self.sensor, vrep.simx_opmode_buffer)
         num_pixels = 0
         avg_distance = 0
+        avg_angle = 0
+        neg_angle = 0
         if len(resolution) > 0:
+            # print(resolution) # 64 x 64
+            # center = (32,32) ish
             for x in range(0, resolution[0]):
                 for y in range(0, resolution[1]):
                     red = image[(x*resolution[0]+y)*3]& 0b000011111111
                     if red > 250:
                         num_pixels += 1
                         avg_distance += depth[x*resolution[0]+y]
-        return num_pixels, avg_distance
+                        # whole thing is 60 degrees across
+                        avg_angle += 60 * (abs(32-y)/64)
+                        # positive right
+                        # negative left
+                        if 32 - y >= 0:
+                            neg_angle += 1
+                        else:
+                            neg_angle -= 1
+        if num_pixels > 0:
+            avg_distance /= num_pixels
+            avg_angle /= num_pixels
+            if neg_angle < 0:
+                avg_angle = -avg_angle
+            print("red: ", num_pixels, " dist: ", avg_distance, " angle: ", avg_angle)
+        return avg_distance, avg_angle

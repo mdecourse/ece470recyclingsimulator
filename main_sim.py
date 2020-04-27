@@ -16,7 +16,7 @@ import threading as th
 
 show_pf = False
 show_dijkstra = False
-manual_mode = False
+manual_mode = True
 for arg in sys.argv:
     if arg == "-show_pf":
         show_pf = True
@@ -164,12 +164,23 @@ def key_capture_thread():
     global vfb
     global vlr
     global vt
+    global arm_motion
+    global avg_angle
+    global avg_distance
+    global vision_sensor
     while True:
         in_str = input().strip()
         for c in in_str:
             if c == "q":
                 keep_going = False
                 break
+            elif c == "b":
+                vfb = 0
+                vlr = 0
+                vt = 0
+            elif c == "m":
+                # arm_motion.set_target_arm_angles([0]*5)
+                arm_motion.grab_red(avg_angle, avg_distance, vision_sensor)
             elif c == "w":
                 vfb += 0.1
             elif c == "s":
@@ -181,13 +192,14 @@ def key_capture_thread():
             elif c == "x":
                 vt -= 0.2
             elif c == "z":
-                # vt += 0.2
-                arm_motion.inv_kin(None)
+                vt += 0.2
+                # arm_motion.inv_kin(None)
 
 th.Thread(target=key_capture_thread, args=(), name='key_capture_thread', daemon=True).start()
 while keep_going:
     robot_motion.set_move(vfb, vlr, vt)
-    vision_sensor.red_pixel_detection()
+    avg_distance, avg_angle = vision_sensor.red_pixel_detection()
+    # arm_motion.grab_red(avg_angle, avg_distance, vision_sensor)
     # Trigger a "tick"
     vrep.simxSynchronousTrigger(clientID)
     vrep.simxGetPingTime(clientID)
