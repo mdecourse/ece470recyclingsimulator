@@ -142,16 +142,21 @@ if not manual_mode:
     target_ind = 0
     target_points = [(1, 2), (0.5, 0.5), (1, 1), (3, 2)]
     print("Pathing mode: Visiting points {}".format(target_points))
+    done_positioning = False
     while keep_going:
         #break
         vrep.simxSynchronousTrigger(clientID)
         vrep.simxGetPingTime(clientID)
         update_pf()
         avg_distance, avg_angle, any_red = vision_sensor.red_pixel_detection()
-        if any_red:
-            print("FOUND RED!")
+        if done_positioning:
             robot_motion.set_move_get_can(avg_distance, avg_angle)
             robot_motion.motion_update()
+            arm_motion.set_move_get_can()
+            still_positioning = arm_motion.motion_update()
+        elif any_red:
+            robot_motion.set_move_get_can(avg_distance, avg_angle)
+            still_positioning = robot_motion.motion_update()
         else:
             keep_going = robot_motion.motion_update()
             if (not keep_going) and target_ind < len(target_points):

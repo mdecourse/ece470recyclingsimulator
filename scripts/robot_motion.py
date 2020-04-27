@@ -58,12 +58,14 @@ class robot_motion:
 
     def set_move_get_can(self, avg_distance, avg_angle):
         def get_can_step(avg_distance, avg_angle):
-            trans_vel = 0.2
+            trans_vel = 0.3
             rot_vel = -0.04
             target_dist = 0.3
             vy = trans_vel*(avg_distance-target_dist)
             vx = 0
             vr = rot_vel*avg_angle
+            # good tolerance is +- 3 for angle and +-.01 for distance!
+            # target angle is 0
             print("angle:", avg_angle, "dist:", avg_distance)
             self.set_move(vy, vx, vr)
             return None
