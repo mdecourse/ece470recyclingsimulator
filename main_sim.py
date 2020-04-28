@@ -151,31 +151,23 @@ if not manual_mode:
         vrep.simxGetPingTime(clientID)
         update_pf()
         avg_distance, avg_angle, any_red = vision_sensor.red_pixel_detection()
-        if (not still_positioning and grab_can_state == 3):
-            print("End of the line")
-            break
-        elif (not still_positioning and grab_can_state == 2):
-            still_positioning = True
-            grab_can_state = 2
-        elif (not still_positioning and grab_can_state == 1):
-            still_positioning = True
-            robot_motion.set_move_get_can(vision_sensor.red_pixel_detection, 0.225)
-            grab_can_state = 2
+        if (not still_positioning and grab_can_state == 1):
             # TODO
             # grab trash, pick up, drop in bin
             # when done not done...? set's an angle loop
             # build set target arm angles, assign new update
             # that moves the gripper
             # then new update function to move the block
-            arm_motion.set_move_get_can(vision_sensor)
-            # set this to true when done grabbing can
+            if (arm_motion.set_move_get_can(vision_sensor)):
+                break
             robot_motion.motion_update()
             arm_motion.motion_update()
+            # set this to true when done grabbing can
         elif (any_red and grab_can_state == 0):
             still_positioning = True
             grab_can_state = 1
             # FIND A PIECE OF TRASH
-            robot_motion.set_move_get_can(vision_sensor.red_pixel_detection, 0.1)
+            robot_motion.set_move_get_can(vision_sensor.red_pixel_detection, 0.205)
             robot_motion.motion_update()
             arm_motion.motion_update()
             # TODO, still_positioning not returning False --> done

@@ -237,4 +237,5 @@ class arm_motion:
             state_machine += 1
         elif state_machine == 400:
             state_machine = 0
-            self.update_func = lambda: True
+            return True
+        return False
