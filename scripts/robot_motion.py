@@ -7,7 +7,7 @@ from scipy.linalg import expm, logm
 from scripts.utils import *
 
 absolute_position = -1
-get_can_storage = []
+get_can_storage = 0
 
 # ======================================= Helper Functions ============================================== #
 class robot_motion:
@@ -57,16 +57,16 @@ class robot_motion:
         # print("EULER ANGLES: x="+str(euler[0])+" y="+str(euler[1])+" z="+str(euler[2])+"\n")
         return euler
 
-    def set_move_get_can(self, avg_distance, avg_angle):
-        # get_can_storage = []
-        # print("trying")
-        def get_can_step(avg_distance, avg_angle):
-            trans_vel = 0.3
-            rot_vel = -0.04
-            target_dist = 0.2
-            vy = trans_vel*(avg_distance-target_dist)
+    def set_move_get_can(self, detection_callback, target_dist):
+        global get_can_storage
+        get_can_storage = 0
+        def get_can_step(detection_callback, target_dist):
+            avg_distance, avg_angle, any_red = detection_callback()
+            trans_vel = 1
+            rot_vel = -0.2
+            vy = np.clip(trans_vel*(avg_distance-target_dist), -0.2, 0.2)
             vx = 0
-            vr = rot_vel*avg_angle
+            vr = np.clip(rot_vel*avg_angle * (0.02 + abs(avg_distance-target_dist)), -0.4, 0.4)
             # good tolerance is +- 3 for angle and +-.01 for distance!
             ang_tol = 3
             dist_tol = 0.01
@@ -74,20 +74,21 @@ class robot_motion:
             # print("angle:", avg_angle, "dist:", avg_distance)
             self.set_move(vy, vx, vr)
             global get_can_storage
-            if abs(avg_angle) < ang_tol and abs(avg_distance) - target_dist < dist_tol:
+            print(f"Angle error: {avg_angle}, Distance error: {avg_distance - target_dist}")
+            if abs(avg_angle) < ang_tol and abs(avg_distance - target_dist) < dist_tol:
                 print("Yay, close enough!")
-                get_can_storage.append(0)
-                print(len(get_can_storage))
-                if len(get_can_storage) >= 15:
+                get_can_storage += 1
+                #print(len(get_can_storage))
+                if get_can_storage >= 15:
                     # print("Yay, 60 seconds!")
                     self.update_func = lambda: False
                     self.set_move(0, 0, 0)
                     return False
             else:
-                get_can_storage.clear()
+                get_can_storage = 0
 
             return True
-        self.update_func = lambda: get_can_step(avg_distance, avg_angle)
+        self.update_func = lambda: get_can_step(detection_callback, target_dist)
 
     def set_move_global_position2(self, end_pos, dijkstras_callback, get_pose_callback, tolerance):
         storage = []

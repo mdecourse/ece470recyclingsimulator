@@ -52,7 +52,7 @@ tip             = get_handle_blocking('youBot_positionTip')
 prox_sensor     = get_handle_blocking('Proximity_sensor')
 lidar_motor     = get_handle_blocking('Tower_Turning_Joint')
 gripper 		= get_handle_blocking('youBotGripperJoint1')
-gripper2 		= get_handle_blocking('youBotGripperJoint2')
+gripper2		= get_handle_blocking('youBotGripperJoint2')
 vision_sens   = get_handle_blocking('Vision_sensor')
 
 armJoints = [-1] * 5
@@ -144,39 +144,62 @@ if not manual_mode:
     target_points = [(1, 2), (0.5, 0.5), (1, 1), (3, 2)]
     print("Pathing mode: Visiting points {}".format(target_points))
     still_positioning = True
+    grab_can_state = 0
     while keep_going:
         #break
         vrep.simxSynchronousTrigger(clientID)
         vrep.simxGetPingTime(clientID)
         update_pf()
         avg_distance, avg_angle, any_red = vision_sensor.red_pixel_detection()
-        if not still_positioning:
-            # robot_motion.set_move_get_can(avg_distance, avg_angle)
-            robot_motion.motion_update()
+        if (not still_positioning and grab_can_state == 2):
+            print("End of the line")
+            break
+        elif (not still_positioning and grab_can_state == 1):
+            still_positioning = True
+            robot_motion.set_move_get_can(vision_sensor.red_pixel_detection, 0.225)
+            grab_can_state = 2
+            # TODO
+            # grab trash, pick up, drop in bin
+            # when done not done...? set's an angle loop
+            # build set target arm angles, assign new update
+            # that moves the gripper
+            # then new update function to move the block
             arm_motion.set_move_get_can(vision_sensor)
             # set this to true when done grabbing can
-            still_positioning = arm_motion.motion_update()
-        elif any_red:
+            robot_motion.motion_update()
+            arm_motion.motion_update()
+        elif (any_red and grab_can_state == 0):
+            still_positioning = True
+            grab_can_state = 1
             # FIND A PIECE OF TRASH
-            robot_motion.set_move_get_can(avg_distance, avg_angle)
-            still_positioning = robot_motion.motion_update()
+            robot_motion.set_move_get_can(vision_sensor.red_pixel_detection, 0.1)
+            robot_motion.motion_update()
+            arm_motion.motion_update()
             # TODO, still_positioning not returning False --> done
-        else:
+        elif grab_can_state == 0:
             # CONTINUE THE SEARCH PATH
             keep_going = robot_motion.motion_update()
+            arm_motion.motion_update()
             if (not keep_going) and target_ind < len(target_points):
                 target_point = target_points[target_ind]
                 print("Pathing mode: Going to {}".format(target_point))
                 robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(), 0.25)
                 target_ind += 1
                 keep_going = True
-        arm_motion.motion_update()
+        else:
+            tmp1 = arm_motion.motion_update()
+            tmp2 = robot_motion.motion_update()
+            still_positioning = tmp2 or tmp1
 
 
 print("Manual mode")
 
 # Hack to do manual robot control
 keep_going = True
+if (pf.resample_particles == 400):
+    pf = particle_filter(40, KNOWN_MAP,perturb_pos_stdev=0.05, perturb_angle_stdev = 0.15,random_fraction=2)
+
+arm_angles = [0, -1.5708, -1.6, 1.2, 0]
 
 def key_capture_thread():
     global keep_going
@@ -212,20 +235,57 @@ def key_capture_thread():
                 vt -= 0.2
             elif c == "z":
                 vt += 0.2
+            elif c == "y":
+                arm_angles[0] += 0.1
+            elif c == "u":
+                arm_angles[1] += 0.1
+                arm_motion.set_target_arm_angles(arm_angles)
+            elif c == "i":
+                arm_angles[2] += 0.1
+                arm_motion.set_target_arm_angles(arm_angles)
+            elif c == "o":
+                arm_angles[3] += 0.1
+                arm_motion.set_target_arm_angles(arm_angles)
+            elif c == "p":
+                arm_angles[4] += 0.1
+                arm_motion.set_target_arm_angles(arm_angles)
+            elif c == "h":
+                arm_angles[0] -= 0.1
+                arm_motion.set_target_arm_angles(arm_angles)
+            elif c == "j":
+                arm_angles[1] -= 0.1
+                arm_motion.set_target_arm_angles(arm_angles)
+            elif c == "k":
+                arm_angles[2] -= 0.1
+                arm_motion.set_target_arm_angles(arm_angles)
+            elif c == "l":
+                arm_angles[3] -= 0.1
+                arm_motion.set_target_arm_angles(arm_angles)
+            elif c == ";":
+                arm_angles[4] -= 0.1
+                arm_motion.set_target_arm_angles(arm_angles)
+            elif c == "[":
+                print(arm_angles)
+            elif c == "]":
+                robot_motion.set_move_get_can(vision_sensor.red_pixel_detection)
+            elif c == "g":
+                arm.set_grasp(True)
+            elif c == "t":
+                arm.set_grasp(False)
                 # arm_motion.inv_kin(None)
 
 th.Thread(target=key_capture_thread, args=(), name='key_capture_thread', daemon=True).start()
 while keep_going:
-    robot_motion.set_move(vfb, vlr, vt)
-    avg_distance, avg_angle, any_read = vision_sensor.red_pixel_detection()
     # arm_motion.grab_red(avg_angle, avg_distance, vision_sensor)
     # Trigger a "tick"
     vrep.simxSynchronousTrigger(clientID)
     vrep.simxGetPingTime(clientID)
     update_pf()
 
+    robot_motion.set_move(vfb, vlr, vt)
     robot_motion.motion_update()
-    arm_motion.motion_update()
+    if not arm_motion.motion_update():
+        arm_motion.set_target_arm_angles(arm_angles)
 
 # robot_motion.set_move(0,0,0)
 # pos = robot_motion.get_global_position()
