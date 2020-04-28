@@ -122,7 +122,7 @@ if not manual_mode:
     th.Thread(target=dijkstras_run_thread, args=(), name='dijkstras_run_thread', daemon=True).start()
     robot_motion.set_move(0, 0, 0)
     last_n_pf_updates = n_pf_updates
-    while keep_going or n_pf_updates < 12:
+    while keep_going or n_pf_updates < 4:#12:
         #break
         vrep.simxSynchronousTrigger(clientID)
         vrep.simxGetPingTime(clientID)
@@ -142,22 +142,32 @@ if not manual_mode:
     target_ind = 0
     target_points = [(1, 2), (0.5, 0.5), (1, 1), (3, 2)]
     print("Pathing mode: Visiting points {}".format(target_points))
-    done_positioning = False
+    still_positioning = True
     while keep_going:
         #break
         vrep.simxSynchronousTrigger(clientID)
         vrep.simxGetPingTime(clientID)
         update_pf()
         avg_distance, avg_angle, any_red = vision_sensor.red_pixel_detection()
-        if done_positioning:
-            robot_motion.set_move_get_can(avg_distance, avg_angle)
+        if not still_positioning:
+            # robot_motion.set_move_get_can(avg_distance, avg_angle)
             robot_motion.motion_update()
-            arm_motion.set_move_get_can()
+            # TODO
+            # grab trash, pick up, drop in bin
+            # when done not done...? set's an angle loop
+            # build set target arm angles, assign new update
+            # that moves the gripper
+            # then new update function to move the block
+            arm_motion.set_move_get_can(vision_sensor)
+            # set this to true when done grabbing can
             still_positioning = arm_motion.motion_update()
         elif any_red:
+            # FIND A PIECE OF TRASH
             robot_motion.set_move_get_can(avg_distance, avg_angle)
             still_positioning = robot_motion.motion_update()
+            # TODO, still_positioning not returning False --> done
         else:
+            # CONTINUE THE SEARCH PATH
             keep_going = robot_motion.motion_update()
             if (not keep_going) and target_ind < len(target_points):
                 target_point = target_points[target_ind]
