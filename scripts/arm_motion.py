@@ -13,13 +13,14 @@ absolute_position = -1
 class arm_motion:
     """ Class for the 2D motion of the entire robot frame. """
 
-    def __init__(self, clientID, youBotRef, arms, youBot, gripper):
+    def __init__(self, clientID, youBotRef, arms, youBot, gripper, gripper2):
         """ Initialize a motion object. """
         self.clientID = clientID
         self.youBotRef = youBotRef
         self.youBot = youBot
         self.arms = arms
         self.gripper = gripper
+        self.gripper2 = gripper2
         self.num_joints = 5
 
         self.w = np.array([[1,0,0],[0,1,0],[0,1,0],[0,1,0],[1,0,0]])
@@ -33,6 +34,8 @@ class arm_motion:
                 r = self.get_any_ref_position(self.gripper, self.youBot)
             self.r.append(r)
             self.v.append(np.cross(-w,r))
+            print("R", r)
+            print("W", w)
             i = i + 1
 
         pos = self.get_any_ref_position(self.gripper, self.youBot)
@@ -66,10 +69,12 @@ class arm_motion:
     def set_target_arm_angles(self, target, tolerance=0.01):
         target = np.array(target)
         def set_angle_loop(target, tolerance):
-            self.SetJointPosition(target)
+            current = self.get_arm_angles()
+            delta = target - current
+            self.SetJointPosition(current + 0.125 * delta)
             if la.norm(self.get_arm_angles() - target) < la.norm(np.ones(len(self.arms)) * 0.01):
                 self.update_func = lambda: False
-                # print("Arm target angle reached")
+                print("Arm target angle reached")
                 return True
             return True
         self.update_func = lambda: set_angle_loop(target, tolerance)

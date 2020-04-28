@@ -52,6 +52,7 @@ tip             = get_handle_blocking('youBot_positionTip')
 prox_sensor     = get_handle_blocking('Proximity_sensor')
 lidar_motor     = get_handle_blocking('Tower_Turning_Joint')
 gripper 		= get_handle_blocking('youBotGripperJoint1')
+gripper2		= get_handle_blocking('youBotGripperJoint2')
 vision_sens   = get_handle_blocking('Vision_sensor')
 
 armJoints = [-1] * 5
@@ -66,7 +67,7 @@ vrep.simxStartSimulation(clientID, vrep.simx_opmode_blocking)
 
 # initialize motion classes
 robot_motion = robot_motion(clientID, youBotRef, wheelJoints, armJoints[0])
-arm_motion = arm_motion(clientID, youBotRef, armJoints, youBot, gripper)
+arm_motion = arm_motion(clientID, youBotRef, armJoints, youBot, gripper, gripper2)
 
 # Simulation dt is 50ms (0.05s)
 dt = 0.05
@@ -150,13 +151,14 @@ if not manual_mode:
         update_pf()
         avg_distance, avg_angle, any_red = vision_sensor.red_pixel_detection()
         if done_positioning:
+            break
             robot_motion.set_move_get_can(avg_distance, avg_angle)
             robot_motion.motion_update()
             arm_motion.set_move_get_can()
             still_positioning = arm_motion.motion_update()
         elif any_red:
-            robot_motion.set_move_get_can(avg_distance, avg_angle)
-            still_positioning = robot_motion.motion_update()
+            robot_motion.set_move_get_can(vision_sensor.red_pixel_detection)
+            done_positioning = robot_motion.motion_update()
         else:
             keep_going = robot_motion.motion_update()
             if (not keep_going) and target_ind < len(target_points):
@@ -172,6 +174,10 @@ print("Manual mode")
 
 # Hack to do manual robot control
 keep_going = True
+if (pf.resample_particles == 400):
+    pf = particle_filter(40, KNOWN_MAP,perturb_pos_stdev=0.05, perturb_angle_stdev = 0.15,random_fraction=2)
+
+arm_angles = [0, -1.5708, -1.6, 1.2, 0]
 
 def key_capture_thread():
     global keep_going
@@ -207,20 +213,57 @@ def key_capture_thread():
                 vt -= 0.2
             elif c == "z":
                 vt += 0.2
+            elif c == "y":
+                arm_angles[0] += 0.1
+            elif c == "u":
+                arm_angles[1] += 0.1
+                arm_motion.set_target_arm_angles(arm_angles)
+            elif c == "i":
+                arm_angles[2] += 0.1
+                arm_motion.set_target_arm_angles(arm_angles)
+            elif c == "o":
+                arm_angles[3] += 0.1
+                arm_motion.set_target_arm_angles(arm_angles)
+            elif c == "p":
+                arm_angles[4] += 0.1
+                arm_motion.set_target_arm_angles(arm_angles)
+            elif c == "h":
+                arm_angles[0] -= 0.1
+                arm_motion.set_target_arm_angles(arm_angles)
+            elif c == "j":
+                arm_angles[1] -= 0.1
+                arm_motion.set_target_arm_angles(arm_angles)
+            elif c == "k":
+                arm_angles[2] -= 0.1
+                arm_motion.set_target_arm_angles(arm_angles)
+            elif c == "l":
+                arm_angles[3] -= 0.1
+                arm_motion.set_target_arm_angles(arm_angles)
+            elif c == ";":
+                arm_angles[4] -= 0.1
+                arm_motion.set_target_arm_angles(arm_angles)
+            elif c == "[":
+                print(arm_angles)
+            elif c == "]":
+                robot_motion.set_move_get_can(vision_sensor.red_pixel_detection)
+            elif c == "g":
+                arm.set_grasp(True)
+            elif c == "t":
+                arm.set_grasp(False)
                 # arm_motion.inv_kin(None)
 
 th.Thread(target=key_capture_thread, args=(), name='key_capture_thread', daemon=True).start()
 while keep_going:
-    robot_motion.set_move(vfb, vlr, vt)
-    avg_distance, avg_angle, any_read = vision_sensor.red_pixel_detection()
     # arm_motion.grab_red(avg_angle, avg_distance, vision_sensor)
     # Trigger a "tick"
     vrep.simxSynchronousTrigger(clientID)
     vrep.simxGetPingTime(clientID)
     update_pf()
 
+    robot_motion.set_move(vfb, vlr, vt)
     robot_motion.motion_update()
-    arm_motion.motion_update()
+    if not arm_motion.motion_update():
+        arm_motion.set_target_arm_angles(arm_angles)
 
 # robot_motion.set_move(0,0,0)
 # pos = robot_motion.get_global_position()

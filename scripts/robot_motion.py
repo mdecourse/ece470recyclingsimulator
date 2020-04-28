@@ -56,20 +56,25 @@ class robot_motion:
         # print("EULER ANGLES: x="+str(euler[0])+" y="+str(euler[1])+" z="+str(euler[2])+"\n")
         return euler
 
-    def set_move_get_can(self, avg_distance, avg_angle):
-        def get_can_step(avg_distance, avg_angle):
-            trans_vel = 0.3
+    def set_move_get_can(self, detection_callback):
+        def get_can_step(detection_callback):
+            avg_distance, avg_angle, any_red = detection_callback()
+            trans_vel = 1
             rot_vel = -0.04
-            target_dist = 0.3
-            vy = trans_vel*(avg_distance-target_dist)
+            target_dist = 0.2.25
+            vy = np.clip(trans_vel*(avg_distance-target_dist), -0.2, 0.2)
             vx = 0
-            vr = rot_vel*avg_angle
+            vr = np.clip(rot_vel*avg_angle * (0.05 + abs(avg_distance-target_dist)), -0.4, 0.4)
             # good tolerance is +- 3 for angle and +-.01 for distance!
             # target angle is 0
             print("angle:", avg_angle, "dist:", avg_distance)
             self.set_move(vy, vx, vr)
-            return None
-        self.update_func = lambda: get_can_step(avg_distance, avg_angle)
+            if abs(avg_distance - target_dist) < 0.01 and abs(avg_angle) < 3:
+                self.update_func = lambda: False
+                self.set_move(0, 0, 0)
+                return True
+            return True
+        self.update_func = lambda: get_can_step(detection_callback)
 
     def set_move_global_position2(self, end_pos, dijkstras_callback, get_pose_callback, tolerance):
         storage = []
