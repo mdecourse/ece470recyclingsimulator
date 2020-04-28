@@ -153,12 +153,6 @@ if not manual_mode:
         if not still_positioning:
             # robot_motion.set_move_get_can(avg_distance, avg_angle)
             robot_motion.motion_update()
-            # TODO
-            # grab trash, pick up, drop in bin
-            # when done not done...? set's an angle loop
-            # build set target arm angles, assign new update
-            # that moves the gripper
-            # then new update function to move the block
             arm_motion.set_move_get_can(vision_sensor)
             # set this to true when done grabbing can
             still_positioning = arm_motion.motion_update()

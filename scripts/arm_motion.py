@@ -8,6 +8,7 @@ from modern_robotics import IKinSpace
 import copy
 
 absolute_position = -1
+state_machine = 0
 
 # ======================================= Helper Functions ============================================== #
 class arm_motion:
@@ -48,11 +49,13 @@ class arm_motion:
 
 
 
-        vrep.simxSetJointTargetVelocity(self.clientID, self.gripper2,0.04, vrep.simx_opmode_streaming)
-        print("DUMB")
-        r, p = vrep.simxGetJointPosition(self.clientID, self.gripper2, vrep.simx_opmode_buffer)
-        print(r)
-        vrep.simxSetJointTargetPosition(self.clientID, self.gripper,p*-0.5, vrep.simx_opmode_streaming)
+        # vrep.simxSetJointTargetVelocity(self.clientID, self.gripper2 , -0.04, vrep.simx_opmode_streaming)
+        # print("DUMB")
+        # r, p = vrep.simxGetJointPosition(self.clientID, self.gripper2, vrep.simx_opmode_buffer)
+        # print(r)
+        # vrep.simxSetJointTargetPosition(self.clientID, self.gripper,1, vrep.simx_opmode_streaming)#p*-0.5, vrep.simx_opmode_streaming)
+        # vrep.simxSetJointPosition(self.clientID, self.gripper, 1, vrep.simx_opmode_oneshot)
+        # vrep.simxSetJointPosition(self.clientID, self.gripper2, 1, vrep.simx_opmode_oneshot)
         # if (opening==0) then
         # sim.setJointTargetVelocity(j2,0.04) --closing
         # else
@@ -80,12 +83,14 @@ class arm_motion:
     def set_target_arm_angles(self, target, tolerance=0.01):
         target = np.array(target)
         def set_angle_loop(target, tolerance):
+            global state_machine
             self.SetJointPosition(target)
             if la.norm(self.get_arm_angles() - target) < la.norm(np.ones(len(self.arms)) * 0.01):
                 self.update_func = lambda: False
                 # print("Arm target angle reached")
-                return True
-            return True
+                state_machine += 1
+                return False
+            return False
         self.update_func = lambda: set_angle_loop(target, tolerance)
 
     def get_any_ref_position(self, handle, reference):
@@ -188,6 +193,7 @@ class arm_motion:
         self.inv_kin(T)
 
     def set_move_get_can(self,vision_sensor):
+        global state_machine
         # TODO
         # grab trash, pick up, drop in bin
         # when done not done...? set's an angle loop
@@ -195,10 +201,38 @@ class arm_motion:
         # that moves the gripper
         # then new update function to move the block
 
-        print("Moving me arms bois")
-
-        pickup_angles = np.array([0.0, -87.4, -95.4, 65.0, 0.0]) # degrees
-        pickup_angles *= (np.pi/180) # radians
-        self.set_target_arm_angles(pickup_angles) # correct set move function
-        p = self.get_any_ref_position(self.gripper, vision_sensor.sensor)
-        print(p)
+        if state_machine == 0:
+            print("moving me arms bois phase")
+            pickup_angles = np.array([0.0, -87.4, -95.4, 65.0, 0.0]) # degrees
+            pickup_angles *= (np.pi/180) # radians
+            self.set_target_arm_angles(pickup_angles) # correct set move function
+            # p = self.get_any_ref_position(self.gripper, vision_sensor.sensor)
+            # print(p)
+            # time.sleep(5)
+            # if self.update_func
+            #     state_machine += 1
+        elif state_machine < 200:
+            # gripping phase
+            print("gripping phase")
+            if state_machine == 1:
+                vrep.simxSetJointPosition(self.clientID, self.gripper, 1, vrep.simx_opmode_streaming)
+                vrep.simxSetJointPosition(self.clientID, self.gripper2, 1, vrep.simx_opmode_streaming)
+            # vrep.simxSetJointTargetVelocity(self.clientID, self.gripper , -0.04, vrep.simx_opmode_streaming)
+            # vrep.simxSetJointTargetVelocity(self.clientID, self.gripper2 , -0.04, vrep.simx_opmode_streaming)
+            state_machine += 1
+        elif state_machine == 200:
+            print("move arm over bucket boi")
+            dropoff_angles = np.array([0.0]*5) # degrees
+            dropoff_angles *= (np.pi/180) # radians
+            self.set_target_arm_angles(dropoff_angles) # correct set move function
+            # p = self.get_any_ref_position(self.gripper, vision_sensor.sensor)
+            # print(p)
+            state_machine += 1
+        elif state_machine < 400:
+            print("dropping phase")
+            vrep.simxSetJointPosition(self.clientID, self.gripper, 0, vrep.simx_opmode_streaming)
+            vrep.simxSetJointPosition(self.clientID, self.gripper2, 0, vrep.simx_opmode_streaming)
+            state_machine += 1
+        elif state_machine == 400:
+            state_machine = 0
+            self.update_func = lambda: True
