@@ -129,9 +129,10 @@ class known_map_AABB:
         ray = (pose @ axis2D_H(angle))[:2]
         closest_intersection = None
         best_distance = 5
+        lidar_position = (pose @ [0, -0.175, 0])[:2] + pose[:2, -1]
         for segments in self.aabb_edges:
             for start, end in segments:
-                intersection, distance = ray_segment_intersection(pose[:2, -1], ray, lidar_range, start, end)
+                intersection, distance = ray_segment_intersection(lidar_position, ray, lidar_range, start, end)
                 if intersection is not None:
                     if closest_intersection is None or distance < best_distance:
                         closest_intersection = intersection

@@ -276,13 +276,16 @@ def setup_dijkstras(should_plot=True):
         if progress_counter % B_SIZE == 0:
             print("Finished {} tiles".format(progress_counter), file=sys.stderr)
             
+prev_heading = -1
 def get_local_heading(me, target):
+    global prev_heading
     if me == target:
-        return -1
+        return prev_heading
     step1 = first_step[(me, target)]
     if step1 == None:
-        return -1
-    return angle(me, step1)
+        return prev_heading
+    prev_heading = angle(me, step1)
+    return prev_heading
 
 if __name__ == "__main__":
     from utils import *
