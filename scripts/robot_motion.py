@@ -7,6 +7,7 @@ from scipy.linalg import expm, logm
 from scripts.utils import *
 
 absolute_position = -1
+get_can_storage = 0
 
 # ======================================= Helper Functions ============================================== #
 class robot_motion:
@@ -24,7 +25,7 @@ class robot_motion:
         self.leftRightVelRange = [-240*math.pi/180, 240*math.pi/180]
         # min and max wheel rotation vel. for left/right rotation movement
         self.rotVelRange = [-240*math.pi/180, 240*math.pi/180]
-        
+
         self.velocities = (0, 0, 0)
 
         self.update_func = lambda: False
@@ -56,32 +57,44 @@ class robot_motion:
         # print("EULER ANGLES: x="+str(euler[0])+" y="+str(euler[1])+" z="+str(euler[2])+"\n")
         return euler
 
-    def set_move_get_can(self, detection_callback):
-        def get_can_step(detection_callback):
+    def set_move_get_can(self, detection_callback, target_dist):
+        global get_can_storage
+        get_can_storage = 0
+        def get_can_step(detection_callback, target_dist):
             avg_distance, avg_angle, any_red = detection_callback()
             trans_vel = 1
             rot_vel = -0.04
-            target_dist = 0.2.25
             vy = np.clip(trans_vel*(avg_distance-target_dist), -0.2, 0.2)
             vx = 0
             vr = np.clip(rot_vel*avg_angle * (0.05 + abs(avg_distance-target_dist)), -0.4, 0.4)
             # good tolerance is +- 3 for angle and +-.01 for distance!
+            ang_tol = 3
+            dist_tol = 0.01
             # target angle is 0
-            print("angle:", avg_angle, "dist:", avg_distance)
+            # print("angle:", avg_angle, "dist:", avg_distance)
             self.set_move(vy, vx, vr)
-            if abs(avg_distance - target_dist) < 0.01 and abs(avg_angle) < 3:
-                self.update_func = lambda: False
-                self.set_move(0, 0, 0)
-                return True
+            global get_can_storage
+            if abs(avg_angle) < ang_tol and abs(avg_distance - target_dist) < dist_tol:
+                print("Yay, close enough!")
+                get_can_storage += 1
+                #print(len(get_can_storage))
+                if get_can_storage >= 15:
+                    # print("Yay, 60 seconds!")
+                    self.update_func = lambda: False
+                    self.set_move(0, 0, 0)
+                    return False
+            else:
+                get_can_storage = 0
+
             return True
-        self.update_func = lambda: get_can_step(detection_callback)
+        self.update_func = lambda: get_can_step(detection_callback, target_dist)
 
     def set_move_global_position2(self, end_pos, dijkstras_callback, get_pose_callback, tolerance):
         storage = []
         def everything_command(end_pos, dijkstras_callback, get_pose_callback, storage):
             trans_vel = 0.2
             rot_vel = 0.4
-            
+
             pos, angle = decompose_pose2D(get_pose_callback())
             angle = angle + np.pi / 2
             if angle < 0:
@@ -113,7 +126,7 @@ class robot_motion:
                     # self.set_move(trans_vel * math.cos(turn_direction), trans_vel * math.sin(turn_direction), 0)
             return True
         self.update_func = lambda: everything_command(end_pos, dijkstras_callback, get_pose_callback, storage)
-    
+
     def set_move_global_position(self, end_pos, tolerance):
         def rotate_command(end_pos):
             curr_pos = np.array(self.get_global_position())
@@ -185,7 +198,7 @@ class robot_motion:
         forwBackVel *= 20
         leftRightVel *= 20
         rotVel *= -7.77
-        
+
         if forwBackVel < self.forwBackVelRange[0]:
             print("set_move TOO LOW: Forward Backward Velocity value out of range.\n")
             forwBackVel = self.forwBackVelRange[0]

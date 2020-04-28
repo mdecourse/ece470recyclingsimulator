@@ -123,7 +123,7 @@ if not manual_mode:
     th.Thread(target=dijkstras_run_thread, args=(), name='dijkstras_run_thread', daemon=True).start()
     robot_motion.set_move(0, 0, 0)
     last_n_pf_updates = n_pf_updates
-    while keep_going or n_pf_updates < 12:
+    while keep_going or n_pf_updates < 4:#12:
         #break
         vrep.simxSynchronousTrigger(clientID)
         vrep.simxGetPingTime(clientID)
@@ -143,31 +143,49 @@ if not manual_mode:
     target_ind = 0
     target_points = [(1, 2), (0.5, 0.5), (1, 1), (3, 2)]
     print("Pathing mode: Visiting points {}".format(target_points))
-    done_positioning = False
+    still_positioning = True
+    grab_can_state = 0
     while keep_going:
         #break
         vrep.simxSynchronousTrigger(clientID)
         vrep.simxGetPingTime(clientID)
         update_pf()
         avg_distance, avg_angle, any_red = vision_sensor.red_pixel_detection()
-        if done_positioning:
+        if (not still_positioning and grab_can_state == 2) or grab_can_state == 3:
+            print("End of the line")
             break
-            robot_motion.set_move_get_can(avg_distance, avg_angle)
+        elif (not still_positioning and grab_can_state == 1) or grab_can_state == 2:
+            robot_motion.set_move_get_can(vision_sensor.red_pixel_detection, 0.225)
+            grab_can_state = 2
             robot_motion.motion_update()
-            arm_motion.set_move_get_can()
-            still_positioning = arm_motion.motion_update()
-        elif any_red:
-            robot_motion.set_move_get_can(vision_sensor.red_pixel_detection)
-            done_positioning = robot_motion.motion_update()
-        else:
+            # TODO
+            # grab trash, pick up, drop in bin
+            # when done not done...? set's an angle loop
+            # build set target arm angles, assign new update
+            # that moves the gripper
+            # then new update function to move the block
+            arm_motion.set_move_get_can(vision_sensor)
+            # set this to true when done grabbing can
+            still_positioning = arm_motion.motion_update() or robot_motion.motion_update()
+        elif (any_red and grab_can_state == 0) or grab_can_state == 1:
+            grab_can_state = 1
+            # FIND A PIECE OF TRASH
+            robot_motion.set_move_get_can(vision_sensor.red_pixel_detection, 0.1)
+            still_positioning = robot_motion.motion_update()
+            arm_motion.motion_update()
+            # TODO, still_positioning not returning False --> done
+        elif grab_can_state == 0:
+            # CONTINUE THE SEARCH PATH
             keep_going = robot_motion.motion_update()
+            arm_motion.motion_update()
             if (not keep_going) and target_ind < len(target_points):
                 target_point = target_points[target_ind]
                 print("Pathing mode: Going to {}".format(target_point))
                 robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(), 0.25)
                 target_ind += 1
                 keep_going = True
-        arm_motion.motion_update()
+        else:
+            break
 
 
 print("Manual mode")

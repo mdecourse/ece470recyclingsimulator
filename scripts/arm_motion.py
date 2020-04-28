@@ -46,7 +46,7 @@ class arm_motion:
 
         self.update_func = lambda: False
         vrep.simxGetJointMatrix(self.clientID, self.gripper, vrep.simx_opmode_streaming)
-        self.set_target_arm_angles([0]*5)
+        self.SetJointPosition([0]*5)
 
 
     def motion_update(self):
@@ -177,3 +177,19 @@ class arm_motion:
         if angle != 0:
             self.inv_kin(T)
         self.inv_kin(T)
+
+    def set_move_get_can(self,vision_sensor):
+        # TODO
+        # grab trash, pick up, drop in bin
+        # when done not done...? set's an angle loop
+        # build set target arm angles, assign new update
+        # that moves the gripper
+        # then new update function to move the block
+
+        print("Moving me arms bois")
+
+        pickup_angles = np.array([0.0, -87.4, -95.4, 65.0, 0.0]) # degrees
+        pickup_angles *= (np.pi/180) # radians
+        self.set_target_arm_angles(pickup_angles) # correct set move function
+        p = self.get_any_ref_position(self.gripper, vision_sensor.sensor)
+        print(p)
