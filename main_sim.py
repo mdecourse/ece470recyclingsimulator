@@ -151,9 +151,12 @@ if not manual_mode:
         vrep.simxGetPingTime(clientID)
         update_pf()
         avg_distance, avg_angle, any_red = vision_sensor.red_pixel_detection()
-        if (not still_positioning and grab_can_state == 2):
+        if (not still_positioning and grab_can_state == 3):
             print("End of the line")
             break
+        elif (not still_positioning and grab_can_state == 2):
+            still_positioning = True
+            grab_can_state = 2
         elif (not still_positioning and grab_can_state == 1):
             still_positioning = True
             robot_motion.set_move_get_can(vision_sensor.red_pixel_detection, 0.225)
