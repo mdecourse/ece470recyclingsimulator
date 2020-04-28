@@ -44,6 +44,23 @@ class arm_motion:
         self.update_func = lambda: False
         vrep.simxGetJointMatrix(self.clientID, self.gripper, vrep.simx_opmode_streaming)
         self.SetJointPosition([0]*5)
+        print("DUMB")
+        ret = vrep.simxSetIntegerSignal(self.clientID, 'youBotGripperState-1', 0, vrep.simx_opmode_oneshot)
+        if ret > 1:
+            print(ret)
+            raise ValueError("potato")
+        ret = vrep.simxSetIntegerSignal(self.clientID, 'youBotGripperState-1', 0, vrep.simx_opmode_oneshot)
+        if ret > 1:
+            print(ret)
+            raise ValueError("potato")
+        print("DUMB DUMB")
+        r = vrep.simxSetJointPosition(self.clientID, self.gripper, 0.05, vrep.simx_opmode_streaming)
+        # print(r)
+        # print("bro we tried")
+        print("again")
+        r = vrep.simxSetJointPosition(self.clientID, self.gripper, 0.05, vrep.simx_opmode_oneshot)
+        # print(r)
+        # print("brooooo")
 
 
     def motion_update(self):
