@@ -49,7 +49,12 @@ class arm_motion:
         vrep.simxGetJointMatrix(self.clientID, self.gripper, vrep.simx_opmode_streaming)
         self.SetJointPosition([0]*5)
 
-
+        # vrep.simxSetJointPosition(self.clientID, self.gripper, -2.200e-02, vrep.simx_opmode_streaming)
+        # vrep.simxSetJointPosition(self.clientID, self.gripper2, -2.200e-02, vrep.simx_opmode_streaming)
+        # time.sleep(5)
+        # vrep.simxSetJointPosition(self.clientID, self.gripper2, -5.000e-02, vrep.simx_opmode_streaming)
+        # # vrep.simxSetJointPosition(self.clientID, self.gripper2, 1, vrep.simx_opmode_streaming)
+        # time.sleep(5)
 
         # vrep.simxSetJointTargetVelocity(self.clientID, self.gripper2 , -0.04, vrep.simx_opmode_streaming)
         # print("DUMB")
@@ -217,8 +222,8 @@ class arm_motion:
             # gripping phase
             print("gripping phase")
             if state_machine == 1:
-                vrep.simxSetJointPosition(self.clientID, self.gripper, 1, vrep.simx_opmode_streaming)
-                vrep.simxSetJointPosition(self.clientID, self.gripper2, 1, vrep.simx_opmode_streaming)
+                vrep.simxSetJointPosition(self.clientID, self.gripper2, -2.200e-02, vrep.simx_opmode_streaming)
+                # vrep.simxSetJointPosition(self.clientID, self.gripper2, 1, vrep.simx_opmode_streaming)
             # vrep.simxSetJointTargetVelocity(self.clientID, self.gripper , -0.04, vrep.simx_opmode_streaming)
             # vrep.simxSetJointTargetVelocity(self.clientID, self.gripper2 , -0.04, vrep.simx_opmode_streaming)
             state_machine += 1
@@ -232,8 +237,9 @@ class arm_motion:
             state_machine += 1
         elif state_machine < 400:
             print("dropping phase")
-            vrep.simxSetJointPosition(self.clientID, self.gripper, 0, vrep.simx_opmode_streaming)
-            vrep.simxSetJointPosition(self.clientID, self.gripper2, 0, vrep.simx_opmode_streaming)
+            vrep.simxSetJointPosition(self.clientID, self.gripper2, -5.000e-02, vrep.simx_opmode_streaming)
+            # vrep.simxSetJointPosition(self.clientID, self.gripper, 0, vrep.simx_opmode_streaming)
+            # vrep.simxSetJointPosition(self.clientID, self.gripper2, 0, vrep.simx_opmode_streaming)
             state_machine += 1
         elif state_machine == 400:
             state_machine = 0
