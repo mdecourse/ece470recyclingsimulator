@@ -52,6 +52,7 @@ tip             = get_handle_blocking('youBot_positionTip')
 prox_sensor     = get_handle_blocking('Proximity_sensor')
 lidar_motor     = get_handle_blocking('Tower_Turning_Joint')
 gripper 		= get_handle_blocking('youBotGripperJoint1')
+gripper2 		= get_handle_blocking('youBotGripperJoint2')
 vision_sens   = get_handle_blocking('Vision_sensor')
 
 armJoints = [-1] * 5
@@ -66,7 +67,7 @@ vrep.simxStartSimulation(clientID, vrep.simx_opmode_blocking)
 
 # initialize motion classes
 robot_motion = robot_motion(clientID, youBotRef, wheelJoints, armJoints[0])
-arm_motion = arm_motion(clientID, youBotRef, armJoints, youBot, gripper)
+arm_motion = arm_motion(clientID, youBotRef, armJoints, youBot, gripper, gripper2)
 
 # Simulation dt is 50ms (0.05s)
 dt = 0.05
