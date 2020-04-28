@@ -107,7 +107,7 @@ class arm_motion:
         target = self.get_arm_angles()
         def hold_loop(target):
             self.SetJointPosition(target)
-            return True
+            return False
         self.update_func = lambda: hold_loop(target)
 
     def forw_kin(self, thetas):

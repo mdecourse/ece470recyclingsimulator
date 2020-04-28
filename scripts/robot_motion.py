@@ -63,10 +63,10 @@ class robot_motion:
         def get_can_step(detection_callback, target_dist):
             avg_distance, avg_angle, any_red = detection_callback()
             trans_vel = 1
-            rot_vel = -0.04
+            rot_vel = -0.2
             vy = np.clip(trans_vel*(avg_distance-target_dist), -0.2, 0.2)
             vx = 0
-            vr = np.clip(rot_vel*avg_angle * (0.05 + abs(avg_distance-target_dist)), -0.4, 0.4)
+            vr = np.clip(rot_vel*avg_angle * (0.02 + abs(avg_distance-target_dist)), -0.4, 0.4)
             # good tolerance is +- 3 for angle and +-.01 for distance!
             ang_tol = 3
             dist_tol = 0.01
@@ -74,6 +74,7 @@ class robot_motion:
             # print("angle:", avg_angle, "dist:", avg_distance)
             self.set_move(vy, vx, vr)
             global get_can_storage
+            print(f"Angle error: {avg_angle}, Distance error: {avg_distance - target_dist}")
             if abs(avg_angle) < ang_tol and abs(avg_distance - target_dist) < dist_tol:
                 print("Yay, close enough!")
                 get_can_storage += 1

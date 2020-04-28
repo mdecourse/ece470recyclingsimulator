@@ -151,13 +151,13 @@ if not manual_mode:
         vrep.simxGetPingTime(clientID)
         update_pf()
         avg_distance, avg_angle, any_red = vision_sensor.red_pixel_detection()
-        if (not still_positioning and grab_can_state == 2) or grab_can_state == 3:
+        if (not still_positioning and grab_can_state == 2):
             print("End of the line")
             break
-        elif (not still_positioning and grab_can_state == 1) or grab_can_state == 2:
+        elif (not still_positioning and grab_can_state == 1):
+            still_positioning = True
             robot_motion.set_move_get_can(vision_sensor.red_pixel_detection, 0.225)
             grab_can_state = 2
-            robot_motion.motion_update()
             # TODO
             # grab trash, pick up, drop in bin
             # when done not done...? set's an angle loop
@@ -166,12 +166,14 @@ if not manual_mode:
             # then new update function to move the block
             arm_motion.set_move_get_can(vision_sensor)
             # set this to true when done grabbing can
-            still_positioning = arm_motion.motion_update() or robot_motion.motion_update()
-        elif (any_red and grab_can_state == 0) or grab_can_state == 1:
+            robot_motion.motion_update()
+            arm_motion.motion_update()
+        elif (any_red and grab_can_state == 0):
+            still_positioning = True
             grab_can_state = 1
             # FIND A PIECE OF TRASH
             robot_motion.set_move_get_can(vision_sensor.red_pixel_detection, 0.1)
-            still_positioning = robot_motion.motion_update()
+            robot_motion.motion_update()
             arm_motion.motion_update()
             # TODO, still_positioning not returning False --> done
         elif grab_can_state == 0:
@@ -185,7 +187,9 @@ if not manual_mode:
                 target_ind += 1
                 keep_going = True
         else:
-            break
+            tmp1 = arm_motion.motion_update()
+            tmp2 = robot_motion.motion_update()
+            still_positioning = tmp2 or tmp1
 
 
 print("Manual mode")
