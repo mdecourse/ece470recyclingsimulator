@@ -91,7 +91,9 @@ class arm_motion:
         target = np.array(target)
         def set_angle_loop(target, tolerance):
             global state_machine
-            self.SetJointPosition(target)
+            current = self.get_arm_angles()
+            delta = target - current
+            self.SetJointPosition(current + delta * 0.1)
             if la.norm(self.get_arm_angles() - target) < la.norm(np.ones(len(self.arms)) * 0.01):
                 self.update_func = lambda: False
                 # print("Arm target angle reached")
