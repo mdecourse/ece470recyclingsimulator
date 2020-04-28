@@ -47,23 +47,19 @@ class arm_motion:
         self.update_func = lambda: False
         vrep.simxGetJointMatrix(self.clientID, self.gripper, vrep.simx_opmode_streaming)
         self.SetJointPosition([0]*5)
+
+
+
+        vrep.simxSetJointTargetVelocity(self.clientID, self.gripper2,0.04, vrep.simx_opmode_streaming)
         print("DUMB")
-        ret = vrep.simxSetIntegerSignal(self.clientID, 'youBotGripperState-1', 0, vrep.simx_opmode_oneshot)
-        if ret > 1:
-            print(ret)
-            raise ValueError("potato")
-        ret = vrep.simxSetIntegerSignal(self.clientID, 'youBotGripperState-1', 0, vrep.simx_opmode_oneshot)
-        if ret > 1:
-            print(ret)
-            raise ValueError("potato")
-        print("DUMB DUMB")
-        r = vrep.simxSetJointPosition(self.clientID, self.gripper, 0.05, vrep.simx_opmode_streaming)
-        # print(r)
-        # print("bro we tried")
-        print("again")
-        r = vrep.simxSetJointPosition(self.clientID, self.gripper, 0.05, vrep.simx_opmode_oneshot)
-        # print(r)
-        # print("brooooo")
+        r, p = vrep.simxGetJointPosition(self.clientID, self.gripper2, vrep.simx_opmode_buffer)
+        print(r)
+        vrep.simxSetJointTargetPosition(self.clientID, self.gripper,p*-0.5, vrep.simx_opmode_streaming)
+        # if (opening==0) then
+        # sim.setJointTargetVelocity(j2,0.04) --closing
+        # else
+        #     sim.setJointTargetVelocity(j2,-0.04) --opening
+        # end
 
 
     def motion_update(self):
