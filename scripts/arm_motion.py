@@ -201,6 +201,13 @@ class arm_motion:
             self.inv_kin(T)
         self.inv_kin(T)
 
+    def hold_grip(self, target):
+        # target = self.get_arm_angles()
+        def hold_loop(target):
+            vrep.simxSetJointPosition(self.clientID, self.gripper2, target, vrep.simx_opmode_streaming)
+            return False
+        self.update_func = lambda: hold_loop(target)
+
     def set_move_get_can(self,vision_sensor):
         global state_machine
         # TODO
@@ -220,30 +227,31 @@ class arm_motion:
             # time.sleep(5)
             # if self.update_func
             #     state_machine += 1
-        elif state_machine < 200:
+        elif state_machine < 100:
             # gripping phase
             print("gripping phase")
             if state_machine == 1:
                 vrep.simxSetJointPosition(self.clientID, self.gripper2, -2.200e-02, vrep.simx_opmode_streaming)
+                self.hold_grip(-2.200e-02)
                 # vrep.simxSetJointPosition(self.clientID, self.gripper2, 1, vrep.simx_opmode_streaming)
             # vrep.simxSetJointTargetVelocity(self.clientID, self.gripper , -0.04, vrep.simx_opmode_streaming)
             # vrep.simxSetJointTargetVelocity(self.clientID, self.gripper2 , -0.04, vrep.simx_opmode_streaming)
             state_machine += 1
-        elif state_machine == 200:
+        elif state_machine == 100:
             print("move arm over bucket boi")
-            dropoff_angles = np.array([0.0]*5) # degrees
+            dropoff_angles = np.array([0.0, 0.0, 40.6, 72.7, 0.0]) # degrees
             dropoff_angles *= (np.pi/180) # radians
             self.set_target_arm_angles(dropoff_angles) # correct set move function
             # p = self.get_any_ref_position(self.gripper, vision_sensor.sensor)
             # print(p)
             state_machine += 1
-        elif state_machine < 400:
+        elif state_machine < 200:
             print("dropping phase")
             vrep.simxSetJointPosition(self.clientID, self.gripper2, -5.000e-02, vrep.simx_opmode_streaming)
             # vrep.simxSetJointPosition(self.clientID, self.gripper, 0, vrep.simx_opmode_streaming)
             # vrep.simxSetJointPosition(self.clientID, self.gripper2, 0, vrep.simx_opmode_streaming)
             state_machine += 1
-        elif state_machine == 400:
+        elif state_machine == 200:
             state_machine = 0
             return True
         return False

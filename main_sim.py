@@ -80,6 +80,8 @@ vision_sensor = vision_sensor(clientID, vision_sens)
 robot_lidar = robot_lidar(clientID, prox_sensor, lidar_motor)
 robot_lidar.set_lidar_velocity(lidar_v)
 
+# raise ValueError("poop")
+
 vfb = 0
 vlr = 0
 vt = 0
@@ -151,27 +153,27 @@ if not manual_mode:
         vrep.simxGetPingTime(clientID)
         update_pf()
         avg_distance, avg_angle, any_red = vision_sensor.red_pixel_detection()
-        if (not still_positioning and grab_can_state == 1):
+        if not still_positioning: # and grab_can_state == 1):
             # TODO
             # grab trash, pick up, drop in bin
             # when done not done...? set's an angle loop
             # build set target arm angles, assign new update
             # that moves the gripper
             # then new update function to move the block
-            if (arm_motion.set_move_get_can(vision_sensor)):
-                break
+            still_positioning = arm_motion.set_move_get_can(vision_sensor)
+                # break
             robot_motion.motion_update()
             arm_motion.motion_update()
             # set this to true when done grabbing can
-        elif (any_red and grab_can_state == 0):
+        elif any_red: #and grab_can_state == 0):
             still_positioning = True
             grab_can_state = 1
             # FIND A PIECE OF TRASH
             robot_motion.set_move_get_can(vision_sensor.red_pixel_detection, 0.205)
-            robot_motion.motion_update()
+            still_positioning = robot_motion.motion_update()
             arm_motion.motion_update()
             # TODO, still_positioning not returning False --> done
-        elif grab_can_state == 0:
+        else: #grab_can_state == 0:
             # CONTINUE THE SEARCH PATH
             keep_going = robot_motion.motion_update()
             arm_motion.motion_update()
@@ -181,10 +183,10 @@ if not manual_mode:
                 robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(), 0.25)
                 target_ind += 1
                 keep_going = True
-        else:
-            tmp1 = arm_motion.motion_update()
-            tmp2 = robot_motion.motion_update()
-            still_positioning = tmp2 or tmp1
+        # else:
+        #     tmp1 = arm_motion.motion_update()
+        #     tmp2 = robot_motion.motion_update()
+        #     still_positioning = tmp2 or tmp1
 
 
 print("Manual mode")

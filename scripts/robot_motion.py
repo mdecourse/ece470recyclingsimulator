@@ -59,7 +59,7 @@ class robot_motion:
 
     def set_move_get_can(self, detection_callback, target_dist):
         global get_can_storage
-        get_can_storage = 0
+        # get_can_storage = 0
         def get_can_step(detection_callback, target_dist):
             avg_distance, avg_angle, any_red = detection_callback()
             trans_vel = 1
