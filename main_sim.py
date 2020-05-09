@@ -195,6 +195,7 @@ if (pf.resample_particles == 400):
     pf = particle_filter(40, KNOWN_MAP,perturb_pos_stdev=0.05, perturb_angle_stdev = 0.15,random_fraction=2)
 
 arm_angles = [0, -1.5708, -1.6, 1.2, 0]
+grasp_pos = arm_motion.get_gripper()
 
 def key_capture_thread():
     global keep_going
@@ -261,12 +262,13 @@ def key_capture_thread():
                 arm_motion.set_target_arm_angles(arm_angles)
             elif c == "[":
                 print(arm_angles)
+                print(arm_motion.get_gripper())
             elif c == "]":
                 robot_motion.set_move_get_can(vision_sensor.red_pixel_detection)
             elif c == "g":
-                arm.set_grasp(True)
+                arm_motion.set_gripper(0.02)
             elif c == "t":
-                arm.set_grasp(False)
+                arm_motion.set_gripper(1)
                 # arm_motion.inv_kin(None)
 
 th.Thread(target=key_capture_thread, args=(), name='key_capture_thread', daemon=True).start()
