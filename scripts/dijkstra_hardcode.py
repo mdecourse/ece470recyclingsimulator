@@ -239,6 +239,9 @@ line_of_sight_cache = dict()
 board = None
 
 def setup_dijkstras(should_plot=True):
+    if try_load():
+        return
+    
     global board
     board = np.ones((B_SIZE2, B_SIZE))
 
@@ -275,7 +278,23 @@ def setup_dijkstras(should_plot=True):
         progress_counter += 1
         if progress_counter % B_SIZE == 0:
             print("Finished {} tiles".format(progress_counter), file=sys.stderr)
-            
+    save()
+
+def save():
+    global first_step
+    import pickle
+    pickle.dump(first_step, open("dijkstra_save.pickl", "wb"))
+
+def try_load():
+    global first_step
+    try:
+        import pickle
+        first_step = pickle.load(open("dijkstra_save.pickl", "rb"))
+        return True
+    except:
+        return False
+
+
 prev_heading = -1
 def get_local_heading(me, target):
     global prev_heading

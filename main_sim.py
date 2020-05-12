@@ -53,7 +53,7 @@ prox_sensor     = get_handle_blocking('Proximity_sensor')
 lidar_motor     = get_handle_blocking('Tower_Turning_Joint')
 gripper 		= get_handle_blocking('youBotGripperJoint1')
 gripper2		= get_handle_blocking('youBotGripperJoint2')
-vision_sens   = get_handle_blocking('Vision_sensor')
+vision_sens     = get_handle_blocking('Vision_sensor')
 
 armJoints = [-1] * 5
 for i in range(5):
@@ -79,6 +79,8 @@ pf = particle_filter(400, KNOWN_MAP,perturb_pos_stdev=0.05, perturb_angle_stdev 
 vision_sensor = vision_sensor(clientID, vision_sens)
 robot_lidar = robot_lidar(clientID, prox_sensor, lidar_motor)
 robot_lidar.set_lidar_velocity(lidar_v)
+
+# raise ValueError("poop")
 
 vfb = 0
 vlr = 0
@@ -151,27 +153,35 @@ if not manual_mode:
         vrep.simxGetPingTime(clientID)
         update_pf()
         avg_distance, avg_angle, any_red = vision_sensor.red_pixel_detection()
-        if (not still_positioning and grab_can_state == 1):
+        if not still_positioning: # and grab_can_state == 1):
+            print(arm_motion.state_machine)
             # TODO
             # grab trash, pick up, drop in bin
             # when done not done...? set's an angle loop
             # build set target arm angles, assign new update
             # that moves the gripper
             # then new update function to move the block
-            if (arm_motion.set_move_get_can(vision_sensor)):
-                break
+            still_positioning = arm_motion.set_move_get_can(vision_sensor)
+                # break
             robot_motion.motion_update()
             arm_motion.motion_update()
             # set this to true when done grabbing can
-        elif (any_red and grab_can_state == 0):
+        elif any_red: #and grab_can_state == 0):
             still_positioning = True
             grab_can_state = 1
             # FIND A PIECE OF TRASH
-            robot_motion.set_move_get_can(vision_sensor.red_pixel_detection, 0.205)
-            robot_motion.motion_update()
-            arm_motion.motion_update()
+            
+            arm_motion.set_gripper(1)
+            pickup_angles = np.array([0.0, -75, -95.4, 100.0, 0.0]) # degrees
+            pickup_angles *= (np.pi/180) # radians
+            arm_motion.set_target_arm_angles(pickup_angles) # correct set move function
+            
+            robot_motion.set_move_get_can(vision_sensor.red_pixel_detection, 0.1875)
+            still_positioning = robot_motion.motion_update()
+            still_positioning = arm_motion.motion_update() or still_positioning
+            arm_motion.state_machine = 0
             # TODO, still_positioning not returning False --> done
-        elif grab_can_state == 0:
+        else: #grab_can_state == 0:
             # CONTINUE THE SEARCH PATH
             keep_going = robot_motion.motion_update()
             arm_motion.motion_update()
@@ -181,10 +191,10 @@ if not manual_mode:
                 robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(), 0.25)
                 target_ind += 1
                 keep_going = True
-        else:
-            tmp1 = arm_motion.motion_update()
-            tmp2 = robot_motion.motion_update()
-            still_positioning = tmp2 or tmp1
+        # else:
+        #     tmp1 = arm_motion.motion_update()
+        #     tmp2 = robot_motion.motion_update()
+        #     still_positioning = tmp2 or tmp1
 
 
 print("Manual mode")
@@ -194,7 +204,9 @@ keep_going = True
 if (pf.resample_particles == 400):
     pf = particle_filter(40, KNOWN_MAP,perturb_pos_stdev=0.05, perturb_angle_stdev = 0.15,random_fraction=2)
 
-arm_angles = [0, -1.5708, -1.6, 1.2, 0]
+arm_angles = np.array([0.0, -87.4, -95.4, 62.0, 0.0]) # degrees
+arm_angles *= (np.pi/180) # radians
+# arm_angles = [0, -1.5708, -1.6, 1.2, 0]
 grasp_pos = arm_motion.get_gripper()
 
 def key_capture_thread():
@@ -266,23 +278,26 @@ def key_capture_thread():
             elif c == "]":
                 robot_motion.set_move_get_can(vision_sensor.red_pixel_detection)
             elif c == "g":
-                arm_motion.set_gripper(0.02)
+                arm_motion.set_gripper(-0.1)
             elif c == "t":
-                arm_motion.set_gripper(1)
+                arm_motion.set_gripper(0.1)
                 # arm_motion.inv_kin(None)
 
 th.Thread(target=key_capture_thread, args=(), name='key_capture_thread', daemon=True).start()
 while keep_going:
-    # arm_motion.grab_red(avg_angle, avg_distance, vision_sensor)
+    # arm_motion.set_move_get_can(vision_sensor)
     # Trigger a "tick"
+
     vrep.simxSynchronousTrigger(clientID)
     vrep.simxGetPingTime(clientID)
     update_pf()
 
     robot_motion.set_move(vfb, vlr, vt)
     robot_motion.motion_update()
-    if not arm_motion.motion_update():
-        arm_motion.set_target_arm_angles(arm_angles)
+    # arm_motion.set_gripper(1)
+    arm_motion.motion_update()
+    # if not arm_motion.motion_update():
+    arm_motion.set_target_arm_angles(arm_angles)
 
 # robot_motion.set_move(0,0,0)
 # pos = robot_motion.get_global_position()
