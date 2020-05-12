@@ -8,11 +8,12 @@ Tori Colthurst (vrc2)
 Jing-Chen Peng (jcpeng)
 
 ## Summary
-This project is to control a simulated robot to move around in a 3D world, 
-avoiding obstacles and building a 2D represntation of its world while it moves. 
-It can search through its world to locate and pick up items, and deliver them 
-to a predefined location. The motivation behind this is a ‘recycling robot’ 
-that picks up trash and throws it away.
+The goal of this project is to simulate a robot in a 3D world using Coppeliasim. 
+The robot will build a 2D representation of its world while it moves around the open
+space, avoiding obstacles. It will move about this environment in search of 'trash' and
+'recycling' items on thr ground. The robot will be able to detect, move to, pick up,
+and deliver these items to a predefined location. The motivation for this robot is 
+a 'recycling robot' that can be put in any space to pick up litter and dispose of it.
 
 ## Getting Started
 
@@ -26,7 +27,7 @@ Install these guys:
 Python requirements:
 * numpy
 * scipy
-* matplotlib (for now, for visualizing/debugging the mapper)
+* matplotlib (for visualizing/debugging the mapper)
 
 Install these by running:
 
@@ -40,12 +41,12 @@ or
 pip3 install numpy scipy matplotlib
 ```
 
-Start CoppeliaSim. Open the scene (robot_lidar_test.ttt)
+Start CoppeliaSim. Open the environment scene (maze_test.ttt)
 
 Run the simulation:
 
 ```
-python3 main_sim.py
+python main_sim.py
 ```
 
 or
@@ -56,14 +57,17 @@ python3 main_sim.py
 
 ## Current script files:
 
-* robot_motion.py: Robot 2d base movement demonstrated here, can follow waypoints
-* arm_motion.py: Robot arm movement and foward kinematics to determine end effector state.
-* robot_lidar.py: Reading & interpreting sensor data for analysis.
-* robot_localization.py: Start on particle filter based localization leveraging lidar data.
+* robot_motion.py: Class definitions and functions for 2d base motion of the robot. 
+* arm_motion.py: Class definitions and functions for robot arm motion, including forward and inverse kinematics.
+* robot_lidar.py: Class definitions and functions for reading and interpreting LIDAR sensor data.
+* robot_localization.py: Class definitions and functions for the particle filter, internal robot state controller, and input space map.
+* vision.py: Class definitions and functions for reading and interpreting vision sensor data.
+* pf_test.py: Helper functions for visualizing LIDAR data.
+* utils.py: Helper functions for 2D and 3D matrix rotation manipulations.
+* dijkstra_hardcode.py: Runs dijstra's algorithm over a given input map dimensions to determine a sequence of waypoints to search the space.
+* robot_lidar_test.ttt: Old environment file.
 
 ## TODO / next steps:
-* Interpret lidar data correctly
-* Make the arm move and pick up blocks
-* Map while moving :O
+* Incorporate physics of cylindrical block to allow the robotic arm to grasp it.
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
