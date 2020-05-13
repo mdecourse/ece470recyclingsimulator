@@ -79,7 +79,7 @@ class robot_motion:
                 print("Yay, close enough!")
                 get_can_storage += 1
                 #print(len(get_can_storage))
-                if get_can_storage >= 15:
+                if get_can_storage >= 5:
                     # print("Yay, 60 seconds!")
                     self.update_func = lambda: False
                     self.set_move(0, 0, 0)

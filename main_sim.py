@@ -141,10 +141,17 @@ if not manual_mode:
 
     pf.resample_particles = 40
 
-    keep_going = True
     target_ind = 0
+    last_target_ind = -1
     target_points = [(1, 2), (0.5, 0.5), (1, 1), (3, 2)]
     print("Pathing mode: Visiting points {}".format(target_points))
+    
+    target_point = target_points[target_ind]
+    print("Pathing mode: Going to {}".format(target_point))
+    robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(), 0.25)
+    target_ind += 1
+    keep_going = True
+    
     still_positioning = True
     grab_can_state = 0
     while keep_going:
@@ -161,12 +168,10 @@ if not manual_mode:
             # build set target arm angles, assign new update
             # that moves the gripper
             # then new update function to move the block
-            still_positioning = arm_motion.set_move_get_can(vision_sensor)
-                # break
+            still_positioning = arm_motion.motion_update()
             robot_motion.motion_update()
-            arm_motion.motion_update()
             # set this to true when done grabbing can
-        elif any_red: #and grab_can_state == 0):
+        elif any_red and arm_motion.state_machine == 0: #and grab_can_state == 0):
             still_positioning = True
             grab_can_state = 1
             # FIND A PIECE OF TRASH
@@ -179,8 +184,21 @@ if not manual_mode:
             robot_motion.set_move_get_can(vision_sensor.red_pixel_detection, 0.1875)
             still_positioning = robot_motion.motion_update()
             still_positioning = arm_motion.motion_update() or still_positioning
+                
             arm_motion.state_machine = 0
             # TODO, still_positioning not returning False --> done
+            last_target_ind = target_ind
+            # Hacky way to restore the old target point
+            if not still_positioning:
+                arm_motion.set_move_get_can()
+        elif last_target_ind != -1:
+            target_ind = last_target_ind - 1
+            print(f"Resume path, index {target_ind}")
+            last_target_ind = -1
+            target_point = target_points[target_ind]
+            print("Pathing mode: Going to {}".format(target_point))
+            robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(), 0.25)
+            target_ind += 1
         else: #grab_can_state == 0:
             # CONTINUE THE SEARCH PATH
             keep_going = robot_motion.motion_update()
