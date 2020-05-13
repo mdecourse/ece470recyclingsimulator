@@ -148,7 +148,8 @@ if not manual_mode:
     
     target_point = target_points[target_ind]
     print("Pathing mode: Going to {}".format(target_point))
-    robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(), 0.25)
+    robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(), 
+        lambda: arm_motion.state_machine != 0, 0.25)
     target_ind += 1
     keep_going = True
     
@@ -197,7 +198,8 @@ if not manual_mode:
             last_target_ind = -1
             target_point = target_points[target_ind]
             print("Pathing mode: Going to {}".format(target_point))
-            robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(), 0.25)
+            robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(), 
+                lambda: arm_motion.state_machine != 0, 0.25)
             target_ind += 1
         else: #grab_can_state == 0:
             # CONTINUE THE SEARCH PATH
@@ -206,7 +208,8 @@ if not manual_mode:
             if (not keep_going) and target_ind < len(target_points):
                 target_point = target_points[target_ind]
                 print("Pathing mode: Going to {}".format(target_point))
-                robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(), 0.25)
+                robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(), 
+                    lambda: arm_motion.state_machine != 0, 0.25)
                 target_ind += 1
                 keep_going = True
         # else:
@@ -263,33 +266,34 @@ def key_capture_thread():
                 vt += 0.2
             elif c == "y":
                 arm_angles[0] += 0.1
+                # arm_motion.set_target_arm_angles(arm_angles)
             elif c == "u":
                 arm_angles[1] += 0.1
-                arm_motion.set_target_arm_angles(arm_angles)
+                # arm_motion.set_target_arm_angles(arm_angles)
             elif c == "i":
                 arm_angles[2] += 0.1
-                arm_motion.set_target_arm_angles(arm_angles)
+                # arm_motion.set_target_arm_angles(arm_angles)
             elif c == "o":
                 arm_angles[3] += 0.1
-                arm_motion.set_target_arm_angles(arm_angles)
+                # arm_motion.set_target_arm_angles(arm_angles)
             elif c == "p":
                 arm_angles[4] += 0.1
-                arm_motion.set_target_arm_angles(arm_angles)
+                # arm_motion.set_target_arm_angles(arm_angles)
             elif c == "h":
                 arm_angles[0] -= 0.1
-                arm_motion.set_target_arm_angles(arm_angles)
+                # arm_motion.set_target_arm_angles(arm_angles)
             elif c == "j":
                 arm_angles[1] -= 0.1
-                arm_motion.set_target_arm_angles(arm_angles)
+                # arm_motion.set_target_arm_angles(arm_angles)
             elif c == "k":
                 arm_angles[2] -= 0.1
-                arm_motion.set_target_arm_angles(arm_angles)
+                # arm_motion.set_target_arm_angles(arm_angles)
             elif c == "l":
                 arm_angles[3] -= 0.1
-                arm_motion.set_target_arm_angles(arm_angles)
+                # arm_motion.set_target_arm_angles(arm_angles)
             elif c == ";":
                 arm_angles[4] -= 0.1
-                arm_motion.set_target_arm_angles(arm_angles)
+                # arm_motion.set_target_arm_angles(arm_angles)
             elif c == "[":
                 print(arm_angles)
                 print(arm_motion.get_gripper())
@@ -313,9 +317,8 @@ while keep_going:
     robot_motion.set_move(vfb, vlr, vt)
     robot_motion.motion_update()
     # arm_motion.set_gripper(1)
-    arm_motion.motion_update()
-    # if not arm_motion.motion_update():
-    arm_motion.set_target_arm_angles(arm_angles)
+    if not arm_motion.motion_update():
+        arm_motion.set_target_arm_angles(arm_angles)
 
 # robot_motion.set_move(0,0,0)
 # pos = robot_motion.get_global_position()

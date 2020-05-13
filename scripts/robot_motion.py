@@ -90,9 +90,9 @@ class robot_motion:
             return True
         self.update_func = lambda: get_can_step(detection_callback, target_dist)
 
-    def set_move_global_position2(self, end_pos, dijkstras_callback, get_pose_callback, tolerance):
+    def set_move_global_position2(self, end_pos, dijkstras_callback, get_pose_callback, slowdown_callback, tolerance):
         storage = []
-        def everything_command(end_pos, dijkstras_callback, get_pose_callback, storage):
+        def everything_command(end_pos, dijkstras_callback, get_pose_callback, slowdown_callback, storage):
             trans_vel = 0.2
             rot_vel = 0.4
 
@@ -117,7 +117,7 @@ class robot_motion:
                 turn_direction = angle_delta(angle, turn_angle)
                 print(turn_direction)
                 xyv = trans_vel
-                if abs(turn_direction) > 0.15:
+                if abs(turn_direction) > 0.15 or slowdown_callback():
                     xyv *= 0.25
                 self.set_move(xyv * math.cos(turn_direction), -xyv * math.sin(turn_direction), np.clip(rot_vel*turn_direction, -0.4, 0.4))
                 # if abs(turn_direction) > 0.15:
@@ -126,7 +126,7 @@ class robot_motion:
                     # # TODO turn angle
                     # self.set_move(trans_vel * math.cos(turn_direction), trans_vel * math.sin(turn_direction), 0)
             return True
-        self.update_func = lambda: everything_command(end_pos, dijkstras_callback, get_pose_callback, storage)
+        self.update_func = lambda: everything_command(end_pos, dijkstras_callback, get_pose_callback, slowdown_callback, storage)
 
     def set_move_global_position(self, end_pos, tolerance):
         def rotate_command(end_pos):
