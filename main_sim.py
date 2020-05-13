@@ -143,7 +143,7 @@ if not manual_mode:
 
     target_ind = 0
     last_target_ind = -1
-    target_points = [(1, 2), (0.5, 0.5), (1, 1), (3, 2)]
+    target_points = [(1, 2), (0.5, 0.5), (3, 2)]
     print("Pathing mode: Visiting points {}".format(target_points))
     
     target_point = target_points[target_ind]
