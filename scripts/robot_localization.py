@@ -142,7 +142,7 @@ class particle_filter:
         # self.particles.extend(self.surroundings_map.generate_particles(N_skip * (4-1), self.lidar_angle))
 
 class known_map_AABB:
-    """ Class for a known map (hard coded by a set of axis-aligned bounding boxes """
+    """ Class for a known map (hard coded by a set of axis-aligned bounding boxes) """
     
     def __init__(self, low_corner, high_corner, aabb_list):
         self.min = low_corner
@@ -202,3 +202,62 @@ KNOWN_MAP = known_map_AABB((0, 0), (4, 3),
                             [(4, 0), (4.1, 3)], 
                             [(1.95, 1), (2.05, 3)], 
                             [(2.95, 0), (3.05, 1)]])
+                            
+
+class known_map_wall_list:
+    """ Class for a known map (hard coded by a list of walls) """
+    
+    def __init__(self, low_corner, high_corner, wall_list):
+        self.min = low_corner
+        self.max = high_corner
+        self.walls = wall_list
+    
+    def sensor_model(self, pose, angle):
+        """ Get sensor reading (a point x, y), or None. No noise """
+        ray = (pose @ axis2D_H(angle))[:2]
+        closest_intersection = None
+        best_distance = 5
+        lidar_position = (pose @ [0, -0.175, 0])[:2] + pose[:2, -1]
+        for start, end in self.walls:
+            intersection, distance = ray_segment_intersection(lidar_position, ray, lidar_range, start, end)
+            if intersection is not None:
+                if closest_intersection is None or distance < best_distance:
+                    closest_intersection = intersection
+                    best_distance = distance
+        return best_distance
+    
+    def generate_particles(self, nParticles):
+        """
+        Generate somme random particles using a uniform distribution.
+        """
+        particles = []
+        for i in range(nParticles):
+            angle = np.random.uniform(0.0, np.pi * 2, 1)
+            x = np.random.uniform(self.min[0], self.max[0])
+            y = np.random.uniform(self.min[1], self.max[1])
+            particles.append(robot_state(pose2D((x, y), angle)))
+        return particles
+
+    def feasible(self, state):
+        """
+        Test if a state is feasible.
+        """
+        pos = state.pose[:2, -1]
+        return pos[0] >= self.min[0] and pos[1] >= self.min[1] and pos[0] <= self.max[0] and pos[1] <= self.max[1]
+
+    def draw(self):
+        """
+        Draw the obstacles on mpl.
+        """
+        lc = mc.LineCollection(self.walls)
+        ax = plt.gca()
+        ax.add_collection(lc)
+
+"""
+The hardcoded known map, given by (min, max, (list of axis-aligned bounding boxes)).
+"""
+KNOWN_MAP_WALLS = known_map_wall_list((0, 0), (4, 3), 
+                           [[np.array((0, 0)), np.array((4, 0))], 
+                            [np.array((0, 0)), np.array((0, 3))], 
+                            [np.array((0, 3)), np.array((4, 3))], 
+                            [np.array((4, 0)), np.array((4, 3))]] + segments_from_aabb([(1.95, 1), (2.05, 3)]) + segments_from_aabb([(2.95, 0), (3.05, 1)]))

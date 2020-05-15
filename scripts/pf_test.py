@@ -2,7 +2,10 @@ import numpy as np
 import numpy.linalg as la
 import math
 import matplotlib.pyplot as plt
-from scripts.robot_localization import *
+if (__name__ == "__main__"):
+    from robot_localization import *
+else:
+    from scripts.robot_localization import *
 
 def plot_single(pf, pose):
     pos = pose[:2, -1]

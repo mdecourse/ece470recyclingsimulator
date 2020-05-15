@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 Diameter, in meters.
 Yes, we're approximating the bot as a circle.
 """
-youbot_diameter = 0.6
+youbot_diameter = 0.7
 
 """
 Hardcoded representation of the map.

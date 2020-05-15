@@ -93,8 +93,8 @@ class arm_motion:
 
     def approach_angles(self, target, tolerance=0.01):
         current = self.get_arm_angles()
-        delta = np.clip(target - current, -0.5, 0.5);
-        self.SetJointPosition(current + delta * 0.1)
+        delta = np.clip(target - current, -0.1, 0.1);
+        self.SetJointPosition(current + delta)
         if la.norm(self.get_arm_angles() - target) < la.norm(np.ones(len(self.arms)) * 0.01):
             # print("Arm target angle reached")
             self.state_machine += 1
@@ -249,7 +249,13 @@ class arm_motion:
                 # vrep.simxSetJointTargetVelocity(self.clientID, self.gripper2 , -0.04, vrep.simx_opmode_streaming)
                 self.state_machine += 1
                 self.set_gripper(-1)
-            elif self.state_machine == 10:
+            elif self.state_machine < 15:
+                print("moving upwards phase")
+                self.set_gripper(-1)
+                pickup_angles = np.array([0.0, -65, -95.4, 100.0, 0.0]) # degrees
+                pickup_angles *= (np.pi/180) # radians
+                self.approach_angles(pickup_angles) # correct set move function
+            elif self.state_machine == 15:
                 print("move arm over bucket boi")
                 dropoff_angles = np.array([0.0, 0.0, 40.6, 72.7, 0.0]) # degrees
                 dropoff_angles *= (np.pi/180) # radians
@@ -259,13 +265,13 @@ class arm_motion:
                 # state_machine += 1
                 self.set_gripper(-1)
                 return True
-            elif self.state_machine < 15:
+            elif self.state_machine < 20:
                 print("dropping phase")
                 self.set_gripper(1)
                 # vrep.simxSetJointPosition(self.clientID, self.gripper2, -5.000e-02, vrep.simx_opmode_streaming)
                 self.state_machine += 1
                 return True
-            elif self.state_machine == 15:
+            elif self.state_machine == 20:
                 self.state_machine = 0
                 self.update_func = lambda: False
                 return True

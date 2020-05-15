@@ -73,7 +73,7 @@ arm_motion = arm_motion(clientID, youBotRef, armJoints, youBot, gripper, gripper
 dt = 0.05
 lidar_v = 6
 
-pf = particle_filter(400, KNOWN_MAP,perturb_pos_stdev=0.05, perturb_angle_stdev = 0.15,random_fraction=2)
+pf = particle_filter(400, KNOWN_MAP_WALLS,perturb_pos_stdev=0.05, perturb_angle_stdev = 0.15,random_fraction=2)
 
 # initialize sensor classes
 vision_sensor = vision_sensor(clientID, vision_sens)
@@ -148,7 +148,7 @@ if not manual_mode:
 
     target_ind = 0
     last_target_ind = -1
-    target_points = [(1, 2), (0.5, 0.5), (3, 2)]
+    target_points = [(1, 1.9), (1.1, 2), (1, 2.1), (0.9, 2), (0.5, 0.5), (3.1, 2), (3, 2.1), (2.9, 2), (3, 1.9)]
     print("Pathing mode: Visiting points {}".format(target_points))
 
     target_point = target_points[target_ind]
@@ -175,23 +175,26 @@ if not manual_mode:
             # that moves the gripper
             # then new update function to move the block
             still_positioning = arm_motion.motion_update()
+            print(still_positioning)
             robot_motion.motion_update()
             # set this to true when done grabbing can
-        elif any_red and arm_motion.state_machine == 0: #and grab_can_state == 0):
+        elif any_red: #and grab_can_state == 0):
             still_positioning = True
             grab_can_state = 1
             # FIND A PIECE OF TRASH
-
-            arm_motion.set_gripper(1)
-            pickup_angles = np.array([0.0, -75, -95.4, 100.0, 0.0]) # degrees
-            pickup_angles *= (np.pi/180) # radians
-            arm_motion.set_target_arm_angles(pickup_angles) # correct set move function
-
+            dropping_cube = arm_motion.state_machine != 0
+            if arm_motion.state_machine == 0:
+                arm_motion.set_gripper(1)
+                pickup_angles = np.array([0.0, -75, -95.4, 100.0, 0.0]) # degrees
+                pickup_angles *= (np.pi/180) # radians
+                arm_motion.set_target_arm_angles(pickup_angles) # correct set move function
+            
             robot_motion.set_move_get_can(vision_sensor.red_pixel_detection, 0.1875)
             still_positioning = robot_motion.motion_update()
-            still_positioning = arm_motion.motion_update() or still_positioning
-
-            arm_motion.state_machine = 0
+            still_positioning = arm_motion.motion_update() or still_positioning or dropping_cube
+            if not dropping_cube:
+                arm_motion.state_machine = 0
+                
             # TODO, still_positioning not returning False --> done
             last_target_ind = target_ind
             # Hacky way to restore the old target point
