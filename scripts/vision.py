@@ -34,22 +34,30 @@ class vision_sensor:
         #neg_angle = 0
         any_red = False
         if len(resolution) > 0:
+            closest_distance = 9999
+            for x in range(0, resolution[0]):
+                for y in range(0, resolution[1]):
+                    red = image[(x*resolution[0]+y)*3]& 0b000011111111
+                    if red > 250:
+                        closest_distance = min(closest_distance, depth[x*resolution[0]+y])
             # print(resolution) # 64 x 64
             # center = (32,32) ish
             for x in range(0, resolution[0]):
                 for y in range(0, resolution[1]):
                     red = image[(x*resolution[0]+y)*3]& 0b000011111111
                     if red > 250:
-                        num_pixels += 1
-                        avg_distance += depth[x*resolution[0]+y]
-                        # whole thing is 60 degrees across
-                        avg_angle += 60 * (32-y)/64
-                        # positive right
-                        # negative left
-                        #if 32 - y >= 0:
-                        #    neg_angle += 1
-                        #else:
-                        #    neg_angle -= 1
+                        distance = depth[x*resolution[0]+y]
+                        if abs(distance - closest_distance) / closest_distance < 0.8: # 20% distance tolerance
+                            num_pixels += 1
+                            avg_distance += depth[x*resolution[0]+y]
+                            # whole thing is 60 degrees across
+                            avg_angle += 60 * (32-y)/64
+                            # positive right
+                            # negative left
+                            #if 32 - y >= 0:
+                            #    neg_angle += 1
+                            #else:
+                            #    neg_angle -= 1
         if num_pixels > 0:
             any_red = True
             avg_distance /= num_pixels
