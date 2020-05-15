@@ -28,9 +28,9 @@ class robot_state:
         self.max_readings = max_readings
     
     def update(self, v_fb, v_rl, v_t, dt):
+        """ Update the robot state's pose using the motion model, given a set of control inputs. """
         new_pose_relative = pose2D((v_rl * dt, v_fb * dt), v_t * dt)
         self.pose = self.pose @ new_pose_relative
-    
     
     def perturb(self, perturb_pos_stdev, perturb_angle_stdev):
         """ Returns a copy of this robot_state, displaced by a random amount in translation and rotation with the same sensor readings. """
@@ -38,10 +38,17 @@ class robot_state:
         return robot_state(self.pose @ pose2D(perturb_vec, np.random.normal(loc=0.0, scale=perturb_angle_stdev)), self.past_readings, self.max_readings)
 
     def add_sensor_input(self, reading):
+        """ Add a new sensor reading to the set of saved sensor readings. Won't store more than max_readings readings. """
         if len(self.past_readings) == self.max_readings:
             self.past_readings.pop(0)
         self.past_readings.append(reading)
 
+"""
+Class for a particle filter.
+Requires a couple of tunable parameters,
+as well as a "map" object that implements
+the sensor model.
+"""
 class particle_filter:
     def __init__(self, nParticles, surroundings_map, perturb_pos_stdev=0.05, perturb_angle_stdev = 0.15,random_fraction=10):
         self.nParticles = nParticles
@@ -55,7 +62,10 @@ class particle_filter:
         self.resample_particles = nParticles
     
     def update(self, v_fb, v_rl, v_t, lidar_angle, dt):
-        
+        """
+        Given a set of control inputs, update every particle and the predicted pose (to save time and to have a consistent estimate).
+        Also calls the sensor model for each particle and sees that result.
+        """
         if self.predicted_pose is not None:
             predicted_pose_relative = pose2D((v_rl * dt, v_fb * dt), v_t * dt)
             self.predicted_pose = self.predicted_pose @ predicted_pose_relative
@@ -71,7 +81,9 @@ class particle_filter:
     def resample(self, readings):
         """
         Resampling method: Take the top quarter of particles, add itself and three perturbed copies each
-        except the bottom 1/8 become random particles.
+        except the bottom 1/8 become random particles. Also invalidates the predicted_pose.
+        
+        readings parameter is the true readings gotten from the robot.
         """
         
         self.predicted_pose = None
@@ -153,6 +165,9 @@ class known_map_AABB:
         return best_distance
     
     def generate_particles(self, nParticles):
+        """
+        Generate somme random particles using a uniform distribution.
+        """
         particles = []
         for i in range(nParticles):
             angle = np.random.uniform(0.0, np.pi * 2, 1)
@@ -162,16 +177,24 @@ class known_map_AABB:
         return particles
 
     def feasible(self, state):
+        """
+        Test if a state is feasible.
+        """
         pos = state.pose[:2, -1]
         return pos[0] >= self.min[0] and pos[1] >= self.min[1] and pos[0] <= self.max[0] and pos[1] <= self.max[1]
 
     def draw(self):
+        """
+        Draw the obstacles on mpl.
+        """
         for segments in self.aabb_edges:
             lc = mc.LineCollection(segments)
             ax = plt.gca()
             ax.add_collection(lc)
 
-
+"""
+The hardcoded known map, given by (min, max, (list of axis-aligned bounding boxes)).
+"""
 KNOWN_MAP = known_map_AABB((0, 0), (4, 3), 
                            [[(0, -0.1), (4, 0)], 
                             [(-0.1, 0), (0, 3)], 
