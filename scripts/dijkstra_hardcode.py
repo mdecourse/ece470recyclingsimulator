@@ -4,17 +4,25 @@ import math
 import sys
 import matplotlib.pyplot as plt
 
+"""
+Diameter, in meters.
+Yes, we're approximating the bot as a circle.
+"""
 youbot_diameter = 0.6
+
+"""
+Hardcoded representation of the map.
+"""
 lines_map = [((0, 0), (4, 0)),
              ((4, 0), (4, 3)),
              ((0, 0), (0, 3)),
              ((0, 3), (4, 3)),
              ((3, 0), (3, 1)),
              ((2, 1), (2, 3))]
-             
+
 EMPTY = 0
 BLOCKED = 1
-MAYBE = 2
+MAYBE = 2 # Unused
 # rows (y)
 B_SIZE = 30
 # cols (x)
@@ -22,6 +30,12 @@ B_SIZE2 = 40
 
 ROOT_2 = math.sqrt(2)
 
+"""
+Determine if there is a line of sight between two given points.
+This method is quite ugly and uses a conservative version of
+bresenham's line drawing algorithm to trace the line more
+efficiently, at the cost of some darned ugly code.
+"""
 def line_of_sight(a, b):
     if (a, b) in line_of_sight_cache:
         return line_of_sight_cache[(a, b)] == 1
@@ -167,7 +181,9 @@ def line_of_sight(a, b):
             line_of_sight_cache[pair] = 1
             return True
 
-
+"""
+Run dijkstra starting from a given node, and reconstruct paths from each node in all_nodes.
+"""
 def djikstra(start, all_nodes):
     distances[(start, start)] = 0
     first_step[(start, start)] = start
@@ -185,6 +201,7 @@ def djikstra(start, all_nodes):
             # print("Neighbor: {}".format(neighbor))
             neighbor_from = curr
 
+            # Attempt to do line-of-sight shortcutting to create diagonal paths between pairs of points that have direct line of sight.
             if line_of_sight(from_node, neighbor):
                 # print("shortcut {} to {}".format(from_node, neighbor))
                 direct_dist = math.sqrt((from_node[0] - neighbor[0])**2 + (from_node[1] - neighbor[1])**2)
@@ -200,6 +217,7 @@ def djikstra(start, all_nodes):
                 prev[neighbor] = neighbor_from
                 frontier.put((new_dist, neighbor, neighbor_from))
 
+    # Reconstruct paths for every destination node.
     for node in all_nodes:
         if node == start:
             continue;
@@ -208,6 +226,9 @@ def djikstra(start, all_nodes):
             head = prev[head]
         first_step[(start, node)] = head
 
+"""
+Get immediate neighbors of a node. Uses an 8-connected grid.
+"""
 def get_neighbors(node, valids):
     neighbors = []
     flags = 0
@@ -233,14 +254,20 @@ def get_neighbors(node, valids):
         neighbors.append(((node[0] + 1, node[1] + 1), ROOT_2))
     return neighbors
 
+# Initialize the data structures.
+# This should really be moved elsewhere so we don't have globals and high startup costs, but eh.
 distances = {((x, y), (a, b)): 999 for x in range(B_SIZE2) for y in range(B_SIZE) for a in range(B_SIZE2) for b in range(B_SIZE)}
 first_step = {((x, y), (a, b)): None for x in range(B_SIZE2) for y in range(B_SIZE) for a in range(B_SIZE2) for b in range(B_SIZE)}
 line_of_sight_cache = dict()
 board = None
 
+"""
+Run everything needed to populate the pathing lookup data structures.
+Loads them from dijkstra_save.pickl instead of that exists.
+
+If it computed stuff, saves it to dijkstra_save.pickl.
+"""
 def setup_dijkstras(should_plot=True):
-    if try_load():
-        return
     
     global board
     board = np.ones((B_SIZE2, B_SIZE))
@@ -263,6 +290,8 @@ def setup_dijkstras(should_plot=True):
     if should_plot:
         plt.scatter(*zip(*points))
         plt.show()
+    if try_load():
+        return
     
     graph_nodes = set()
 
@@ -294,7 +323,10 @@ def try_load():
     except:
         return False
 
-
+"""
+Use the lookup table to get a heading that we should
+point towards to get from "me" to "target".
+"""
 prev_heading = -1
 def get_local_heading(me, target):
     global prev_heading

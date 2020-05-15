@@ -30,6 +30,7 @@ class robot_lidar:
         return theta
     
     def get_lidar_raw(self):
+        """ Gets the lidar distance measurement directly. """
         result = vrep.simxReadProximitySensor(self.clientID, self.prox_sensor, vrep.simx_opmode_buffer)
         if result[1]:
             depth = result[2][2] * np.random.normal(loc=1.0, scale=self.noise_stdev)

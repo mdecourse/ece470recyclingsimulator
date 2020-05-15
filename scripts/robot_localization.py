@@ -7,9 +7,20 @@ from scripts.utils import *
 
 # ======================================= Helper Functions ============================================== #
 
+"""
+Hardcoded position of the lidar tower relative to the robot center.
+"""
 lidar_robot_pose = np.array([[1, 0, 0], [0, 1, -0.175], [0, 0, 1]])
+
+"""
+Range of the lidar detection beam.
+"""
 lidar_range = 2
 
+"""
+A class representing the robot's current state
+and past few lidar readings. These are the particles.
+"""
 class robot_state:
     def __init__(self, pose, past_readings=[], max_readings=30):
         self.pose = pose
@@ -19,8 +30,10 @@ class robot_state:
     def update(self, v_fb, v_rl, v_t, dt):
         new_pose_relative = pose2D((v_rl * dt, v_fb * dt), v_t * dt)
         self.pose = self.pose @ new_pose_relative
-
+    
+    
     def perturb(self, perturb_pos_stdev, perturb_angle_stdev):
+        """ Returns a copy of this robot_state, displaced by a random amount in translation and rotation with the same sensor readings. """
         perturb_vec = axis2D_H(np.random.uniform(low=0.0, high=2*np.pi)) * np.random.normal(loc=perturb_pos_stdev, scale=perturb_pos_stdev)
         return robot_state(self.pose @ pose2D(perturb_vec, np.random.normal(loc=0.0, scale=perturb_angle_stdev)), self.past_readings, self.max_readings)
 
