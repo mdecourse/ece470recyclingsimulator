@@ -2,7 +2,7 @@ import numpy as np
 import numpy.linalg as la
 import math
 import matplotlib.pyplot as plt
-from robot_localization import *
+from scripts.robot_localization import *
 
 def plot_single(pf, pose):
     pos = pose[:2, -1]
@@ -16,7 +16,7 @@ def plot_single(pf, pose):
     plt.plot(pos[0], pos[1], "o")
     plt.plot(pointer[0], pointer[1], ".")
     plt.plot(intersection[0], intersection[1], ".")
-    
+
 
 def visualize_pf(pf, true_pos = None, n=0):
     points = []
@@ -31,7 +31,7 @@ def visualize_pf(pf, true_pos = None, n=0):
         intersections.append(state.pose @ intersect_pos)
         points.append(state.pose[:2, -1])
         dirs.append(state.pose @ np.array([0, 0.1, 1]))
-    
+
     points = np.array(points).T
     dirs = np.array(dirs).T
     intersections = np.array(intersections).T
@@ -40,14 +40,14 @@ def visualize_pf(pf, true_pos = None, n=0):
     plt.plot(points[0], points[1], "o")
     plt.plot(dirs[0], dirs[1], ".")
     plt.plot(intersections[0], intersections[1], ".")
-    
+
     if true_pos:
         plot_single(pf, true_pos.pose)
-    
+
     predicted_pose = pf.get_predicted_pose()
     if predicted_pose is not None:
         plot_single(pf, predicted_pose)
-    
+
     plt.xlim(-0.15, 4.15)
     plt.ylim(-0.15, 3.15)
     pf.surroundings_map.draw()
@@ -67,7 +67,7 @@ if __name__ == "__main__":
         true_position.update(0, 0, 0, 0.05)
         intersect_distance = pf.surroundings_map.sensor_model(true_position.pose, pf.lidar_angle)
         true_position.add_sensor_input(intersect_distance * np.random.normal(loc=1, scale=0.05))
-        
+
         # pf.update(0, -0.05, 0.3, 6, 0.05)
         pf.update(0, 0, 0, 6, 0.05)
         # if True:

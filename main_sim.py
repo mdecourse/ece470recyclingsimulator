@@ -10,7 +10,7 @@ from scripts.arm_motion import *
 from scripts.robot_lidar import *
 from scripts.vision import *
 from scripts.dijkstra_hardcode import setup_dijkstras, get_local_heading
-from pf_test import *
+from scripts.pf_test import *
 import sys
 import threading as th
 
@@ -88,6 +88,8 @@ vt = 0
 i = 0
 n_pf_updates = 0
 readings = []
+final_plot_predicted = []
+final_plot_actual = []
 def update_pf():
     global i
     global n_pf_updates
@@ -110,8 +112,11 @@ def update_pf():
             plt.show()
             plt.pause(0.001)
         readings = []
-        print("Prediction:",pf.get_predicted_pose()[:2, -1])
+        pos = pf.get_predicted_pose()[:2, -1]
+        final_plot_predicted.append(pos)
+        print("Prediction:",pos)
         pos = robot_motion.get_global_position()
+        final_plot_actual.append([pos[0] + 2, pos[1] + 2])
         print("Actual:[{} {}]".format(pos[0] + 2, pos[1] + 2))
 
 if not manual_mode:
@@ -145,14 +150,14 @@ if not manual_mode:
     last_target_ind = -1
     target_points = [(1, 2), (0.5, 0.5), (3, 2)]
     print("Pathing mode: Visiting points {}".format(target_points))
-    
+
     target_point = target_points[target_ind]
     print("Pathing mode: Going to {}".format(target_point))
-    robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(), 
+    robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(),
         lambda: arm_motion.state_machine != 0, 0.25)
     target_ind += 1
     keep_going = True
-    
+
     still_positioning = True
     grab_can_state = 0
     while keep_going:
@@ -176,16 +181,16 @@ if not manual_mode:
             still_positioning = True
             grab_can_state = 1
             # FIND A PIECE OF TRASH
-            
+
             arm_motion.set_gripper(1)
             pickup_angles = np.array([0.0, -75, -95.4, 100.0, 0.0]) # degrees
             pickup_angles *= (np.pi/180) # radians
             arm_motion.set_target_arm_angles(pickup_angles) # correct set move function
-            
+
             robot_motion.set_move_get_can(vision_sensor.red_pixel_detection, 0.1875)
             still_positioning = robot_motion.motion_update()
             still_positioning = arm_motion.motion_update() or still_positioning
-                
+
             arm_motion.state_machine = 0
             # TODO, still_positioning not returning False --> done
             last_target_ind = target_ind
@@ -198,7 +203,7 @@ if not manual_mode:
             last_target_ind = -1
             target_point = target_points[target_ind]
             print("Pathing mode: Going to {}".format(target_point))
-            robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(), 
+            robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(),
                 lambda: arm_motion.state_machine != 0, 0.25)
             target_ind += 1
         else: #grab_can_state == 0:
@@ -208,15 +213,37 @@ if not manual_mode:
             if (not keep_going) and target_ind < len(target_points):
                 target_point = target_points[target_ind]
                 print("Pathing mode: Going to {}".format(target_point))
-                robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(), 
+                robot_motion.set_move_global_position2(target_point, get_local_heading, lambda: pf.get_predicted_pose(),
                     lambda: arm_motion.state_machine != 0, 0.25)
                 target_ind += 1
                 keep_going = True
+        print("LENGTH, ", len(final_plot_actual))
+        if len(final_plot_actual) > 100:
+            break
         # else:
         #     tmp1 = arm_motion.motion_update()
         #     tmp2 = robot_motion.motion_update()
         #     still_positioning = tmp2 or tmp1
 
+t = range(0,len(final_plot_actual))
+x = [element[0] for element in final_plot_actual]
+y = [element[1] for element in final_plot_actual]
+x2 = [element[0] for element in final_plot_predicted]
+y2 = [element[1] for element in final_plot_predicted]
+plt.plot(t, x, label="actual")
+plt.plot(t, x2, label="predicted")
+plt.xlabel('time')
+plt.ylabel('x location (meters)')
+plt.title("x location prediction vs. actual")
+plt.legend()
+plt.show()
+plt.plot(t, y, label="actual")
+plt.plot(t, y2, label="predicted")
+plt.xlabel('time')
+plt.ylabel('y location (meters)')
+plt.title("y location prediction vs. actual")
+plt.legend()
+plt.show()
 
 print("Manual mode")
 
