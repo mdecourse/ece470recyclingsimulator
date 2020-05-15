@@ -244,6 +244,21 @@ plt.ylabel('y location (meters)')
 plt.title("y location prediction vs. actual")
 plt.legend()
 plt.show()
+errorx = 0
+errory = 0
+errortot = 0
+for i,j,i2,j2 in zip(x,y,x2,y2):
+    xdiff = (i2-i)**2
+    ydiff = (j2-j)**2
+    errorx += abs(i2-i)
+    errory += abs(j2-j)
+    errortot += (xdiff+ydiff)**0.5
+errortot /= len(x)
+errorx /= len(x)
+errory /= len(x)
+print(" error x ", errorx)
+print(" error y ", errory)
+print("root mean squared error total ", errortot)
 
 print("Manual mode")
 
