@@ -60,14 +60,15 @@ python3 main_sim.py
 * robot_motion.py: Class definitions and functions for 2d base motion of the robot. 
 * arm_motion.py: Class definitions and functions for robot arm motion, including forward and inverse kinematics.
 * robot_lidar.py: Class definitions and functions for reading and interpreting LIDAR sensor data.
-* robot_localization.py: Class definitions and functions for the particle filter, internal robot state controller, and input space map.
+* robot_localization.py: Class definitions and functions for the particle filter, and input space map.
 * vision.py: Class definitions and functions for reading and interpreting vision sensor data.
-* pf_test.py: Helper functions for visualizing LIDAR data.
-* utils.py: Helper functions for 2D and 3D matrix rotation manipulations.
-* dijkstra_hardcode.py: Runs dijstra's algorithm over a given input map dimensions to determine a sequence of waypoints to search the space.
+* pf_test.py: Helper functions for testing the particle filter outside of the CoppeliaSim environment.
+* utils.py: Helper functions for 2D and 3D matrix rotation/translation manipulations, and some geometry stuff.
+* dijkstra_hardcode.py: Precomputes paths between every pair of points in the (discretized) workspace. Resulting map is used for pathfinding.
 * robot_lidar_test.ttt: Old environment file.
 
 ## TODO / next steps:
-* Incorporate physics of cylindrical block to allow the robotic arm to grasp it.
+* Move to SLAM instead of human-input map.
+* Improve the path planning (right now it just assumes the robot is a circle and tends to crash).
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
