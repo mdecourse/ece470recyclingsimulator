@@ -90,6 +90,8 @@ n_pf_updates = 0
 readings = []
 final_plot_predicted = []
 final_plot_actual = []
+
+# code to interatively update the particle filter
 def update_pf():
     global i
     global n_pf_updates
@@ -119,14 +121,16 @@ def update_pf():
         final_plot_actual.append([pos[0] + 2, pos[1] + 2])
         print("Actual:[{} {}]".format(pos[0] + 2, pos[1] + 2))
 
+# allow our autonomous functionalities to run.
 if not manual_mode:
     print("Localizing and preparing dijkstras tables...")
     keep_going = True
+		# parallel thread that computes A* needed verticies from the map
     def dijkstras_run_thread():
         global keep_going
         setup_dijkstras(show_dijkstra)
         keep_going = False
-
+		# compute A* nodes while localizing with Particle filter.
     th.Thread(target=dijkstras_run_thread, args=(), name='dijkstras_run_thread', daemon=True).start()
     robot_motion.set_move(0, 0, 0)
     last_n_pf_updates = n_pf_updates
@@ -157,7 +161,6 @@ if not manual_mode:
         lambda: arm_motion.state_machine != 0, 0.25)
     target_ind += 1
     keep_going = True
-
     still_positioning = True
     grab_can_state = 0
     while keep_going:
@@ -181,7 +184,7 @@ if not manual_mode:
         elif any_red: #and grab_can_state == 0):
             still_positioning = True
             grab_can_state = 1
-            # FIND A PIECE OF TRASH
+            # Found A PIECE OF TRASH and greedily navigating towards it
             dropping_cube = arm_motion.state_machine != 0
             if arm_motion.state_machine == 0:
                 arm_motion.set_gripper(1)
@@ -200,6 +203,7 @@ if not manual_mode:
             # Hacky way to restore the old target point
             if not still_positioning:
                 arm_motion.set_move_get_can()
+				# resuming navigation path
         elif last_target_ind != -1:
             target_ind = last_target_ind - 1
             print(f"Resume path, index {target_ind}")
@@ -275,6 +279,10 @@ arm_angles *= (np.pi/180) # radians
 # arm_angles = [0, -1.5708, -1.6, 1.2, 0]
 grasp_pos = arm_motion.get_gripper()
 
+# parallel thread to collect keyboard input and set control state
+# only begin manual control after autonomous search path is traversed.
+# q for quit, m for grabbing the can, b for stopping in place
+# w, a, s, d for translation, x and z for rotation
 def key_capture_thread():
     global keep_going
     global vfb

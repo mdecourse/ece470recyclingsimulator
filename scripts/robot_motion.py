@@ -57,6 +57,7 @@ class robot_motion:
         # print("EULER ANGLES: x="+str(euler[0])+" y="+str(euler[1])+" z="+str(euler[2])+"\n")
         return euler
 
+		# code the reads camera and greedily follows the red mass on camera
     def set_move_get_can(self, detection_callback, target_dist):
         global get_can_storage
         # get_can_storage = 0
@@ -90,6 +91,7 @@ class robot_motion:
             return True
         self.update_func = lambda: get_can_step(detection_callback, target_dist)
 
+		# code that goes to 2d waypoint in map
     def set_move_global_position2(self, end_pos, dijkstras_callback, get_pose_callback, slowdown_callback, tolerance):
         storage = []
         def everything_command(end_pos, dijkstras_callback, get_pose_callback, slowdown_callback, storage):
@@ -192,7 +194,8 @@ class robot_motion:
             return True
 
         self.update_func = lambda: rotate_command(end_pos)
-
+	
+		# code used for manual mode control
     def set_move(self, forwBackVel, leftRightVel, rotVel):
         """ Move at a given velocity. Velocity is in m/s for translational, and rad/sec for rotational. """
         self.velocities = (forwBackVel, leftRightVel, rotVel)
