@@ -1,4 +1,6 @@
-import support.vrep as vrep
+# modified for CoppeliaSim 4.1.0
+# need pip install modern_robotics
+import support.sim as vrep
 import time
 import numpy as np
 import math

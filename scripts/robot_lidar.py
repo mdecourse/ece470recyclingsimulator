@@ -1,4 +1,4 @@
-import support.vrep as vrep
+import support.sim as vrep
 import time
 import numpy as np
 import math
