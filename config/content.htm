@@ -1,4 +1,8 @@
 <h1>About</h1>
+<h4>工作站室虛擬主機:</h4>
+<p style="padding-left: 30px;">nginx: sudo /etc/init.d/nginx restart</p>
+<p style="padding-left: 30px;">uwsgi: sudo systemctl restart cmsimde</p>
+<p style="padding-left: 30px;">fossil scm: sudo /etc/init.d/stunnel4 restart</p>
 <h4>研究項目:</h4>
 <ol>
 <li>在實體或虛擬主機上配置 Ubuntu Desktop 操作系統, 並配置網際應用程式伺服器</li>
@@ -36,8 +40,8 @@
 <li>機器可以透過影像裝置取得外部物件座標系統</li>
 <li>電腦可以透過該物件座標系統取放物件</li>
 <li>機電資系統可以透過強化學習完成既定工作項目</li>
-</ol><h1>pj5073</h1>
-<p><a href="http://mally.stanford.edu/~sr/computing/basic-unix.html">http://mally.stanford.edu/~sr/computing/basic-unix.html</a> </p>
+</ol><h1>pj2022</h1>
+<p><a href="http://mally.stanford.edu/~sr/computing/basic-unix.html">http://mally.stanford.edu/~sr/computing/basic-unix.html</a></p>
 <p>這台主機是採用 Ubuntu 20.04 Desktop 最小安裝後, 配置 CMSiMDE 動態網站在 uwsgi + nginx 的 https www server 的環境中啟動, 而靜態網頁則直接配置於 http nginx server.</p>
 <p>之後為了讓使用者可以遠端 ssh 至主機, 另外安裝 openssh-server.</p>
 <p>Fossil SCM 則透過 stunnel 提供的 https 進行 port 5443 的 serving. 但目前上述動態與靜態 CMSiMDE 並未與近端 Fossil SCM 及遠端 Github 倉儲進行同步整合.</p>
@@ -57,7 +61,7 @@
 <p>因為 Range3 無法在 Ubuntu 20.04 項下的 libqt5core5a 程式庫版本中執行 5.12, 必須升級為 Ubuntu 21.04 才可以安裝 5.15 以上的 libqt5core5a.</p>
 <p>2021.05.16 16:59 正在升級為 Ubuntu 21.04 過程中.</p>
 <h1>相關技術</h1>
-<h2>X Window</h2>
+<p>Fundamentals of Manipulator Calibration: <a href="https://core.ac.uk/download/pdf/36732657.pdf">https://core.ac.uk/download/pdf/36732657.pdf</a> </p><h2>X Window</h2>
 <p>在 Windows 10 中可以使用 <a href="https://sourceforge.net/projects/xming/">Xming </a>X server. 其目的在讓遠端的伺服器執行 GUI 程式時, 能將圖型介面傳送至 X server.</p>
 <p>利用 <a href="https://sourceforge.net/projects/xming/">Xming </a>帶出 pj5073.kmol.info 上所執行的程式 GUI 畫面流程:</p>
 <ol>
