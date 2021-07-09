@@ -28,9 +28,9 @@
 <ol>
 <li>將 <a href="https://github.com/mdecourse/pj2022/tree/main/ece470_project">ECE470 專案</a>內容分別配置於 Windows 與 Ubuntu 環境中, 重現 Python remote API 控制場景, 完成避障與取放特定物件任務.</li>
 <li>延伸 Python remote API, 改用 <a href="https://www.coppeliarobotics.com/helpFiles/en/b0RemoteApiOverview.htm">B0-based remote API</a> 完成避障與取放特定物件任務.</li>
-<li>延伸上述 <a href="https://www.coppeliarobotics.com/">CoppeliaSim</a> 控制場景, 在 Ubuntu 上以 headless 啟動, 並將場景影像以 Flask 串流至 client 端瀏覽器.</li>
-<li>在 Ubuntu 實體與虛擬主機上建立 pj2022.kmol.info 主機, 設法編寫轉檔程式 (主要修改 init.py, config/config 檔案設定內容), 讓自架主機上的倉儲內容能夠同時支援近端 (同步內容推送至 Github, Gitlab, Bitbucket 與 Heroku) 與 uwsgi 伺服.</li>
-<li>研究如何利用機器視覺與深度強化學習提升避障與取放特定物件效能.</li>
+<li>延伸上述 <a href="https://www.coppeliarobotics.com/">CoppeliaSim</a> 控制場景, 在 Ubuntu 上以 <a href="https://www.coppeliarobotics.com/helpFiles/en/commandLine.htm">headless</a> 啟動, 並將場景影像以 <a href="https://flask.palletsprojects.com/en/2.0.x/">Flask</a> 串流至 client 端瀏覽器.</li>
+<li>在 Ubuntu 實體與虛擬主機上建立 pj2022.kmol.info 主機, 設法編寫轉檔程式 (主要修改 init.py, config/config 檔案設定內容), 讓自架主機上的倉儲內容能夠同時支援近端 (同步內容推送至 Github, Gitlab, Bitbucket 與 Heroku) 與 <a href="https://uwsgi-docs.readthedocs.io/en/latest/">uwsgi</a> 伺服.</li>
+<li>研究如何利用機器視覺與深度強化學習 (<a href="https://link.springer.com/book/10.1007/978-981-15-4095-0">ref1</a>, <a href="https://link.springer.com/book/10.1007/978-981-13-8285-7">ref2</a>, <a href="https://github.com/p-christ/Deep-Reinforcement-Learning-Algorithms-with-PyTorch">ref3</a>)提升避障與取放特定物件效能.</li>
 </ol>
 <h4 style="padding-left: 30px;">預計成果:</h4>
 <ol>
@@ -107,7 +107,17 @@
 <p>Prompt=lts or normal</p>
 <p>因為 Range3 無法在 Ubuntu 20.04 項下的 libqt5core5a 程式庫版本中執行 5.12, 必須升級為 Ubuntu 21.04 才可以安裝 5.15 以上的 libqt5core5a.</p>
 <p>2021.05.16 16:59 正在升級為 Ubuntu 21.04 過程中.</p>
-<h1>相關技術</h1>
+<h1>強化學習</h1>
+<h4>Deep Reinforcement Learning</h4>
+<p><a href="/downloads/Introduction to Deep Reinforcement Learning0.pdf">Introduction to Deep Reinforcement Learning0.pdf</a></p>
+<p><a href="/downloads/Tutorial of Deep Reinforcement Learning.pdf">Tutorial of Deep Reinforcement Learning.pdf</a></p>
+<p><a href="/downloads/An Introduction to Deep Reinforcement Learning.pdf">An Introduction to Deep Reinforcement Learning.pdf</a></p>
+<p><a href="/downloads/An Introduction To Deep Reinforcement Learning2.pdf">An Introduction To Deep Reinforcement Learning2.pdf</a></p>
+<p><a href="/downloads/An Introduction to Deep Reinforcement Learning3.pdf">An Introduction to Deep Reinforcement Learning3.pdf</a></p>
+<p><a href="/downloads/Deep Reinforcement Learning with InteractiveFeedback in a Human–Robot Environment.pdf">Deep Reinforcement Learning with InteractiveFeedback in a Human–Robot Environment.pdf</a></p>
+<p><a href="/downloads/A Collision Avoidance Method Based on DeepReinforcement Learning.pdf">A Collision Avoidance Method Based on DeepReinforcement Learning.pdf</a></p>
+<p><a href="/downloads/Experimental investigations of a highlymaneuverable mobile omniwheel robot.pdf">Experimental investigations of a highlymaneuverable mobile omniwheel robot.pdf</a></p>
+<p><a href="https://ieeexplore.ieee.org/document/7989385">Deep reinforcement learning for robotic manipulation with asynchronous off-policy updates</a> (在校園網路中下載)</p><h1>相關技術</h1>
 <p><a href="http://kinematic-rl.cs.uni-freiburg.de/">Learning Kinematic Feasibility through Reinforcement Learning</a></p>
 <p style="padding-left: 30px;"><a href="/downloads/Learning Kinematic Feasibility for MobileManipulation through Deep Reinforcement Learning.pdf">Learning Kinematic Feasibility for MobileManipulation through Deep Reinforcement Learning.pdf</a></p>
 <p style="padding-left: 30px;"><a href="https://github.com/robot-learning-freiburg/kinematic-feasibility-rl">https://github.com/robot-learning-freiburg/kinematic-feasibility-rl</a></p>
