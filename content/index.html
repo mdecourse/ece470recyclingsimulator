@@ -84,9 +84,8 @@ img.add_border {
 }
 </style>
 
-<script type="text/javascript">
-if ((location.href.search(/http:/) != -1) && (location.href.search(/login/) != -1)) window.location= 'https://' + location.host + location.pathname + location.search;
-</script></head><body>
+</head>
+<body>
 <div class='container'><nav>
         
     <div class="site-wrap">
@@ -135,6 +134,53 @@ if ((location.href.search(/http:/) != -1) && (location.href.search(/login/) != -
           
         </header>
     <div id="tipue_search_content"> <a href='網際內容管理.html'>Next</a> >> 網際內容管理<br /><h1>About</h1>
+<h4>五專部專題題目:</h4>
+<h4 style="padding-left: 30px;"><span style="background-color: #ffff99;">網際內容管理系統在精密機械工程教學與研究上的應用</span></h4>
+<h4 style="padding-left: 30px;">Application of Web-based Content Management Systems in Teaching and Research of Precision Mechanical Engineering</h4>
+<h4 style="padding-left: 30px;">專題動機:</h4>
+<p style="padding-left: 60px;">探討如何利用 <a href="https://www.fossil-scm.org">Fossil SCM</a> 虛擬與實體伺服器, 讓五專精密機械工程科相關師生, 得以透過學校配發的 @gm 帳號登入, 並在網際內容管理系統中進行知識管理與互動, 擬藉此提升課程教學與專題研究效益.</p>
+<h4 style="padding-left: 30px;">研究步驟:</h4>
+<p style="padding-left: 60px;">從 Windows 與 Ubuntu 中編譯 <a href="https://www.fossil-scm.org">Fossil SCM</a> 套件開始, 分別取得 client 與 server 端的可執行檔案後, 將 <a href="https://www.fossil-scm.org">Fossil SCM</a> 安裝配置在一台實體或虛擬主機上, 利用 Python + <a href="https://flask.palletsprojects.com/en/2.0.x/">Flask</a> 著手編寫 <a href="https://oauth.net/2/">Oauth2</a> 網際程式介面, 讓所有相關成員得以自建倉儲與網際內容管理系統, 之後再分門別類, 根據精密機械工程科學會的任務編組, 利用網際內容管理系統提供相關服務.</p>
+<h4 style="padding-left: 30px;">預計成果:</h4>
+<ol>
+<li>參與 eng.nfu.edu.tw 網域伺服器 (DNS) 與 G Suite 系統管理.</li>
+<li>在 Ubuntu 虛擬主機上, 完成以 <a href="https://www.fossil-scm.org">Fossil SCM</a> 架設 pj5073.eng.nfu.edu.tw 精密機械工程科學會網站.</li>
+<li>能讓獲得許可之相關人員, 透過 @gm 帳號登入科學會網站, 在各班對應網站上進行 Github 上同步網際內容管理維護或互動討論.</li>
+<li>專題報告 pdf 檔案, 能夠在 github.com/mdecourse/pj5073 倉儲中的 pdf 分支, 以 Github Actions 流程發布.</li>
+<li>專題簡報可直接在 mde.tw/pj5073/reveal/ 中發布.</li>
+</ol>
+<h4 style="padding-left: 30px;">組員:</h4>
+<p style="padding-left: 60px;">50733105</p>
+<p style="padding-left: 60px;">50733144</p>
+<p style="padding-left: 60px;">50733146</p>
+<p style="padding-left: 60px;">50733152</p>
+<h4>四技部專題題目:</h4>
+<h4 style="padding-left: 30px;"><span style="background-color: #ffff99;">深度強化學習在行動機器人運動學上之應用</span></h4>
+<h4 style="padding-left: 30px;">Application of Deep Reinforcement Learning in Kinematics of Mobile Robots</h4>
+<h4 style="padding-left: 30px;">專題動機:</h4>
+<p style="padding-left: 60px;">藉由研究 <a href="https://github.com/mdecourse/pj2022/tree/main/ece470_project">ECE470 專案</a>中行動機器人如何在 <a href="https://www.coppeliarobotics.com/">CoppeliaSim</a> 場景中, 利用 Python remote API, 以機器視覺輔助完成避障與取放特定物件的專案內容, 並在 <a href="https://arxiv.org/pdf/2101.05325.pdf">ref1</a> 與 <a href="https://github.com/robot-learning-freiburg/kinematic-feasibility-rl">ref2</a> 參考資料的引導下, 研究分析深度強化學習架構該如何在行動機器人運動學上進行應用.</p>
+<h4 style="padding-left: 30px;">研究步驟:</h4>
+<ol>
+<li>將 <a href="https://github.com/mdecourse/pj2022/tree/main/ece470_project">ECE470 專案</a>內容分別配置於 Windows 與 Ubuntu 環境中, 重現 Python remote API 控制場景, 完成避障與取放特定物件任務.</li>
+<li>延伸 Python remote API, 改用 <a href="https://www.coppeliarobotics.com/helpFiles/en/b0RemoteApiOverview.htm">B0-based remote API</a> 完成避障與取放特定物件任務.</li>
+<li>延伸上述 <a href="https://www.coppeliarobotics.com/">CoppeliaSim</a> 控制場景, 在 Ubuntu 上以 <a href="https://www.coppeliarobotics.com/helpFiles/en/commandLine.htm">headless</a> 啟動, 並將場景影像以 <a href="https://flask.palletsprojects.com/en/2.0.x/">Flask</a> 串流至 client 端瀏覽器.</li>
+<li>在 Ubuntu 實體與虛擬主機上建立 pj2022.kmol.info 主機, 設法編寫轉檔程式 (主要修改 init.py, config/config 檔案設定內容), 讓自架主機上的倉儲內容能夠同時支援近端 (同步內容推送至 Github, Gitlab, Bitbucket 與 Heroku) 與 <a href="https://uwsgi-docs.readthedocs.io/en/latest/">uwsgi</a> 伺服.</li>
+<li>研究如何利用機器視覺與深度強化學習 (<a href="https://link.springer.com/book/10.1007/978-981-15-4095-0">ref1</a>, <a href="https://link.springer.com/book/10.1007/978-981-13-8285-7">ref2</a>, <a href="https://github.com/p-christ/Deep-Reinforcement-Learning-Algorithms-with-PyTorch">ref3</a>)提升避障與取放特定物件效能.</li>
+</ol>
+<h4 style="padding-left: 30px;">預計成果:</h4>
+<ol>
+<li>完成 pj2022.kmol.info 主機架設, 使用者可從瀏覽器登入行動機器人場景執行監控.</li>
+<li>pj2022 專題網站內容可同步至 Github Pages, Gitlab Pages, 自架 <a href="https://www.fossil-scm.org">Fossil SCM</a> 主機與 Heroku 主機.</li>
+<li>專題報告 pdf 檔案, 能夠在 github.com/mdecourse/pj2022 倉儲中的 pdf 分支, 以 Github Actions 流程發布.</li>
+<li>專題報告內容能直接透過 Github Actions 套用 <a href="https://www.ieee.org/conferences/publishing/templates.html">IEEE 論文格式</a>進行 5-7 頁論文 Release 發布.</li>
+<li>專題簡報可直接在 mde.tw/pj2022/reveal/ 中發布.</li>
+</ol>
+<h4 style="padding-left: 30px;">組員:</h4>
+<p style="padding-left: 60px;">40823116</p>
+<p style="padding-left: 60px;">40823131</p>
+<p style="padding-left: 60px;">40823152</p>
+<p style="padding-left: 60px;">40823153</p>
+<hr/>
 <h4>工作站室虛擬主機:</h4>
 <p style="padding-left: 30px;">nginx: sudo /etc/init.d/nginx restart</p>
 <p style="padding-left: 30px;">uwsgi: sudo systemctl restart cmsimde</p>
