@@ -92,7 +92,21 @@
 <li>機器可以透過影像裝置取得外部物件座標系統</li>
 <li>電腦可以透過該物件座標系統取放物件</li>
 <li>機電資系統可以透過強化學習完成既定工作項目</li>
-</ol><h1>pj2022</h1>
+</ol><h1>DRLKMR</h1>
+<p>四技專題題目</p>
+<h4><span style="background-color: #ffff99;">深度強化學習在行動機器人運動學上之應用</span></h4>
+<h4>Application of Deep Reinforcement Learning in Kinematics of Mobile Robots (DRLKMR)</h4>
+<h4>工作任務:</h4>
+<h4 style="padding-left: 30px;">以 <a href="https://www.msys2.org/">MSYS2</a> 編譯 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a>:</h4>
+<p style="padding-left: 60px;">建立可編譯 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 的可攜程式環境</p>
+<p style="padding-left: 60px;">先編譯 <a href="https://www.lua.org/">Lua</a>, 再編譯 <a href="https://riverbankcomputing.com/software/qscintilla/download">QScintilla_gpl-2.11.2</a>, 接著編譯 <a href="https://github.com/CoppeliaRobotics/CoppeliaSimLib">CoppeliaSimlib</a> 與 <a href="https://github.com/CoppeliaRobotics/coppeliaSimClientApplication">coppeliasimClientAppllication</a></p>
+<p style="padding-left: 90px;">過程中需要 programming 目錄中的 <a href="https://github.com/CoppeliaRobotics/common">common</a>, <a href="https://github.com/CoppeliaRobotics/include">include</a> 與 <a href="https://github.com/CoppeliaRobotics/simMath">simMath</a></p>
+<p style="padding-left: 90px;">取得 coppeliaSim.dll 與 coppeliaSim.exe 後再利用 <a href="https://github.com/lucasg/Dependencies">Dependencies</a> 複製所需 dll 後, 透過 <a href="https://www.msys2.org/">MSYS2</a> 安裝的 <a href="https://doc.qt.io/qt-5/qpa.html">Qt5 plugins platforms</a> 環境變數設定後啟動 CoppeliaSim.</p>
+<h4 style="padding-left: 60px;">取得結果:</h4>
+<p style="padding-left: 90px;">可編譯執行 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 的可攜程式環境</p>
+<p style="padding-left: 90px;">自行編譯的 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 4.2.0 rev6 程式套件</p>
+<h4 style="padding-left: 30px;">利用 <a href="https://github.com/mdecourse/vrep-env">vrep-env</a> 完成冰球機在 Windows 環境的強化學習訓練</h4>
+<p></p><h1>pj2022</h1>
 <p><a href="http://mally.stanford.edu/~sr/computing/basic-unix.html">http://mally.stanford.edu/~sr/computing/basic-unix.html</a></p>
 <p>這台主機是採用 Ubuntu 20.04 Desktop 最小安裝後, 配置 CMSiMDE 動態網站在 uwsgi + nginx 的 https www server 的環境中啟動, 而靜態網頁則直接配置於 http nginx server.</p>
 <p>之後為了讓使用者可以遠端 ssh 至主機, 另外安裝 openssh-server.</p>
