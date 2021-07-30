@@ -98,15 +98,42 @@
 <h4>Application of Deep Reinforcement Learning in Kinematics of Mobile Robots (DRLKMR)</h4>
 <h4>工作任務:</h4>
 <h4 style="padding-left: 30px;">以 <a href="https://www.msys2.org/">MSYS2</a> 編譯 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a>:</h4>
-<p style="padding-left: 60px;">建立可編譯 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 的可攜程式環境</p>
+<p style="padding-left: 60px;">建立可編譯 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 的可攜程式環境.</p>
+<p style="padding-left: 60px;">倉儲: <a href="https://github.com/CoppeliaRobotics">https://github.com/CoppeliaRobotics</a> </p>
+<p style="padding-left: 60px;">由於 CoppeliaSim 4.2.0 re6 將進行 lua 程式介接的改寫, 整體架構將會與先前的版本有很大差異.</p>
+<p style="padding-left: 60px;">目前希望針對 CoppeliaSim 4.2.0 rev5 的版本執行編譯(<a href="https://github.com/CoppeliaRobotics/CoppeliaSimLib/releases/tag/coppeliasim-v4.2.0-rev5">核心程式庫倉儲</a>), 所採用的 Lua 為 5.3.5 版(可從 <a href="https://www.lua.org/ftp/">https://www.lua.org/ftp/</a> 下載). 至於從 <a href="https://riverbankcomputing.com/software/qscintilla/download">https://riverbankcomputing.com/software/qscintilla/download</a>, 可以發現 QScintilla gpl 版本僅釋出至 2.12.2, 因此只能採用 <a href="https://www.riverbankcomputing.com/static/Downloads/QScintilla/2.11.2/QScintilla_gpl-2.11.2.zip">QScintilla_gpl-2.11.2.zip</a>.</p>
 <p style="padding-left: 60px;">先編譯 <a href="https://www.lua.org/">Lua</a>, 再編譯 <a href="https://riverbankcomputing.com/software/qscintilla/download">QScintilla_gpl-2.11.2</a>, 接著編譯 <a href="https://github.com/CoppeliaRobotics/CoppeliaSimLib">CoppeliaSimlib</a> 與 <a href="https://github.com/CoppeliaRobotics/coppeliaSimClientApplication">coppeliasimClientAppllication</a></p>
 <p style="padding-left: 90px;">過程中需要 programming 目錄中的 <a href="https://github.com/CoppeliaRobotics/common">common</a>, <a href="https://github.com/CoppeliaRobotics/include">include</a> 與 <a href="https://github.com/CoppeliaRobotics/simMath">simMath</a></p>
 <p style="padding-left: 90px;">取得 coppeliaSim.dll 與 coppeliaSim.exe 後再利用 <a href="https://github.com/lucasg/Dependencies">Dependencies</a> 複製所需 dll 後, 透過 <a href="https://www.msys2.org/">MSYS2</a> 安裝的 <a href="https://doc.qt.io/qt-5/qpa.html">Qt5 plugins platforms</a> 環境變數設定後啟動 CoppeliaSim.</p>
 <h4 style="padding-left: 60px;">取得結果:</h4>
 <p style="padding-left: 90px;">可編譯執行 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 的可攜程式環境</p>
-<p style="padding-left: 90px;">自行編譯的 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 4.2.0 rev6 程式套件</p>
+<p style="padding-left: 90px;">自行編譯的 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 4.2.0 rev5 程式套件</p>
 <h4 style="padding-left: 30px;">利用 <a href="https://github.com/mdecourse/vrep-env">vrep-env</a> 完成冰球機在 Windows 環境的強化學習訓練</h4>
-<p></p><h1>pj2022</h1>
+<hr/>
+<p>Portable compiler in Windows 64-bit operating system. <a href="https://drive.google.com/file/d/1szBXUkv7q_UpcMvOtX4D5SOMuM1KMcgP/view?usp=sharing">compile_copsim.7z</a>, download file size 3.87 GB, uncompressed file size 14 GB)</p>
+<p>有關 V-rep 3.1.2 的 <a href="http://mde.tw/cad2021/content/Lua%20and%20CPP.html">Lua 與 C++ 編譯練習</a>.</p>
+<h4>參考資料:</h4>
+<p style="padding-left: 30px;"><a href="https://dtransposed.github.io/blog/2020/10/21/Robotic-Assembly/">Robotic assembly using Deep Reinforcement Learning</a></p>
+<p style="padding-left: 30px;"><a href="/get_page/DRLKMR/Deep Reinforcement Learning Fundamentals, Research and Applications">An Introduction to Deep Reinforcement Learning</a> (140頁電子書)</p>
+<p style="padding-left: 30px;"><a href="/get_page/DRLKMR/Deep Reinforcement Learning Fundamentals, Research and Applications">Tutorial: Deep Reinforcement Learning</a> (66 頁簡報)</p>
+<p style="padding-left: 30px;"><a href="/get_page/DRLKMR/Deep Reinforcement Learning Fundamentals, Research and Applications">Intro to Deep Reinforcement Learning</a></p>
+<p style="padding-left: 30px;"><a href="https://www.hou.usra.edu/meetings/isairas2020fullpapers/pdf/5032.pdf">Deep Reinforcement Learning Fundamentals, Research and Applications</a></p>
+<p style="padding-left: 30px;"><a href="/get_page/DRLKMR/Deep Reinforcement Learning Fundamentals, Research and Applications">Playing Atari with Deep Reinforcement Learning</a></p>
+<p style="padding-left: 30px;"><a href="https://deepreinforcementlearningbook.org/docs/Chap%2016.%20Robot%20Learning%20in%20Simulation/">Deep Reinforcement Learning</a> (只有章節標題與程式碼)</p>
+<p style="padding-left: 60px;"><a href="https://github.com/deep-reinforcement-learning-book/Chapter16-Robot-Learning-in-Simulation">https://github.com/deep-reinforcement-learning-book/Chapter16-Robot-Learning-in-Simulation</a></p>
+<p style="padding-left: 30px;"><a href="https://medium.datadriveninvestor.com/elixir-e-reinforcement-learning-i-3ecd9399d03c">利用 Elixir 建立自駕車 DRL</a></p>
+<p style="padding-left: 60px;"><a href="https://github.com/marceloreichert/pwt-autonomous-car-medium">https://github.com/marceloreichert/pwt-autonomous-car-medium</a></p><h2>建立可攜系統</h2>
+<p><a href="https://drive.google.com/file/d/1RcTirRKBe3Zc0LZ5GlZ1v8UHUBjrXRS9/view?usp=sharing">Python 3.9.5</a> (下載 203MB, 解開壓縮 880MB) - 主要執行 Leo Editor 進行程式開發.</p>
+<p><a href="https://drive.google.com/file/d/1ZGRlP-scG7AD5OX7F-5NRQKKuA9Ni4Cn/view?usp=sharing">Portablegit 2.31.1</a> (下載 58MB, 解開壓縮 272MB) - Git 工具.</p>
+<p><a href="https://drive.google.com/file/d/1APTKgWxWHFCMm-skMs5VuXJbnn4-tx-M/view?usp=sharing">SciTE 5.0.2</a> (下載 1.3MB, 解開壓縮 4.3MB) - 編輯並執行 Python, TinyC, Lua 等程式.</p>
+<p><a href="https://drive.google.com/file/d/1dJ0cPzKSkydVN6Q5GLXN4R-oJxW1iil2/view?usp=sharing">Lua5.4.3</a> (下載 635KB, 解開壓縮 2.85MB) - Lua 解譯系統.</p>
+<p><a href="https://drive.google.com/file/d/11ohtBeEK0rjCzoWxAjzO_Gh4t7Y4FnA6/view?usp=sharing">MSYS2 20210419</a> (下載 3.33GB, 解開壓縮 12GB) - 用於編譯 Qt5 C++ 程式碼.</p>
+<p><a href="https://drive.google.com/file/d/1k3e80b0oSTesRXeW5KJB8lVImPm2m_ly/view?usp=sharing">Boost 1.76.0</a> (下載 93MB, 解開壓縮 680MB) - C++ 程式庫.</p>
+<p><a href="https://drive.google.com/file/d/17bxQVNJrKdO05nuyTXYXdn5Efdsn9fsq/view?usp=sharing">cmake 3.10.1</a> (下載 10.7MB, 解開壓縮 61MB) - build C++ 程式套件.</p>
+<p><a href="https://drive.google.com/file/d/11_OOXmEpEKMzGv4nxYAy332HtGzRZssi/view?usp=sharing">Qscintilla 2.11.2</a> (下載 3.7MB, 解開壓縮 32.8MB) - editor control 程式庫.</p>
+<p><a href="https://drive.google.com/file/d/1KKfRgkq1wAIpe-NhxP0t7lz9eGb3vIfG/view?usp=sharing">eigen 3.3.8</a> (下載 1.4MB, 解開壓縮 11.5MB) - eigenvalue 運算程式庫.</p>
+<p><a href="https://drive.google.com/file/d/1aoyWG8rzCCgF5oyEED82ChLNCefuuIa_/view?usp=sharing">Dependencies</a> (下載 2.7MB, 解開壓縮 12.4MB) - 查詢 exe 與 dll 檔案執行相依程式庫.</p>
+<p><a href="https://drive.google.com/file/d/1FUIXqDmcmuyKRq6iJCPkPKpJWk_xQhtd/view?usp=sharing">start and stop batch</a> - 啟動關閉與設定檔案.</p><h1>pj2022</h1>
 <p><a href="http://mally.stanford.edu/~sr/computing/basic-unix.html">http://mally.stanford.edu/~sr/computing/basic-unix.html</a></p>
 <p>這台主機是採用 Ubuntu 20.04 Desktop 最小安裝後, 配置 CMSiMDE 動態網站在 uwsgi + nginx 的 https www server 的環境中啟動, 而靜態網頁則直接配置於 http nginx server.</p>
 <p>之後為了讓使用者可以遠端 ssh 至主機, 另外安裝 openssh-server.</p>

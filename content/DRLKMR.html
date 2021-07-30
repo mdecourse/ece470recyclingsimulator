@@ -124,7 +124,7 @@ img.add_border {
                             <li><a href="./../blog/index.html">blog</a></li>
                         </ul>
                       </li>
-                     <li class='has-children'><a href='About.html'>About</a><ul class='dropdown'><li><a href='網際內容管理.html'>網際內容管理</a><li><a href='虛實整合.html'>虛實整合</a><li><a href='機器學習.html'>機器學習</a></li></ul><li><a href='DRLKMR.html'>DRLKMR</a><li class='has-children'><a href='pj2022.html'>pj2022</a><ul class='dropdown'><li><a href='upgrade.html'>upgrade</a></li></ul><li><a href='強化學習.html'>強化學習</a><li class='has-children'><a href='相關技術.html'>相關技術</a><ul class='dropdown'><li><a href='X Window.html'>X Window</a><li class='has-children'><a href='RoboDK.html'>RoboDK</a><ul class='dropdown'><li><a href='RoboDK API.html'>RoboDK API</a><li><a href='Pick and Place.html'>Pick and Place</a></li></ul><li><a href='CoppeliaSim.html'>CoppeliaSim</a><li><a href='Arduino.html'>Arduino</a></li>
+                     <li class='has-children'><a href='About.html'>About</a><ul class='dropdown'><li><a href='網際內容管理.html'>網際內容管理</a><li><a href='虛實整合.html'>虛實整合</a><li><a href='機器學習.html'>機器學習</a></li></ul><li class='has-children'><a href='DRLKMR.html'>DRLKMR</a><ul class='dropdown'><li><a href='建立可攜系統.html'>建立可攜系統</a></li></ul><li class='has-children'><a href='pj2022.html'>pj2022</a><ul class='dropdown'><li><a href='upgrade.html'>upgrade</a></li></ul><li><a href='強化學習.html'>強化學習</a><li class='has-children'><a href='相關技術.html'>相關技術</a><ul class='dropdown'><li><a href='X Window.html'>X Window</a><li class='has-children'><a href='RoboDK.html'>RoboDK</a><ul class='dropdown'><li><a href='RoboDK API.html'>RoboDK API</a><li><a href='Pick and Place.html'>Pick and Place</a></li></ul><li><a href='CoppeliaSim.html'>CoppeliaSim</a><li><a href='Arduino.html'>Arduino</a></li>
                       </ul>
                 </nav>
               </div>
@@ -135,21 +135,37 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">機器學習 << <a href='機器學習.html'>Previous</a> <a href='pj2022.html'>Next</a> >> pj2022<br /><h1>DRLKMR</h1>
+    <div id="tipue_search_content">機器學習 << <a href='機器學習.html'>Previous</a> <a href='建立可攜系統.html'>Next</a> >> 建立可攜系統<br /><h1>DRLKMR</h1>
 <p>四技專題題目</p>
 <h4><span style="background-color: #ffff99;">深度強化學習在行動機器人運動學上之應用</span></h4>
 <h4>Application of Deep Reinforcement Learning in Kinematics of Mobile Robots (DRLKMR)</h4>
 <h4>工作任務:</h4>
 <h4 style="padding-left: 30px;">以 <a href="https://www.msys2.org/">MSYS2</a> 編譯 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a>:</h4>
-<p style="padding-left: 60px;">建立可編譯 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 的可攜程式環境</p>
+<p style="padding-left: 60px;">建立可編譯 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 的可攜程式環境.</p>
+<p style="padding-left: 60px;">倉儲: <a href="https://github.com/CoppeliaRobotics">https://github.com/CoppeliaRobotics</a> </p>
+<p style="padding-left: 60px;">由於 CoppeliaSim 4.2.0 re6 將進行 lua 程式介接的改寫, 整體架構將會與先前的版本有很大差異.</p>
+<p style="padding-left: 60px;">目前希望針對 CoppeliaSim 4.2.0 rev5 的版本執行編譯(<a href="https://github.com/CoppeliaRobotics/CoppeliaSimLib/releases/tag/coppeliasim-v4.2.0-rev5">核心程式庫倉儲</a>), 所採用的 Lua 為 5.3.5 版(可從 <a href="https://www.lua.org/ftp/">https://www.lua.org/ftp/</a> 下載). 至於從 <a href="https://riverbankcomputing.com/software/qscintilla/download">https://riverbankcomputing.com/software/qscintilla/download</a>, 可以發現 QScintilla gpl 版本僅釋出至 2.12.2, 因此只能採用 <a href="https://www.riverbankcomputing.com/static/Downloads/QScintilla/2.11.2/QScintilla_gpl-2.11.2.zip">QScintilla_gpl-2.11.2.zip</a>.</p>
 <p style="padding-left: 60px;">先編譯 <a href="https://www.lua.org/">Lua</a>, 再編譯 <a href="https://riverbankcomputing.com/software/qscintilla/download">QScintilla_gpl-2.11.2</a>, 接著編譯 <a href="https://github.com/CoppeliaRobotics/CoppeliaSimLib">CoppeliaSimlib</a> 與 <a href="https://github.com/CoppeliaRobotics/coppeliaSimClientApplication">coppeliasimClientAppllication</a></p>
 <p style="padding-left: 90px;">過程中需要 programming 目錄中的 <a href="https://github.com/CoppeliaRobotics/common">common</a>, <a href="https://github.com/CoppeliaRobotics/include">include</a> 與 <a href="https://github.com/CoppeliaRobotics/simMath">simMath</a></p>
 <p style="padding-left: 90px;">取得 coppeliaSim.dll 與 coppeliaSim.exe 後再利用 <a href="https://github.com/lucasg/Dependencies">Dependencies</a> 複製所需 dll 後, 透過 <a href="https://www.msys2.org/">MSYS2</a> 安裝的 <a href="https://doc.qt.io/qt-5/qpa.html">Qt5 plugins platforms</a> 環境變數設定後啟動 CoppeliaSim.</p>
 <h4 style="padding-left: 60px;">取得結果:</h4>
 <p style="padding-left: 90px;">可編譯執行 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 的可攜程式環境</p>
-<p style="padding-left: 90px;">自行編譯的 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 4.2.0 rev6 程式套件</p>
+<p style="padding-left: 90px;">自行編譯的 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 4.2.0 rev5 程式套件</p>
 <h4 style="padding-left: 30px;">利用 <a href="https://github.com/mdecourse/vrep-env">vrep-env</a> 完成冰球機在 Windows 環境的強化學習訓練</h4>
-<p></p><br />機器學習 << <a href='機器學習.html'>Previous</a> <a href='pj2022.html'>Next</a> >> pj2022</div>
+<hr/>
+<p>Portable compiler in Windows 64-bit operating system. <a href="https://drive.google.com/file/d/1szBXUkv7q_UpcMvOtX4D5SOMuM1KMcgP/view?usp=sharing">compile_copsim.7z</a>, download file size 3.87 GB, uncompressed file size 14 GB)</p>
+<p>有關 V-rep 3.1.2 的 <a href="http://mde.tw/cad2021/content/Lua%20and%20CPP.html">Lua 與 C++ 編譯練習</a>.</p>
+<h4>參考資料:</h4>
+<p style="padding-left: 30px;"><a href="https://dtransposed.github.io/blog/2020/10/21/Robotic-Assembly/">Robotic assembly using Deep Reinforcement Learning</a></p>
+<p style="padding-left: 30px;"><a href="/get_page/DRLKMR/Deep Reinforcement Learning Fundamentals, Research and Applications">An Introduction to Deep Reinforcement Learning</a> (140頁電子書)</p>
+<p style="padding-left: 30px;"><a href="/get_page/DRLKMR/Deep Reinforcement Learning Fundamentals, Research and Applications">Tutorial: Deep Reinforcement Learning</a> (66 頁簡報)</p>
+<p style="padding-left: 30px;"><a href="/get_page/DRLKMR/Deep Reinforcement Learning Fundamentals, Research and Applications">Intro to Deep Reinforcement Learning</a></p>
+<p style="padding-left: 30px;"><a href="https://www.hou.usra.edu/meetings/isairas2020fullpapers/pdf/5032.pdf">Deep Reinforcement Learning Fundamentals, Research and Applications</a></p>
+<p style="padding-left: 30px;"><a href="/get_page/DRLKMR/Deep Reinforcement Learning Fundamentals, Research and Applications">Playing Atari with Deep Reinforcement Learning</a></p>
+<p style="padding-left: 30px;"><a href="https://deepreinforcementlearningbook.org/docs/Chap%2016.%20Robot%20Learning%20in%20Simulation/">Deep Reinforcement Learning</a> (只有章節標題與程式碼)</p>
+<p style="padding-left: 60px;"><a href="https://github.com/deep-reinforcement-learning-book/Chapter16-Robot-Learning-in-Simulation">https://github.com/deep-reinforcement-learning-book/Chapter16-Robot-Learning-in-Simulation</a></p>
+<p style="padding-left: 30px;"><a href="https://medium.datadriveninvestor.com/elixir-e-reinforcement-learning-i-3ecd9399d03c">利用 Elixir 建立自駕車 DRL</a></p>
+<p style="padding-left: 60px;"><a href="https://github.com/marceloreichert/pwt-autonomous-car-medium">https://github.com/marceloreichert/pwt-autonomous-car-medium</a></p><br />機器學習 << <a href='機器學習.html'>Previous</a> <a href='建立可攜系統.html'>Next</a> >> 建立可攜系統</div>
         
     <!-- footer -->
       <div class="container">
