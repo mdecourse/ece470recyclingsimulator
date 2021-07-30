@@ -105,6 +105,10 @@
 <p style="padding-left: 60px;">先編譯 <a href="https://www.lua.org/">Lua</a>, 再編譯 <a href="https://riverbankcomputing.com/software/qscintilla/download">QScintilla_gpl-2.11.2</a>, 接著編譯 <a href="https://github.com/CoppeliaRobotics/CoppeliaSimLib">CoppeliaSimlib</a> 與 <a href="https://github.com/CoppeliaRobotics/coppeliaSimClientApplication">coppeliasimClientAppllication</a></p>
 <p style="padding-left: 90px;">過程中需要 programming 目錄中的 <a href="https://github.com/CoppeliaRobotics/common">common</a>, <a href="https://github.com/CoppeliaRobotics/include">include</a> 與 <a href="https://github.com/CoppeliaRobotics/simMath">simMath</a></p>
 <p style="padding-left: 90px;">取得 coppeliaSim.dll 與 coppeliaSim.exe 後再利用 <a href="https://github.com/lucasg/Dependencies">Dependencies</a> 複製所需 dll 後, 透過 <a href="https://www.msys2.org/">MSYS2</a> 安裝的 <a href="https://doc.qt.io/qt-5/qpa.html">Qt5 plugins platforms</a> 環境變數設定後啟動 CoppeliaSim.</p>
+<p style="padding-left: 90px;"><a href="https://github.com/CoppeliaRobotics/CoppeliaSimLib/releases/tag/coppeliasim-v4.2.0-rev5">核心程式庫</a></p>
+<p style="padding-left: 90px;"><a href="https://github.com/CoppeliaRobotics/CoppeliaSimLib/releases/tag/coppeliasim-v4.2.0-rev5">ClientApplication</a></p>
+<p style="padding-left: 90px;">從 4.2.0 rev5 下載安裝套件中取得 programming 目錄中的檔案內容, 其中最重要的是 system, platforms, models, scenes, lua, luar 等目錄.</p>
+<p style="padding-left: 90px;">編譯完成 coppeliaSim.dll, coppeliaSim.exe 後, 配合 programming 目錄內容與所需的 dll 動態連結程式庫後, CoppeliaSim 已經可以開啟, 但是若要執行 Lua scripting, 還需要 <a href="https://github.com/CoppeliaRobotics/simExtGeom">simExtGeom</a>, 若要套用 Inverse Kinematics 則需要 <a href="https://github.com/CoppeliaRobotics/simExtIK">simExtIK</a>, 至於要開啟 Object 附屬的 Lua 程式編輯器, 則需要 <a href="https://github.com/CoppeliaRobotics/simExtCodeEditor">simExtCodeEditor</a>.</p>
 <h4 style="padding-left: 60px;">取得結果:</h4>
 <p style="padding-left: 90px;">可編譯執行 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 的可攜程式環境</p>
 <p style="padding-left: 90px;">自行編譯的 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 4.2.0 rev5 程式套件</p>
