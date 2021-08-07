@@ -2,7 +2,7 @@
         <head>
         <title>pj2022</title>
         <meta charset="utf-8">
-<meta property="head" content="H1">
+<meta property="head" content="H3">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700,900" rel="stylesheet">
         <link rel="stylesheet" href="./../cmsimde/static/chimper/fonts/icomoon/style.css">
@@ -135,18 +135,40 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">下載可攜系統 << <a href='下載可攜系統.html'>Previous</a> <a href='upgrade.html'>Next</a> >> upgrade<br /><h1>pj2022</h1>
-<p><a href="http://mally.stanford.edu/~sr/computing/basic-unix.html">http://mally.stanford.edu/~sr/computing/basic-unix.html</a></p>
-<p>這台主機是採用 Ubuntu 20.04 Desktop 最小安裝後, 配置 CMSiMDE 動態網站在 uwsgi + nginx 的 https www server 的環境中啟動, 而靜態網頁則直接配置於 http nginx server.</p>
-<p>之後為了讓使用者可以遠端 ssh 至主機, 另外安裝 openssh-server.</p>
-<p>Fossil SCM 則透過 stunnel 提供的 https 進行 port 5443 的 serving. 但目前上述動態與靜態 CMSiMDE 並未與近端 Fossil SCM 及遠端 Github 倉儲進行同步整合.</p>
-<p>由於這台主機具備桌面系統, 因此使用者可以透過 <a href="https://sourceforge.net/projects/xming/">https://sourceforge.net/projects/xming/</a> 以 X-windows 取得在server 執行的程式畫面, 其中包括 <a href="https://robodk.com/">RoboDK</a> 與 <a href="https://www.coppeliarobotics.com">CoppeliaSim</a>.</p>
-<p>上述配置可以搭配:</p>
-<p style="padding-left: 30px;"><a href="https://ctmakro.github.io/site/on_learning/rl/vrep.html">https://ctmakro.github.io/site/on_learning/rl/vrep.html</a></p>
-<p style="padding-left: 30px;"><a href="https://medium.com/pytorch/robotic-assembly-using-deep-reinforcement-learning-dfd9916c5ad7">https://medium.com/pytorch/robotic-assembly-using-deep-reinforcement-learning-dfd9916c5ad7</a></p>
-<p style="padding-left: 30px;"><a href="https://github.com/stepjam/PyRep">https://github.com/stepjam/PyRep</a></p>
-<p>進行機電整合系統的機器學習研究.</p>
-<p>Change init.py title to "Pj5073", need to use "sudo systemctl restart cmsimde" to make it work.</p><br />下載可攜系統 << <a href='下載可攜系統.html'>Previous</a> <a href='upgrade.html'>Next</a> >> upgrade</div>
+    <div id="tipue_search_content">建立可攜系統 << <a href='建立可攜系統.html'>Previous</a> <a href='下載可攜系統.html'>Next</a> >> 下載可攜系統<br /><h1>Legacy Console Mode</h1>
+<p>這裡所使用的 Batch file start_iv6.bat 與 stop.bat 只能在 <a href="https://docs.microsoft.com/en-us/windows/console/legacymode">https://docs.microsoft.com/en-us/windows/console/legacymode</a> 中使用. 之後應該要設法透過可攜且跨平台的 <a href="https://github.com/PowerShell/PowerShell">https://github.com/PowerShell/PowerShell</a>  編寫能夠直接從外接 USB 啟動可攜系統的啟動 scripts.</p>
+<h4>MSYS2 版本的選擇</h4>
+<p>MSYS2 各 release 版本可以從 <a href="https://github.com/msys2/msys2-installer/releases">https://github.com/msys2/msys2-installer/releases</a> 下載. 在此使用 20210419 的版本. 主要原因是 20210604 與 20210725 釋出的版本與 20210419 有很大差異, 最大的問題在於目前只有 20210419 的版本能夠順利 build <a href="https://github.com/zeromq/libzmq">https://github.com/zeromq/libzmq</a>, 而 libzmq 是 CoppeliaSim BlueZero 延伸套件的核心程式庫. 所以選用 20210419 的 MSYS2 的版本.</p>
+<p>理論上 MSYS2 安裝在 Windows 10 之後再取出目錄資料放入 C:\tmp\summer\data 目錄後, 必須要透過</p>
+<p>pacman -Syu 與 pacman -Sy 更新內容, 但是在這裡只需要從<a href="http://mde.tw/cmstemplate/content/%E5%8F%AF%E6%94%9C%E7%B3%BB%E7%B5%B1.html">可攜系統頁面</a>下載 clean 的 MSYS2 檔案即可.</p>
+<h4>此一可攜系統的規劃如下:</h4>
+<p style="padding-left: 30px;">Python 使用 Windows 10 版本</p>
+<p style="padding-left: 60px;">操作步驟是在 Windows 安裝 Python 3.9.6 版之後, 再將 Python396 內容取出, 但是安裝時選擇不安裝 pip, 因為 pip.exe 會將安裝路徑直接寫入, 因此必須在安裝 pip 之外的內容後, 設定好隨身系統的 Python 啟動路徑後, 再以命令列 python <a href="https://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=&amp;ved=2ahUKEwjjjKm-vpvyAhWBIaYKHbSTASAQFnoECAIQAQ&amp;url=https%3A%2F%2Fbootstrap.pypa.io%2Fget-pip.py&amp;usg=AOvVaw0zKVO_zW0nkF7s0zdjWFNj">get-pip.py</a> 安裝 pip.exe, 如此才能直接在可攜系統中正確利用 pip install 安裝套件.</p>
+<p style="padding-left: 30px;">Lua 使用 Windows 版本</p>
+<p style="padding-left: 60px;">Lua 原始碼對於 CoppeliaSim 或 Webots 的編譯非常重要, 因為 Lua 原始碼系統非常簡潔, 可以與 C/C++ 結合, 使用者只要編譯一次 C/C++ 程式碼並轉為動態連結程式庫後, 就可以利用 Lua 解譯程式對模擬系統進行調控.</p>
+<p style="padding-left: 60px;">CoppeliaSim 4.2.0 版所採用的 Lua 為 5.3.5 (可以從<a href="https://www.lua.org/ftp/">這裡</a>下載原始碼) 與之前的 5.2 或 V-rep 時代的 Lua 5.1 版有些許出入, 因此過去場景所編寫的 Lua scripts, 可能必須經過修改才能夠在 CoppeliaSim 4.2.0 中執行.</p>
+<p style="padding-left: 60px;">利用配置好的 MSYS2 編譯 Lua 5.3.5, 可以進入 w32 目錄後執行 mingw32-make mingw.</p>
+<p style="padding-left: 30px;">Git 使用 Windows 版本</p>
+<p style="padding-left: 60px;">Portablegit 可以從<a href="https://git-scm.com/downloads">這裡</a>下載.</p>
+<p style="padding-left: 60px;">假如存放至 Github 的檔案超過 45 MB, 建議利用 <a href="https://git-lfs.github.com/">https://git-lfs.github.com/</a> 進行配置設定, 解開 git-lfs.exe 後放入 Portablegit bin 目錄中與 git.exe 一起, 就可以直接在可攜系統中使用 git lfs 執行安裝與配置設定.</p>
+<p style="padding-left: 30px;">SciTE 使用 Windows 版本</p>
+<p style="padding-left: 60px;">SciTE 可以從<a href="https://www.scintilla.org/SciTEDownload.html">這裡</a>下載. 也可以下載原始碼自行利用可攜系統進行編譯.</p>
+<p style="padding-left: 30px;">CMake 使用 Windows 10 版本</p>
+<p style="padding-left: 60px;">Windows 10 版的 CMake 可以從這裡<a href="https://cmake.org/download/">下載</a>. 只要將 cmake.exe 路徑加入 path 搜尋就可以使用.</p>
+<p style="padding-left: 30px;">gcc 使用 MinGW64 版本</p>
+<p style="padding-left: 60px;">前面已經提過, 目前使用 <a href="https://github.com/msys2/msys2-installer/releases/tag/2021-04-19">20210419 的版本</a>, 與 Python 的方法相同, 必須先在 Windows 系統安裝後, 取出對應目錄內容, 放入 data 目錄後, 再將操作系統所安裝的版本移除.</p>
+<p style="padding-left: 60px;">MSYS2 配置完成後, 必須以 pacman -S mingw-w64-x86_64-toolchain 安裝 gcc MinGW64 版後, 才可用來編譯 C/C++ 程式.</p>
+<p style="padding-left: 30px;">boost 使用 MinGW64 版本</p>
+<p style="padding-left: 60px;">以 pacman -S mingw-w64-x86_64-boost 安裝後續編譯 CoppeliaSim 所需的 <a href="https://www.boost.org/">Boost C++ 程式庫</a>.</p>
+<p style="padding-left: 30px;">Qt5 使用 MinGW 版本</p>
+<p style="padding-left: 60px;">以 pacman -Sy mingw-w64-x86_64-qt5  安裝 Qt5, 可用於編譯 CoppeliaSim 與 Webots.</p>
+<p style="padding-left: 60px;">以 pacman -Sy mingw-w64-x86_64-ffmpeg 安裝 ffmpeg, 後續可用於強化學習流程動畫製作.</p>
+<p style="padding-left: 60px;">其他相關套件安裝:</p>
+<p style="padding-left: 90px;">pacman -S mingw-w64-x86_64-gnutls, <a href="https://www.gnutls.org/">https://www.gnutls.org/</a> </p>
+<p style="padding-left: 90px;">pacman -S mingw-w64-x86_64-libsodium, <a href="https://doc.libsodium.org/">https://doc.libsodium.org/</a> </p>
+<p style="padding-left: 90px;">pacman -Sy mingw-w64-x86_64-doxygen, <a href="https://www.doxygen.nl">https://www.doxygen.nl</a> </p>
+<p style="padding-left: 30px;">cmsimde 所需模組安裝:</p>
+<p style="padding-left: 60px;">pip install pyopenssl flask flask_cors bs4 lxml pelican markdown leo</p><br />建立可攜系統 << <a href='建立可攜系統.html'>Previous</a> <a href='下載可攜系統.html'>Next</a> >> 下載可攜系統</div>
         
     <!-- footer -->
       <div class="container">
