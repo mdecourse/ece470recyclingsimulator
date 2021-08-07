@@ -103,7 +103,7 @@
 <p style="padding-left: 60px;">每一位科學會成員都能將相關教學與專題製作流程內容納入 <a href="https://www.fossil-scm.org">Fossil SCM</a> 管理</p>
 <p style="padding-left: 90px;">設法讓每一組專題都擁有一個線上專案系統, 可以透過網頁與版次管理系統呈現專題內容</p>
 <p style="padding-left: 90px;">設法建立較學與研究資料配置與備份管理流程及系統</p>
-<p style="padding-left: 60px;">設法吸引校友透過 Gmail 帳號登入五專科學會 <a href="https://www.fossil-scm.org">Fossil SCM</a> 網站, 提供教學研究與升學相關指導.</p>
+<p style="padding-left: 60px;">設法吸引校友透過 Gmail 帳號登入五專科學會 <a href="https://www.fossil-scm.org">Fossil SCM</a> 網站, 提供教學研究與升學相關經驗與指導.</p>
 <p style="padding-left: 60px;">設法配置 <a href="https://jitsi.org/">https://jitsi.org/</a> 與 <a href="https://obsproject.com/">OBS</a> 及 <a href="https://www.youtube.com/channel/UC4R8DWoMoI7CAwX8_LjQHig/all">Youtube 直播</a>結合, 建立校友線上 meeting 與互動系統.</p>
 <p style="padding-left: 30px;"></p>
 <p></p><h1>DRLKMR</h1>
@@ -348,7 +348,24 @@ start taskkill /IM cmd.exe /F
 
 EXIT
 </pre>
-<p></p><h2>下載可攜系統</h2>
+<p></p><h3>PowerShell</h3>
+<h4>取得 USB 磁碟代號:</h4>
+<p style="padding-left: 30px;">指令: volume</p>
+<p style="padding-left: 30px;">volume | ? drivetype -eq removable | % driveletter</p>
+<h4>以磁碟代號對應特定目錄:</h4>
+<p style="padding-left: 30px;">指令: <a href="https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/new-psdrive">New-PSDrive</a></p>
+<p style="padding-left: 30px;">New-PSDrive -Name y -PSProvider FileSystem -Root c:\tmp\portable\data</p>
+<p><a href="https://docs.microsoft.com/en-us/powershell/scripting/learn/remoting/ssh-remoting-in-powershell-core">SSH remoting</a></p>
+<h4>插入 USB 隨身碟後自動執行 PowserShell script:</h4>
+<p style="padding-left: 30px;"><a href="https://stackoverflow.com/questions/21805166/start-powershell-script-when-usb-drive-is-inserted/21806438">https://stackoverflow.com/questions/21805166/start-powershell-script-when-usb-drive-is-inserted/21806438</a></p>
+<h4>Dismount USB drive:</h4>
+<p style="padding-left: 30px;"><a href="https://serverfault.com/questions/130887/dismount-usb-external-drive-using-powershell">https://serverfault.com/questions/130887/dismount-usb-external-drive-using-powershell</a></p>
+<p><a href="https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/start-process">Start-Process</a></p>
+<p style="padding-left: 30px;">開啟命令列視窗 (<a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands">Windows command shell</a> 指令列表)</p>
+<p style="padding-left: 30px;">Start-Process "cmd"</p>
+<h4>Examples:</h4>
+<p style="padding-left: 30px;"><a href="https://github.com/sushihangover/SushiHangover-PowerShell">https://github.com/sushihangover/SushiHangover-PowerShell</a></p>
+<p style="padding-left: 30px;"><a href="https://superuser.com/questions/219401/starting-scheduled-task-by-detecting-connection-of-usb-device">https://superuser.com/questions/219401/starting-scheduled-task-by-detecting-connection-of-usb-device</a></p><h2>下載可攜系統</h2>
 <p>以下可攜系統主要用於 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 編譯用, <a href="https://github.com/CoppeliaRobotics">Boost C++</a> 程式庫以 <a href="https://github.com/CoppeliaRobotics">MSYS2</a> 為主.</p>
 <p><a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 原始碼: <a href="https://github.com/CoppeliaRobotics">https://github.com/CoppeliaRobotics</a></p>
 <h4>下載可攜程式系統:</h4>

@@ -155,7 +155,9 @@
 <h3>Legacy Console Mode</h3>
 <p>Old commands never die, they just fade away.</p>
 <p>這裡所使用的 Batch file start_iv6.bat 與 stop.bat 只能在 <a href="https://docs.microsoft.com/en-us/windows/console/legacymode">https://docs.microsoft.com/en-us/windows/console/legacymode</a> 中使用. 之後應該要設法透過可攜且跨平台的 <a href="https://github.com/PowerShell/PowerShell">https://github.com/PowerShell/PowerShell</a>  編寫能夠直接從外接 USB 啟動可攜系統的啟動 scripts.</p>
-<p style="padding-left: 30px;">有關 PowerShell: <a href="https://docs.microsoft.com/zh-tw/powershell/">https://docs.microsoft.com/zh-tw/powershell/</a></p>
+<p style="padding-left: 30px;">有關 PowerShell:</p>
+<p style="padding-left: 60px;"><a href="https://docs.microsoft.com/zh-tw/powershell/">https://docs.microsoft.com/zh-tw/powershell/</a></p>
+<p style="padding-left: 60px;"><a href="https://leanpub.com/powershell101">https://leanpub.com/powershell101</a> </p>
 <h4>MSYS2 版本的選擇</h4>
 <p>MSYS2 各 release 版本可以從 <a href="https://github.com/msys2/msys2-installer/releases">https://github.com/msys2/msys2-installer/releases</a> 下載. 在此使用 20210419 的版本. 主要原因是 20210604 與 20210725 釋出的版本與 20210419 有很大差異, 最大的問題在於目前只有 20210419 的版本能夠順利 build <a href="https://github.com/zeromq/libzmq">https://github.com/zeromq/libzmq</a>, 而 libzmq 是 CoppeliaSim BlueZero 延伸套件的核心程式庫. 所以選用 20210419 的 MSYS2 的版本.</p>
 <p>理論上 MSYS2 安裝在 Windows 10 之後再取出目錄資料放入 C:\tmp\summer\data 目錄後, 必須要透過</p>
@@ -346,7 +348,24 @@ start taskkill /IM cmd.exe /F
 
 EXIT
 </pre>
-<p></p><h2>下載可攜系統</h2>
+<p></p><h3>PowerShell</h3>
+<h4>取得 USB 磁碟代號:</h4>
+<p style="padding-left: 30px;">指令: volume</p>
+<p style="padding-left: 30px;">volume | ? drivetype -eq removable | % driveletter</p>
+<h4>以磁碟代號對應特定目錄:</h4>
+<p style="padding-left: 30px;">指令: <a href="https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/new-psdrive">New-PSDrive</a></p>
+<p style="padding-left: 30px;">New-PSDrive -Name y -PSProvider FileSystem -Root c:\tmp\portable\data</p>
+<p><a href="https://docs.microsoft.com/en-us/powershell/scripting/learn/remoting/ssh-remoting-in-powershell-core">SSH remoting</a></p>
+<h4>插入 USB 隨身碟後自動執行 PowserShell script:</h4>
+<p style="padding-left: 30px;"><a href="https://stackoverflow.com/questions/21805166/start-powershell-script-when-usb-drive-is-inserted/21806438">https://stackoverflow.com/questions/21805166/start-powershell-script-when-usb-drive-is-inserted/21806438</a></p>
+<h4>Dismount USB drive:</h4>
+<p style="padding-left: 30px;"><a href="https://serverfault.com/questions/130887/dismount-usb-external-drive-using-powershell">https://serverfault.com/questions/130887/dismount-usb-external-drive-using-powershell</a></p>
+<p><a href="https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/start-process">Start-Process</a></p>
+<p style="padding-left: 30px;">開啟命令列視窗 (<a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands">Windows command shell</a> 指令列表)</p>
+<p style="padding-left: 30px;">Start-Process "cmd"</p>
+<h4>Examples:</h4>
+<p style="padding-left: 30px;"><a href="https://github.com/sushihangover/SushiHangover-PowerShell">https://github.com/sushihangover/SushiHangover-PowerShell</a></p>
+<p style="padding-left: 30px;"><a href="https://superuser.com/questions/219401/starting-scheduled-task-by-detecting-connection-of-usb-device">https://superuser.com/questions/219401/starting-scheduled-task-by-detecting-connection-of-usb-device</a></p><h2>下載可攜系統</h2>
 <p>以下可攜系統主要用於 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 編譯用, <a href="https://github.com/CoppeliaRobotics">Boost C++</a> 程式庫以 <a href="https://github.com/CoppeliaRobotics">MSYS2</a> 為主.</p>
 <p><a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 原始碼: <a href="https://github.com/CoppeliaRobotics">https://github.com/CoppeliaRobotics</a></p>
 <h4>下載可攜程式系統:</h4>

@@ -2,7 +2,7 @@
         <head>
         <title>pj2022</title>
         <meta charset="utf-8">
-<meta property="head" content="H2">
+<meta property="head" content="H3">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700,900" rel="stylesheet">
         <link rel="stylesheet" href="./../cmsimde/static/chimper/fonts/icomoon/style.css">
@@ -135,16 +135,24 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">相關技術 << <a href='相關技術.html'>Previous</a> <a href='RoboDK.html'>Next</a> >> RoboDK<br /><h1>X Window</h1>
-<p>在 Windows 10 中可以使用 <a href="https://sourceforge.net/projects/xming/">Xming </a>X server. 其目的在讓遠端的伺服器執行 GUI 程式時, 能將圖型介面傳送至 X server.</p>
-<p>利用 <a href="https://sourceforge.net/projects/xming/">Xming </a>帶出 pj5073.kmol.info 上所執行的程式 GUI 畫面流程:</p>
-<ol>
-<li>設定以 putty.exe 對 pj5073.kmol.info ssh 連線</li>
-<li>連線 session 之 SSH -&gt; Auth -&gt;X11 勾選 enable X11 Forwarding, 並將 X Display location 設為 localhost:0.0, 表示要將程式執行的畫面傳回 X server.</li>
-<li>ssh <a href="mailto:user_account@pj5073.kmol.info">user_account@pj5073.kmol.info</a> 連線後, 以 xterm&amp; 背景執行 xterm.</li>
-<li>接著以 nautilus&amp; 背景執行 Ubuntu 的 GUI 檔案瀏覽器.</li>
-</ol>
-<br />相關技術 << <a href='相關技術.html'>Previous</a> <a href='RoboDK.html'>Next</a> >> RoboDK</div>
+    <div id="tipue_search_content">Legacy Console Mode << <a href='Legacy Console Mode.html'>Previous</a> <a href='下載可攜系統.html'>Next</a> >> 下載可攜系統<br /><h1>PowerShell</h1>
+<h4>取得 USB 磁碟代號:</h4>
+<p style="padding-left: 30px;">指令: volume</p>
+<p style="padding-left: 30px;">volume | ? drivetype -eq removable | % driveletter</p>
+<h4>以磁碟代號對應特定目錄:</h4>
+<p style="padding-left: 30px;">指令: <a href="https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/new-psdrive">New-PSDrive</a></p>
+<p style="padding-left: 30px;">New-PSDrive -Name y -PSProvider FileSystem -Root c:\tmp\portable\data</p>
+<p><a href="https://docs.microsoft.com/en-us/powershell/scripting/learn/remoting/ssh-remoting-in-powershell-core">SSH remoting</a></p>
+<h4>插入 USB 隨身碟後自動執行 PowserShell script:</h4>
+<p style="padding-left: 30px;"><a href="https://stackoverflow.com/questions/21805166/start-powershell-script-when-usb-drive-is-inserted/21806438">https://stackoverflow.com/questions/21805166/start-powershell-script-when-usb-drive-is-inserted/21806438</a></p>
+<h4>Dismount USB drive:</h4>
+<p style="padding-left: 30px;"><a href="https://serverfault.com/questions/130887/dismount-usb-external-drive-using-powershell">https://serverfault.com/questions/130887/dismount-usb-external-drive-using-powershell</a></p>
+<p><a href="https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/start-process">Start-Process</a></p>
+<p style="padding-left: 30px;">開啟命令列視窗 (<a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands">Windows command shell</a> 指令列表)</p>
+<p style="padding-left: 30px;">Start-Process "cmd"</p>
+<h4>Examples:</h4>
+<p style="padding-left: 30px;"><a href="https://github.com/sushihangover/SushiHangover-PowerShell">https://github.com/sushihangover/SushiHangover-PowerShell</a></p>
+<p style="padding-left: 30px;"><a href="https://superuser.com/questions/219401/starting-scheduled-task-by-detecting-connection-of-usb-device">https://superuser.com/questions/219401/starting-scheduled-task-by-detecting-connection-of-usb-device</a></p><br />Legacy Console Mode << <a href='Legacy Console Mode.html'>Previous</a> <a href='下載可攜系統.html'>Next</a> >> 下載可攜系統</div>
         
     <!-- footer -->
       <div class="container">
