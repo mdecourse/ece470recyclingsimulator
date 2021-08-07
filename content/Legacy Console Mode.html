@@ -124,7 +124,7 @@ img.add_border {
                             <li><a href="./../blog/index.html">blog</a></li>
                         </ul>
                       </li>
-                     <li class='has-children'><a href='About.html'>About</a><ul class='dropdown'><li><a href='網際內容管理.html'>網際內容管理</a><li><a href='虛實整合.html'>虛實整合</a><li><a href='機器學習.html'>機器學習</a></li></ul><li class='has-children'><a href='DRLKMR.html'>DRLKMR</a><ul class='dropdown'><li class='has-children'><a href='建立可攜系統.html'>建立可攜系統</a><ul class='dropdown'><li><a href='Legacy Console Mode.html'>Legacy Console Mode</a></li></ul><li><a href='下載可攜系統.html'>下載可攜系統</a></li></ul><li class='has-children'><a href='pj2022.html'>pj2022</a><ul class='dropdown'><li><a href='upgrade.html'>upgrade</a></li></ul><li><a href='強化學習.html'>強化學習</a><li class='has-children'><a href='相關技術.html'>相關技術</a><ul class='dropdown'><li><a href='X Window.html'>X Window</a><li class='has-children'><a href='RoboDK.html'>RoboDK</a><ul class='dropdown'><li><a href='RoboDK API.html'>RoboDK API</a><li><a href='Pick and Place.html'>Pick and Place</a></li></ul><li><a href='CoppeliaSim.html'>CoppeliaSim</a><li><a href='Arduino.html'>Arduino</a></li>
+                     <li class='has-children'><a href='About.html'>About</a><ul class='dropdown'><li><a href='網際內容管理.html'>網際內容管理</a><li><a href='虛實整合.html'>虛實整合</a><li><a href='機器學習.html'>機器學習</a></li></ul><li><a href='AWCMS.html'>AWCMS</a><li class='has-children'><a href='DRLKMR.html'>DRLKMR</a><ul class='dropdown'><li class='has-children'><a href='建立可攜系統.html'>建立可攜系統</a><ul class='dropdown'><li><a href='Legacy Console Mode.html'>Legacy Console Mode</a></li></ul><li><a href='下載可攜系統.html'>下載可攜系統</a></li></ul><li class='has-children'><a href='pj2022.html'>pj2022</a><ul class='dropdown'><li><a href='upgrade.html'>upgrade</a></li></ul><li><a href='強化學習.html'>強化學習</a><li class='has-children'><a href='相關技術.html'>相關技術</a><ul class='dropdown'><li><a href='X Window.html'>X Window</a><li class='has-children'><a href='RoboDK.html'>RoboDK</a><ul class='dropdown'><li><a href='RoboDK API.html'>RoboDK API</a><li><a href='Pick and Place.html'>Pick and Place</a></li></ul><li><a href='CoppeliaSim.html'>CoppeliaSim</a><li><a href='Arduino.html'>Arduino</a></li>
                       </ul>
                 </nav>
               </div>
@@ -136,7 +136,11 @@ img.add_border {
           
         </header>
     <div id="tipue_search_content">建立可攜系統 << <a href='建立可攜系統.html'>Previous</a> <a href='下載可攜系統.html'>Next</a> >> 下載可攜系統<br /><h1>Legacy Console Mode</h1>
+<p>Old commands never die, they just fade away.</p>
 <p>這裡所使用的 Batch file start_iv6.bat 與 stop.bat 只能在 <a href="https://docs.microsoft.com/en-us/windows/console/legacymode">https://docs.microsoft.com/en-us/windows/console/legacymode</a> 中使用. 之後應該要設法透過可攜且跨平台的 <a href="https://github.com/PowerShell/PowerShell">https://github.com/PowerShell/PowerShell</a>  編寫能夠直接從外接 USB 啟動可攜系統的啟動 scripts.</p>
+<p style="padding-left: 30px;">有關 PowerShell:</p>
+<p style="padding-left: 60px;"><a href="https://docs.microsoft.com/zh-tw/powershell/">https://docs.microsoft.com/zh-tw/powershell/</a></p>
+<p style="padding-left: 60px;"><a href="https://leanpub.com/powershell101">https://leanpub.com/powershell101</a> </p>
 <h4>MSYS2 版本的選擇</h4>
 <p>MSYS2 各 release 版本可以從 <a href="https://github.com/msys2/msys2-installer/releases">https://github.com/msys2/msys2-installer/releases</a> 下載. 在此使用 20210419 的版本. 主要原因是 20210604 與 20210725 釋出的版本與 20210419 有很大差異, 最大的問題在於目前只有 20210419 的版本能夠順利 build <a href="https://github.com/zeromq/libzmq">https://github.com/zeromq/libzmq</a>, 而 libzmq 是 CoppeliaSim BlueZero 延伸套件的核心程式庫. 所以選用 20210419 的 MSYS2 的版本.</p>
 <p>理論上 MSYS2 安裝在 Windows 10 之後再取出目錄資料放入 C:\tmp\summer\data 目錄後, 必須要透過</p>
@@ -164,11 +168,170 @@ img.add_border {
 <p style="padding-left: 60px;">以 pacman -Sy mingw-w64-x86_64-qt5  安裝 Qt5, 可用於編譯 CoppeliaSim 與 Webots.</p>
 <p style="padding-left: 60px;">以 pacman -Sy mingw-w64-x86_64-ffmpeg 安裝 ffmpeg, 後續可用於強化學習流程動畫製作.</p>
 <p style="padding-left: 60px;">其他相關套件安裝:</p>
-<p style="padding-left: 90px;">pacman -S mingw-w64-x86_64-gnutls, <a href="https://www.gnutls.org/">https://www.gnutls.org/</a> </p>
-<p style="padding-left: 90px;">pacman -S mingw-w64-x86_64-libsodium, <a href="https://doc.libsodium.org/">https://doc.libsodium.org/</a> </p>
-<p style="padding-left: 90px;">pacman -Sy mingw-w64-x86_64-doxygen, <a href="https://www.doxygen.nl">https://www.doxygen.nl</a> </p>
+<p style="padding-left: 90px;">pacman -S mingw-w64-x86_64-gnutls, <a href="https://www.gnutls.org/">https://www.gnutls.org/</a></p>
+<p style="padding-left: 90px;">pacman -S mingw-w64-x86_64-libsodium, <a href="https://doc.libsodium.org/">https://doc.libsodium.org/</a></p>
+<p style="padding-left: 90px;">pacman -Sy mingw-w64-x86_64-doxygen, <a href="https://www.doxygen.nl">https://www.doxygen.nl</a></p>
 <p style="padding-left: 30px;">cmsimde 所需模組安裝:</p>
-<p style="padding-left: 60px;">pip install pyopenssl flask flask_cors bs4 lxml pelican markdown leo</p><br />建立可攜系統 << <a href='建立可攜系統.html'>Previous</a> <a href='下載可攜系統.html'>Next</a> >> 下載可攜系統</div>
+<p style="padding-left: 60px;">pip install pyopenssl flask flask_cors bs4 lxml pelican markdown leo</p>
+<p>start_ipv6.bat</p>
+<pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">@echo off
+set Disk=y
+start subst %Disk%: "data"
+
+%Disk%:
+
+set HomePath=%Disk%:\home_ipv6
+set HomeDrive=%Disk%:\home_ipv6
+set Home=%Disk%:\home_ipv6
+set USERPROFILE=%Disk%:\home_ipv6
+
+REM set Python io encoding as utf-8
+set PYTHONIOENCODING="utf-8"
+
+set PYTHONPATH=%Disk%:\Python396\DLLs;%Disk%:\Python396\Lib;^
+%Disk%:\Python396\Lib\site-packages;
+
+set PYTHONHOME=%Disk%:\Python396
+
+REM for putty
+set GIT_SSH=%Disk%:\putty\plink.exe
+
+REM for Java and Android SDK
+set java_home=%Disk%:\java\jdk8u222-b10
+set ANDROID_SDK_home=%Disk%:\home_ipv6
+set GRADLE_USER_home=%Disk%:\home_ipv6
+set ANDROID_SDK_ROOT=%Disk%:\android\sdk
+set ANDROID_Home=%Disk%:\android\sdk
+set REPO_OS_OVERRIDE=windows
+
+REM set Python related path
+set path_python=%Disk%:\Python396;%Disk%:\Python396\Scripts;
+REM set git related path
+set path_git=%Disk%:\portablegit_2.31.1\bin;
+REM set for msys2 64 byte system
+set path_msys2=%Disk%:\msys64_20210419\mingw64\bin;
+REM set for LaTeX
+set path_miketex=%Disk%:\miktex-portable\texmfs\install\miktex\bin\x64;
+REM Flutter path
+set path_flutter=%Disk%:\flutter\bin;%java_home%\bin;%Disk%:\Android\sdk;^
+%Disk%:\Android\sdk\tools;%Disk%:\Android\sdk\tools\bin;^
+%Disk%:\Android\sdk\emulator;%Disk%:\Android\sdk\platform-tools;^
+%Disk%:\flutter\bin\cache\dart-sdk\bin;%Disk%:\vscode;
+
+set path_node=%Disk%:\node-v14.15.4-win-x64;
+set path_tcc=%Disk%:\tmp\tcc\win32;
+rem set path_tcc=%Disk%:\tcc;
+set path_heroku=%Disk%:\heroku\bin;
+set path_postgresql=%Disk%:\postgresql13\bin;
+set path_range=%Disk%:\Range3_official\bin;
+rem set path_range=%Disk%:\range-3.2.5_kmol\bin;
+set path_lua=%Disk%:\lua-5.3.5\;
+set path_core=%Disk%:\coreutils-5.3.0\bin;
+REM for gogs
+set path_putty=%Disk%:\putty;
+set path_vscode=%Disk%:\vscode;
+
+REM for Rust
+set MINGW_PATH=%path_msys2%;
+set GIT_PATH=%path_git%;
+set VSCODE_PATH=%path_vscode%
+set RUSTUP_HOME=%Disk%:\Rust\rust
+set CARGO_HOME=%Disk%:\Rust\cargo
+set RUST_PATH=%CARGO_HOME%\bin
+
+REM for Erlang and Elixir
+set path_erlang=%Disk%:\elixir\erl10.7\bin\;^
+%Disk%:\elixir\erl10.7\erts-10.7\bin;^
+%Disk%:\elixir\elixir\bin;
+
+set ERTSPATH=%Disk%:\elixir\erl10.7\erts-10.7\bin
+set ERLINI=%Disk%:\elixir\erl10.7\erts-10.7\bin\erl.ini
+
+REM for Haskell
+set path_haskell=%Disk%:\ghc-9.0.1-x86_64-unknown-mingw32\bin;
+REM for node.js
+set path_nodejs=%Disk%:\node-v14.17.2-x64\nodejs;^
+%Disk%:\node-v14.17.2-x64\nodejs\node_modules\npm;
+
+REM add PostgreSQL related path
+
+@SET PGDATA=%Disk%:\postgresql13\data
+@SET PGDATABASE=postgres
+@SET PGUSER=postgres
+@SET PGPORT=5432
+@SET PGLOCALEDIR=%Disk%:\postgresql13\share\locale
+
+REM set for Range3
+REM REG IMPORT %Disk%:\range3.reg
+
+REM proxy needed for heroku login
+REM proxy can not use with fossil scm
+REM proxy can not use with Rust installation
+REM needed for node.js
+REM set HTTP_PROXY=http://account:password@[IPV6address or domain name]:3128
+REM set HTTPS_PROXY=http://account:password@[IPV6address or domain name]:3128
+
+REM for PyRep
+set VREP_PATH=%Disk%:\CoppeliaSimEdu_4.1.0_rev1
+
+REM BOOST_ROOT for compiling coppeliasim but maybe not for linking
+REM set BOOST_ROOT=%Disk%:\boost_1_76_0\;
+set path_copsim=%Disk%:\cmake-3.21.1-windows-x86_64\bin;^
+%Disk%:\diffutils-2.8.7-1\bin;%Disk%:\patch-2.5.9-7\bin;^
+%Disk%:\jom_1_1_2;%Disk%:\LLVM\bin;%Disk%:\QtCreator\bin;^
+%Disk%:\CoppeliaSimEdu;%Disk%:\Python396\tcl\tcl8.6;
+
+REM set QT_QPA_PLATFORM_PLUGIN_PATH=Y:\msys64_20210419\mingw64\share\qt5\plugins\platforms
+REM set QT_PLUGIN_PATH=Y:\msys64_20210419\mingw64\share\qt5\plugins
+
+REM for execute scite directly
+set path_scite=%Disk%:\wScite511\;
+
+REM for simExtZMQ
+set path_xsltproc=%Disk%:\xsltproc;
+REM for simExtOMPL
+set path_sed=%Disk%:\portablegit_2.31.1\usr\bin;
+REM for vs code
+set path_code=%Disk%:\VSCode-win32-x64-1.58.2;
+
+path=%Disk%:;%path_python%;%path_git%;%path_copsim%;^
+%path_msys2%;%path_miketex%;%path_flutter%;%path_node%;^
+%path_tcc%;%path_heroku%;%path_postgresql%;%path_range%;^
+%path_lua%;%path_core%;%path_putty%;%path_vscode%;^
+%RUST_PATH%;%path_erlang%;%path_nodejs%;%path_haskell%;^
+%path_scite%;%path_xsltproc%;%path_sed%;%path_code%;%path%;
+
+start /MIN cmd.exe
+start /MIN cmd.exe
+start /MIN cmd.exe
+start /MIN cmd.exe
+
+start /MIN %Disk%:\wScite511\SciTE.exe
+start /MIN %Disk%:\wScite511\SciTE.exe
+
+Exit
+</pre>
+<p>stop.bat</p>
+<pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">@echo off
+set Disk=y
+path=%PATH%;
+
+start taskkill /IM python.exe /F
+start taskkill /IM pythonw.exe /F
+REM stop Flutter and BlueStacks connection
+start taskkill /IM adb.exe /F
+start taskkill /IM scite.exe /F
+REM stop Range3
+start taskkill /IM range.exe /F
+
+REM stop data directory and y: substitution
+start subst %Disk%: /D
+REM stope cmd windows
+start taskkill /IM cmd.exe /F
+
+EXIT
+</pre>
+<p></p><br />建立可攜系統 << <a href='建立可攜系統.html'>Previous</a> <a href='下載可攜系統.html'>Next</a> >> 下載可攜系統</div>
         
     <!-- footer -->
       <div class="container">

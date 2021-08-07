@@ -92,7 +92,21 @@
 <li>機器可以透過影像裝置取得外部物件座標系統</li>
 <li>電腦可以透過該物件座標系統取放物件</li>
 <li>機電資系統可以透過強化學習完成既定工作項目</li>
-</ol><h1>DRLKMR</h1>
+</ol><h1>AWCMS</h1>
+<p>五專專題題目</p>
+<h4>網際內容管理系統在精密機械工程教學與研究上的應用</h4>
+<h4>Application of Web-based Content Management Systems in Teaching and Research of Precision Mechanical Engineering</h4>
+<h4>工作任務:</h4>
+<p style="padding-left: 30px;">學習如何在 Ubuntu 20.04 配置管理 <a href="https://www.fossil-scm.org">Fossil SCM</a></p>
+<p style="padding-left: 30px;">設法導入五專科學會相關課程教學與專題製作流程上的應用</p>
+<p style="padding-left: 60px;">每一位成員都能夠透過 @gm 帳號登入所配置的 <a href="https://www.fossil-scm.org">Fossil SCM</a> 論壇 (<a href="https://fossil-scm.org/forum/forummain">範例</a>) 進行討論</p>
+<p style="padding-left: 60px;">每一位科學會成員都能將相關教學與專題製作流程內容納入 <a href="https://www.fossil-scm.org">Fossil SCM</a> 管理</p>
+<p style="padding-left: 90px;">設法讓每一組專題都擁有一個線上專案系統, 可以透過網頁與版次管理系統呈現專題內容</p>
+<p style="padding-left: 90px;">設法建立較學與研究資料配置與備份管理流程及系統</p>
+<p style="padding-left: 60px;">設法吸引校友透過 Gmail 帳號登入五專科學會 <a href="https://www.fossil-scm.org">Fossil SCM</a> 網站, 提供教學研究與升學相關指導.</p>
+<p style="padding-left: 60px;">設法配置 <a href="https://jitsi.org/">https://jitsi.org/</a> 與 <a href="https://obsproject.com/">OBS</a> 及 <a href="https://www.youtube.com/channel/UC4R8DWoMoI7CAwX8_LjQHig/all">Youtube 直播</a>結合, 建立校友線上 meeting 與互動系統.</p>
+<p style="padding-left: 30px;"></p>
+<p></p><h1>DRLKMR</h1>
 <p>四技專題題目</p>
 <h4><span style="background-color: #ffff99;">深度強化學習在行動機器人運動學上之應用</span></h4>
 <h4>Application of Deep Reinforcement Learning in Kinematics of Mobile Robots (DRLKMR)</h4>
@@ -139,7 +153,11 @@
 <p><a href="https://drive.google.com/file/d/1aoyWG8rzCCgF5oyEED82ChLNCefuuIa_/view?usp=sharing">Dependencies</a> (下載 2.7MB, 解開壓縮 12.4MB) - 查詢 exe 與 dll 檔案執行相依程式庫.</p>
 <p><a href="https://drive.google.com/file/d/1FUIXqDmcmuyKRq6iJCPkPKpJWk_xQhtd/view?usp=sharing">start and stop batch</a> - 啟動關閉與設定檔案.</p>
 <h3>Legacy Console Mode</h3>
+<p>Old commands never die, they just fade away.</p>
 <p>這裡所使用的 Batch file start_iv6.bat 與 stop.bat 只能在 <a href="https://docs.microsoft.com/en-us/windows/console/legacymode">https://docs.microsoft.com/en-us/windows/console/legacymode</a> 中使用. 之後應該要設法透過可攜且跨平台的 <a href="https://github.com/PowerShell/PowerShell">https://github.com/PowerShell/PowerShell</a>  編寫能夠直接從外接 USB 啟動可攜系統的啟動 scripts.</p>
+<p style="padding-left: 30px;">有關 PowerShell:</p>
+<p style="padding-left: 60px;"><a href="https://docs.microsoft.com/zh-tw/powershell/">https://docs.microsoft.com/zh-tw/powershell/</a></p>
+<p style="padding-left: 60px;"><a href="https://leanpub.com/powershell101">https://leanpub.com/powershell101</a> </p>
 <h4>MSYS2 版本的選擇</h4>
 <p>MSYS2 各 release 版本可以從 <a href="https://github.com/msys2/msys2-installer/releases">https://github.com/msys2/msys2-installer/releases</a> 下載. 在此使用 20210419 的版本. 主要原因是 20210604 與 20210725 釋出的版本與 20210419 有很大差異, 最大的問題在於目前只有 20210419 的版本能夠順利 build <a href="https://github.com/zeromq/libzmq">https://github.com/zeromq/libzmq</a>, 而 libzmq 是 CoppeliaSim BlueZero 延伸套件的核心程式庫. 所以選用 20210419 的 MSYS2 的版本.</p>
 <p>理論上 MSYS2 安裝在 Windows 10 之後再取出目錄資料放入 C:\tmp\summer\data 目錄後, 必須要透過</p>
@@ -167,11 +185,170 @@
 <p style="padding-left: 60px;">以 pacman -Sy mingw-w64-x86_64-qt5  安裝 Qt5, 可用於編譯 CoppeliaSim 與 Webots.</p>
 <p style="padding-left: 60px;">以 pacman -Sy mingw-w64-x86_64-ffmpeg 安裝 ffmpeg, 後續可用於強化學習流程動畫製作.</p>
 <p style="padding-left: 60px;">其他相關套件安裝:</p>
-<p style="padding-left: 90px;">pacman -S mingw-w64-x86_64-gnutls, <a href="https://www.gnutls.org/">https://www.gnutls.org/</a> </p>
-<p style="padding-left: 90px;">pacman -S mingw-w64-x86_64-libsodium, <a href="https://doc.libsodium.org/">https://doc.libsodium.org/</a> </p>
-<p style="padding-left: 90px;">pacman -Sy mingw-w64-x86_64-doxygen, <a href="https://www.doxygen.nl">https://www.doxygen.nl</a> </p>
+<p style="padding-left: 90px;">pacman -S mingw-w64-x86_64-gnutls, <a href="https://www.gnutls.org/">https://www.gnutls.org/</a></p>
+<p style="padding-left: 90px;">pacman -S mingw-w64-x86_64-libsodium, <a href="https://doc.libsodium.org/">https://doc.libsodium.org/</a></p>
+<p style="padding-left: 90px;">pacman -Sy mingw-w64-x86_64-doxygen, <a href="https://www.doxygen.nl">https://www.doxygen.nl</a></p>
 <p style="padding-left: 30px;">cmsimde 所需模組安裝:</p>
-<p style="padding-left: 60px;">pip install pyopenssl flask flask_cors bs4 lxml pelican markdown leo</p><h2>下載可攜系統</h2>
+<p style="padding-left: 60px;">pip install pyopenssl flask flask_cors bs4 lxml pelican markdown leo</p>
+<p>start_ipv6.bat</p>
+<pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">@echo off
+set Disk=y
+start subst %Disk%: "data"
+
+%Disk%:
+
+set HomePath=%Disk%:\home_ipv6
+set HomeDrive=%Disk%:\home_ipv6
+set Home=%Disk%:\home_ipv6
+set USERPROFILE=%Disk%:\home_ipv6
+
+REM set Python io encoding as utf-8
+set PYTHONIOENCODING="utf-8"
+
+set PYTHONPATH=%Disk%:\Python396\DLLs;%Disk%:\Python396\Lib;^
+%Disk%:\Python396\Lib\site-packages;
+
+set PYTHONHOME=%Disk%:\Python396
+
+REM for putty
+set GIT_SSH=%Disk%:\putty\plink.exe
+
+REM for Java and Android SDK
+set java_home=%Disk%:\java\jdk8u222-b10
+set ANDROID_SDK_home=%Disk%:\home_ipv6
+set GRADLE_USER_home=%Disk%:\home_ipv6
+set ANDROID_SDK_ROOT=%Disk%:\android\sdk
+set ANDROID_Home=%Disk%:\android\sdk
+set REPO_OS_OVERRIDE=windows
+
+REM set Python related path
+set path_python=%Disk%:\Python396;%Disk%:\Python396\Scripts;
+REM set git related path
+set path_git=%Disk%:\portablegit_2.31.1\bin;
+REM set for msys2 64 byte system
+set path_msys2=%Disk%:\msys64_20210419\mingw64\bin;
+REM set for LaTeX
+set path_miketex=%Disk%:\miktex-portable\texmfs\install\miktex\bin\x64;
+REM Flutter path
+set path_flutter=%Disk%:\flutter\bin;%java_home%\bin;%Disk%:\Android\sdk;^
+%Disk%:\Android\sdk\tools;%Disk%:\Android\sdk\tools\bin;^
+%Disk%:\Android\sdk\emulator;%Disk%:\Android\sdk\platform-tools;^
+%Disk%:\flutter\bin\cache\dart-sdk\bin;%Disk%:\vscode;
+
+set path_node=%Disk%:\node-v14.15.4-win-x64;
+set path_tcc=%Disk%:\tmp\tcc\win32;
+rem set path_tcc=%Disk%:\tcc;
+set path_heroku=%Disk%:\heroku\bin;
+set path_postgresql=%Disk%:\postgresql13\bin;
+set path_range=%Disk%:\Range3_official\bin;
+rem set path_range=%Disk%:\range-3.2.5_kmol\bin;
+set path_lua=%Disk%:\lua-5.3.5\;
+set path_core=%Disk%:\coreutils-5.3.0\bin;
+REM for gogs
+set path_putty=%Disk%:\putty;
+set path_vscode=%Disk%:\vscode;
+
+REM for Rust
+set MINGW_PATH=%path_msys2%;
+set GIT_PATH=%path_git%;
+set VSCODE_PATH=%path_vscode%
+set RUSTUP_HOME=%Disk%:\Rust\rust
+set CARGO_HOME=%Disk%:\Rust\cargo
+set RUST_PATH=%CARGO_HOME%\bin
+
+REM for Erlang and Elixir
+set path_erlang=%Disk%:\elixir\erl10.7\bin\;^
+%Disk%:\elixir\erl10.7\erts-10.7\bin;^
+%Disk%:\elixir\elixir\bin;
+
+set ERTSPATH=%Disk%:\elixir\erl10.7\erts-10.7\bin
+set ERLINI=%Disk%:\elixir\erl10.7\erts-10.7\bin\erl.ini
+
+REM for Haskell
+set path_haskell=%Disk%:\ghc-9.0.1-x86_64-unknown-mingw32\bin;
+REM for node.js
+set path_nodejs=%Disk%:\node-v14.17.2-x64\nodejs;^
+%Disk%:\node-v14.17.2-x64\nodejs\node_modules\npm;
+
+REM add PostgreSQL related path
+
+@SET PGDATA=%Disk%:\postgresql13\data
+@SET PGDATABASE=postgres
+@SET PGUSER=postgres
+@SET PGPORT=5432
+@SET PGLOCALEDIR=%Disk%:\postgresql13\share\locale
+
+REM set for Range3
+REM REG IMPORT %Disk%:\range3.reg
+
+REM proxy needed for heroku login
+REM proxy can not use with fossil scm
+REM proxy can not use with Rust installation
+REM needed for node.js
+REM set HTTP_PROXY=http://account:password@[IPV6address or domain name]:3128
+REM set HTTPS_PROXY=http://account:password@[IPV6address or domain name]:3128
+
+REM for PyRep
+set VREP_PATH=%Disk%:\CoppeliaSimEdu_4.1.0_rev1
+
+REM BOOST_ROOT for compiling coppeliasim but maybe not for linking
+REM set BOOST_ROOT=%Disk%:\boost_1_76_0\;
+set path_copsim=%Disk%:\cmake-3.21.1-windows-x86_64\bin;^
+%Disk%:\diffutils-2.8.7-1\bin;%Disk%:\patch-2.5.9-7\bin;^
+%Disk%:\jom_1_1_2;%Disk%:\LLVM\bin;%Disk%:\QtCreator\bin;^
+%Disk%:\CoppeliaSimEdu;%Disk%:\Python396\tcl\tcl8.6;
+
+REM set QT_QPA_PLATFORM_PLUGIN_PATH=Y:\msys64_20210419\mingw64\share\qt5\plugins\platforms
+REM set QT_PLUGIN_PATH=Y:\msys64_20210419\mingw64\share\qt5\plugins
+
+REM for execute scite directly
+set path_scite=%Disk%:\wScite511\;
+
+REM for simExtZMQ
+set path_xsltproc=%Disk%:\xsltproc;
+REM for simExtOMPL
+set path_sed=%Disk%:\portablegit_2.31.1\usr\bin;
+REM for vs code
+set path_code=%Disk%:\VSCode-win32-x64-1.58.2;
+
+path=%Disk%:;%path_python%;%path_git%;%path_copsim%;^
+%path_msys2%;%path_miketex%;%path_flutter%;%path_node%;^
+%path_tcc%;%path_heroku%;%path_postgresql%;%path_range%;^
+%path_lua%;%path_core%;%path_putty%;%path_vscode%;^
+%RUST_PATH%;%path_erlang%;%path_nodejs%;%path_haskell%;^
+%path_scite%;%path_xsltproc%;%path_sed%;%path_code%;%path%;
+
+start /MIN cmd.exe
+start /MIN cmd.exe
+start /MIN cmd.exe
+start /MIN cmd.exe
+
+start /MIN %Disk%:\wScite511\SciTE.exe
+start /MIN %Disk%:\wScite511\SciTE.exe
+
+Exit
+</pre>
+<p>stop.bat</p>
+<pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">@echo off
+set Disk=y
+path=%PATH%;
+
+start taskkill /IM python.exe /F
+start taskkill /IM pythonw.exe /F
+REM stop Flutter and BlueStacks connection
+start taskkill /IM adb.exe /F
+start taskkill /IM scite.exe /F
+REM stop Range3
+start taskkill /IM range.exe /F
+
+REM stop data directory and y: substitution
+start subst %Disk%: /D
+REM stope cmd windows
+start taskkill /IM cmd.exe /F
+
+EXIT
+</pre>
+<p></p><h2>下載可攜系統</h2>
 <p>以下可攜系統主要用於 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 編譯用, <a href="https://github.com/CoppeliaRobotics">Boost C++</a> 程式庫以 <a href="https://github.com/CoppeliaRobotics">MSYS2</a> 為主.</p>
 <p><a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 原始碼: <a href="https://github.com/CoppeliaRobotics">https://github.com/CoppeliaRobotics</a></p>
 <h4>下載可攜程式系統:</h4>
