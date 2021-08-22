@@ -2,7 +2,7 @@
         <head>
         <title>pj2022</title>
         <meta charset="utf-8">
-<meta property="head" content="H2">
+<meta property="head" content="H3">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700,900" rel="stylesheet">
         <link rel="stylesheet" href="./../cmsimde/static/chimper/fonts/icomoon/style.css">
@@ -135,16 +135,29 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">Pick and Place << <a href='Pick and Place.html'>Previous</a> <a href='Arduino.html'>Next</a> >> Arduino<br /><h1>CoppeliaSim</h1>
-<h4>Educational version:</h4>
-<h4>Windows:</h4>
-<p style="padding-left: 30px;"><a href="https://www.coppeliarobotics.com/files/CoppeliaSim_Edu_V4_1_0_Setup.exe">https://www.coppeliarobotics.com/files/CoppeliaSim_Edu_V4_1_0_Setup.exe</a></p>
-<p style="padding-left: 30px;"><a href="https://www.coppeliarobotics.com/files/CoppeliaSim_Edu_V4_1_0_Win.zip">https://www.coppeliarobotics.com/files/CoppeliaSim_Edu_V4_1_0_Win.zip</a></p>
-<h4>Mac:</h4>
-<p style="padding-left: 30px;"><a href="https://www.coppeliarobotics.com/files/CoppeliaSim_Edu_V4_1_0_Mac.zip">https://www.coppeliarobotics.com/files/CoppeliaSim_Edu_V4_1_0_Mac.zip</a></p>
-<h4>Ubuntu:</h4>
-<p style="padding-left: 30px;"><a href="https://www.coppeliarobotics.com/files/CoppeliaSim_Edu_V4_1_0_Ubuntu20_04.tar.xz">https://www.coppeliarobotics.com/files/CoppeliaSim_Edu_V4_1_0_Ubuntu20_04.tar.xz</a></p>
-<br />Pick and Place << <a href='Pick and Place.html'>Previous</a> <a href='Arduino.html'>Next</a> >> Arduino</div>
+    <div id="tipue_search_content">Legacy Console Mode << <a href='Legacy Console Mode.html'>Previous</a> <a href='pj2022.html'>Next</a> >> pj2022<br /><h1>PowerShell</h1>
+<h4>取得 USB 磁碟代號:</h4>
+<p style="padding-left: 30px;">指令: volume</p>
+<p style="padding-left: 30px;">volume | ? drivetype -eq removable | % driveletter</p>
+<h4>以磁碟代號對應特定目錄:</h4>
+<p style="padding-left: 30px;">指令: <a href="https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/new-psdrive">New-PSDrive</a></p>
+<p style="padding-left: 30px;">New-PSDrive -Name y -PSProvider FileSystem -Root c:\tmp\portable\data</p>
+<p><a href="https://docs.microsoft.com/en-us/powershell/scripting/learn/remoting/ssh-remoting-in-powershell-core">SSH remoting</a></p>
+<h4>插入 USB 隨身碟後自動執行 PowserShell script:</h4>
+<p style="padding-left: 30px;"><a href="https://stackoverflow.com/questions/21805166/start-powershell-script-when-usb-drive-is-inserted/21806438">https://stackoverflow.com/questions/21805166/start-powershell-script-when-usb-drive-is-inserted/21806438</a></p>
+<h4>Dismount USB drive:</h4>
+<p style="padding-left: 30px;"><a href="https://serverfault.com/questions/130887/dismount-usb-external-drive-using-powershell">https://serverfault.com/questions/130887/dismount-usb-external-drive-using-powershell</a></p>
+<p><a href="https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/start-process">Start-Process</a></p>
+<p style="padding-left: 30px;">開啟命令列視窗 (<a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands">Windows command shell</a> 指令列表)</p>
+<p style="padding-left: 30px;">Start-Process "cmd"</p>
+<h4>Examples:</h4>
+<p style="padding-left: 30px;"><a href="https://github.com/sushihangover/SushiHangover-PowerShell">https://github.com/sushihangover/SushiHangover-PowerShell</a></p>
+<p style="padding-left: 30px;"><a href="https://superuser.com/questions/219401/starting-scheduled-task-by-detecting-connection-of-usb-device">https://superuser.com/questions/219401/starting-scheduled-task-by-detecting-connection-of-usb-device</a></p>
+<p>以下可攜系統主要用於 <a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 編譯用, <a href="https://github.com/CoppeliaRobotics">Boost C++</a> 程式庫以 <a href="https://github.com/CoppeliaRobotics">MSYS2</a> 為主.</p>
+<p><a href="https://github.com/CoppeliaRobotics">CoppeliaSim</a> 原始碼: <a href="https://github.com/CoppeliaRobotics">https://github.com/CoppeliaRobotics</a></p>
+<h4>下載可攜程式系統:</h4>
+<p style="padding-left: 30px;"><a href="https://drive.google.com/file/d/1hEGgONw8ahNs7JPAKOurc7JvGfhgO2zY/view?usp=sharing">compile_copsim_for_pj2022.7z</a> (download file size 4 GB, uncompressed file size 14 GB)</p>
+<br />Legacy Console Mode << <a href='Legacy Console Mode.html'>Previous</a> <a href='pj2022.html'>Next</a> >> pj2022</div>
         
     <!-- footer -->
       <div class="container">
