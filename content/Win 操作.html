@@ -2,7 +2,7 @@
         <head>
         <title>PJ2022</title>
         <meta charset="utf-8">
-<meta property="head" content="H2">
+<meta property="head" content="H3">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700,900" rel="stylesheet">
         <link rel="stylesheet" href="./../cmsimde/static/chimper/fonts/icomoon/style.css">
@@ -139,13 +139,52 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">虛實整合 << <a href='虛實整合.html'>Previous</a> <a href='AWCMS.html'>Next</a> >> AWCMS<br /><h1>機器學習</h1>
-<ol>
-<li>機器可以透過影像裝置取得外部物件座標系統</li>
-<li>電腦可以透過該物件座標系統取放物件</li>
-<li>機電資系統可以透過強化學習完成既定工作項目</li>
-</ol>
-<br />虛實整合 << <a href='虛實整合.html'>Previous</a> <a href='AWCMS.html'>Next</a> >> AWCMS</div>
+    <div id="tipue_search_content">Fossil SCM << <a href='Fossil SCM.html'>Previous</a> <a href='DRLKMR.html'>Next</a> >> DRLKMR<br /><h1>Win 操作</h1>
+<p>在 Ubuntu 伺服器中建立 Fossil SCM 服務之前, 可以先透過 Windows 上的操作, 熟悉 Fossil SCM 的各項指令功能後, 再設法將配置流程轉換到 Ubuntu.</p>
+<p>step1: 從 <a href="https://www.fossil-scm.org/home/uv/download.html">https://www.fossil-scm.org/home/uv/download.html</a> 下載最新的 fossil.exe</p>
+<p>step2: 從 <a href="https://www.stunnel.org/downloads.html">https://www.stunnel.org/downloads.html</a> 下載 Windows 安裝檔案後, 利用 7zip 解開壓縮後, 將 stunnel.exe 所在目錄設為可攜系統的 path 即可.</p>
+<h4>操作練習 1:</h4>
+<p>設定 stunnel/config/stunnel.conf 如下:</p>
+<pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">[https]
+; 以 python -m http.server 8000 --bind 127.0.0.1 啟動 www server 
+accept  = 127.0.0.1:443
+connect = 127.0.0.1:8000
+cert = localhost.crt
+key = localhost.key
+TIMEOUTclose = 0</pre>
+<p>localhost.crt 與 localhost.key 可以直接從 <a href="https://github.com/mdecourse/pj2022">https://github.com/mdecourse/pj2022</a> 目錄中, 將兩個檔案複製至 stunnel/config/ 目錄下即可.</p>
+<p>設法好之後, 在命令列的 y:\tmp 目錄中以:</p>
+<pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">python -m  http.server 8000 --bind 127.0.0.1</pre>
+<p>啟動 www server, 可讓使用者透過 <a href="http://localhost:8000">http://localhost:8000</a> 擷取到 y:\tmp 目錄中的檔案.</p>
+<p>接下來則利用另一個命令列執行 stunnel, 表示要以 stunnel/config/stunnel.conf 當作啟動設定檔案執行 stunnel.exe.</p>
+<p>啟動 stunnel 後若顯示正常接受 connection, 則使用者可以透過 <a href="https://localhost:443">https://localhost:443</a> 擷取到 y:\tmp 目錄中的檔案.</p>
+<p>以上的操作就是典型的 stunnel 應用, 原先以 python -m http.server 啟動的服務並沒有 https 伺服功能, 但是透過 stunnel 居中服務, 若將 accept = 設定為該電腦的外部 IP, 則外部連線可以透過 https 協定取得相關檔案或執行服務.</p>
+<p>假如上述的 localhsot.crt 與 localhost.key 又是透過合法的 <a href="https://letsencrypt.org/">https://letsencrypt.org/</a> 認證配發, 表示所使用的主機 domain name 是經過第三方所配發的數位簽章認證, 則此 server 的 https 連線就會是正式受到各 dns 伺服器接受的 https secure connections.</p>
+<h4>操作練習二:</h4>
+<p>假如將練習一中的 python -m http.server 換成 Fossil SCM 的網際服務, 則可透過 Fossil SCM 提供各種支援版本管理的網際服務.</p>
+<p>進入 y:\tmp 建立 fossil 倉儲 pj2022.fossil:</p>
+<pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">y:\tmp&gt;fossil init pj2022.fossil</pre>
+<p>系統會列出管理 pj2022.fossil 的 username 與 password<br/>接著修改與 username 對應的 password</p>
+<pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false">fossil user password username new_password -R pj2022.fossil</pre>
+<p>上述的 fossil user password 是指令名稱, 表示要執行 fossil 針對使用者更改密碼的指令, 最後的 -R pj2022.fossil 則表示此一使用者密碼的更改是針對 pj2020.fossil 倉儲檔案. 而中間的 username new_password 則替上面建立倉儲時所對應的 username, 希望透過這個指令將系統產生的密碼, 改為比較容易記住的 new_password.</p>
+<p>接下來則先針對此一 pj2022.fossil 倉儲, 要以 https 的資料傳送, 在 port 9000 中伺服.</p>
+<pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">y:\&gt;fossil server -P 127.0.0.1:9000 --https y:\tmp\pj2022.fossil</pre>
+<p>至於利用上述指令啟動後, 因為選擇以 --https 送出伺服資料, 因此若使用 <a href="http://localhost:9000">http://localhost:9000</a> 並無法正確連線, 必須在 stunnel https 的代理伺服下才可正常以 <a href="https://localhost">https://localhost</a> 連線.</p>
+<p>所以接下來要設定 stunnel, 讓 443 可以承接 Fossil SCM 從 port 9000 送出的資料.</p>
+<p>將 y:\stunnel\config\stunnel.conf 改為:</p>
+<pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">[https]
+; 配合從此命令轉接資料: fossil.exe server -P 127.0.0.1:9000 --https y:\tmp\pj2022.fossil
+accept  = 443
+connect = 9000
+cert = localhost.crt
+key = localhost.key
+TIMEOUTclose = 0
+</pre>
+<p>並以命令列中的 stunnel 啟動 stunnel 伺服器, 假如 stunnel 並沒有載入最新更改的 stunnel.conf, 可以利用 configuration 下拉式功能表中的 reload configuration 重新讀取設定後啟動.</p>
+<p>完成上列設定後, 使用者就可以從 <a href="https://localhost">https://localhost</a> 看到 Fossil SCM 倉儲伺服後的網際介面.</p>
+<h4>操作練習三:</h4>
+<p>一旦對 Fossil SCM 的網際介面有所了解後, 就可以再設法綁入 <a href="https://github.com/mdecourse/fossilapp">https://github.com/mdecourse/fossilapp</a> 與 <a href="https://github.com/mdecourse/fossiloauth">https://github.com/mdecourse/fossiloauth</a> 等兩個應用.</p>
+<p>最後則必須將上列所完成的各項伺服轉移至 Ubuntu server, 以隨機器啟動的方式執行服務.</p><br />Fossil SCM << <a href='Fossil SCM.html'>Previous</a> <a href='DRLKMR.html'>Next</a> >> DRLKMR</div>
         
     <!-- footer -->
       <div class="container">
