@@ -132,8 +132,10 @@ TIMEOUTclose = 0</pre>
 <pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">python -m  http.server 8000 --bind 127.0.0.1</pre>
 <p>啟動 www server, 可讓使用者透過 <a href="http://localhost:8000">http://localhost:8000</a> 擷取到 y:\tmp 目錄中的檔案.</p>
 <p>接下來則利用另一個命令列執行 stunnel, 表示要以 stunnel/config/stunnel.conf 當作啟動設定檔案執行 stunnel.exe.</p>
-<p>啟動 stunnel 後若顯示正常接受 connection, 則使用者可以透過 <a href="https://localhost:443">https://localhost:443</a> 擷取到 y:\tmp 目錄中的檔案.</p>
-<p>以上的操作就是典型的 stunnel 應用, 原先以 python -m http.server 啟動的服務並沒有 https 伺服功能, 但是透過 stunnel 居中服務, 若將 accept = 設定為該電腦的外部 IP, 則外部連線可以透過 https 協定取得相關檔案或執行服務.</p>
+<p>啟動 stunnel 後會出現 GUI 介面視窗, 若顯示正常接受 connection, 則使用者可以透過 <a href="https://localhost:443">https://localhost:443</a> 擷取到 y:\tmp 目錄中的檔案.</p>
+<p>這裡利用指令啟動 stunnel.exe 後,  stunnel 便會常駐, 若後續更改 stunnel/config/stunnel.conf 則可以利用啟動後的 stunnel GUI 介面中的 configuration 功能表 reload configuration.</p>
+<p>若要停止 stunnel.exe, 必須利用 <a href="https://docs.microsoft.com/en-us/sysinternals/downloads/process-explorer">process explorer</a> kill stunnel 執行 process.</p>
+<p>以上的操作就是典型的 stunnel 應用, 原先以 python -m http.server 啟動的服務並沒有 https 伺服功能, 但是透過 stunnel 居中服務, 若將 accept = 設定為該電腦的外部 IP, 若令 stunnel 伺服程式通過電腦所設定的防火牆, 則外部連線可以透過 https 協定取得相關檔案或執行服務.</p>
 <p>假如上述的 localhsot.crt 與 localhost.key 又是透過合法的 <a href="https://letsencrypt.org/">https://letsencrypt.org/</a> 認證配發, 表示所使用的主機 domain name 是經過第三方所配發的數位簽章認證, 則此 server 的 https 連線就會是正式受到各 dns 伺服器接受的 https secure connections.</p>
 <h4>操作練習二:</h4>
 <p>假如將練習一中的 python -m http.server 換成 Fossil SCM 的網際服務, 則可透過 Fossil SCM 提供各種支援版本管理的網際服務.</p>

@@ -133,6 +133,8 @@ TIMEOUTclose = 0</pre>
 <p>啟動 www server, 可讓使用者透過 <a href="http://localhost:8000">http://localhost:8000</a> 擷取到 y:\tmp 目錄中的檔案.</p>
 <p>接下來則利用另一個命令列執行 stunnel, 表示要以 stunnel/config/stunnel.conf 當作啟動設定檔案執行 stunnel.exe.</p>
 <p>啟動 stunnel 後若顯示正常接受 connection, 則使用者可以透過 <a href="https://localhost:443">https://localhost:443</a> 擷取到 y:\tmp 目錄中的檔案.</p>
+<p>這裡利用指令啟動 stunnel.exe 後,  stunnel 便會常駐, 若後續更改 stunnel/config/stunnel.conf 則可以利用啟動後的 stunnel GUI 介面中的 configuration 功能表 reload configuration.</p>
+<p>若要停止 stunnel.exe, 必須利用 <a href="https://docs.microsoft.com/en-us/sysinternals/downloads/process-explorer">process explorer</a> kill stunnel 執行 process.</p>
 <p>以上的操作就是典型的 stunnel 應用, 原先以 python -m http.server 啟動的服務並沒有 https 伺服功能, 但是透過 stunnel 居中服務, 若將 accept = 設定為該電腦的外部 IP, 則外部連線可以透過 https 協定取得相關檔案或執行服務.</p>
 <p>假如上述的 localhsot.crt 與 localhost.key 又是透過合法的 <a href="https://letsencrypt.org/">https://letsencrypt.org/</a> 認證配發, 表示所使用的主機 domain name 是經過第三方所配發的數位簽章認證, 則此 server 的 https 連線就會是正式受到各 dns 伺服器接受的 https secure connections.</p>
 <h4>操作練習二:</h4>
@@ -158,7 +160,11 @@ TIMEOUTclose = 0
 <p>並以命令列中的 stunnel 啟動 stunnel 伺服器, 假如 stunnel 並沒有載入最新更改的 stunnel.conf, 可以利用 configuration 下拉式功能表中的 reload configuration 重新讀取設定後啟動.</p>
 <p>完成上列設定後, 使用者就可以從 <a href="https://localhost">https://localhost</a> 看到 Fossil SCM 倉儲伺服後的網際介面.</p>
 <h4>操作練習三:</h4>
-<p>一旦對 Fossil SCM 的網際介面有所了解後, 就可以再設法綁入 <a href="https://github.com/mdecourse/fossilapp">https://github.com/mdecourse/fossilapp</a> 與 <a href="https://github.com/mdecourse/fossiloauth">https://github.com/mdecourse/fossiloauth</a> 等兩個應用.</p>
+<p>假如希望將上述在 localhost 設定的 Fossil SCM 與 Stunnel 伺服器提升為聯外服務, 則除了要將 Stunnel 中的設定 IP 以電腦的外部 IPv4 或 IPv6 位址設定外, 還必須將兩個指令設為 Windows 10 的 service, 最方便的做法為使用 <a href="https://nssm.cc/,">https://nssm.cc/,</a> 下載後解開壓縮檔案, 就可以利用 nssm install "服務名稱" 設定 service, 並以 nssm remove "服務名稱" 移除 service.</p>
+<p>由於在 Windows 建立 Fossil SCM 網際伺服器, 必須執行 stunnel 與 fossil, 因此必須利用 nssm 建立兩個 service, 一個執行 stunnel.exe, 無需額外的設定參數, 而執行 fossil.exe 時則需要以 "server -P 127.0.0.1:9000 --https y:\tmp\pj2022.fossil" 作為設定參數, 只是 nssm.exe 並無法認得以 command subst 建立的 y:, 因此所有與 nssm 相關的設定, 必須直接使用 c:\ 的路徑.</p>
+<p>以上兩個 service 建立好之後, 可以透過滑鼠右鍵點擊設定後, 選擇電腦管理中的服務與應用程式, 就可以將上述兩個 service 設定為隨機器自動啟動, 如此應該就可以在 Windows 提供 Fossil SCM 的網際伺服.</p>
+<h4>操作練習四:</h4>
+<p>一旦對 Fossil SCM 在 Windows 的網際介面有所了解後, 就可以再設法綁入 <a href="https://github.com/mdecourse/fossilapp">https://github.com/mdecourse/fossilapp</a> 與 <a href="https://github.com/mdecourse/fossiloauth">https://github.com/mdecourse/fossiloauth</a> 等兩個應用.</p>
 <p>最後則必須將上列所完成的各項伺服轉移至 Ubuntu server, 以隨機器啟動的方式執行服務.</p><h1>DRLKMR</h1>
 <p>四技專題題目</p>
 <h4><span style="background-color: #ffff99;">深度強化學習在行動機器人運動學上之應用</span></h4>
@@ -198,7 +204,7 @@ TIMEOUTclose = 0
 <h4>參考資料:</h4>
 <p style="padding-left: 30px;"><a href="/downloads/2013_Techniques for Robot Navigation in Dynamic Real-World Environments.pdf">2013_Techniques for Robot Navigation in Dynamic Real-World Environments.pdf</a></p>
 <p style="padding-left: 30px;">論文簡介時就直接列出科學上的貢獻, 已經出版的內容, 所釋出的軟體以及協同相關事項.</p>
-<p style="padding-left: 60px;">1 Introduction<br/>1.1 Scientific Contributions<br/>1.2 Publications<br/>1.3 Software Releases<br/>1.4 Collaborations<br/>1.5 Notation<br/>1.6 Outline</p>
+<p style="padding-left: 60px;">1 Introduction<br/>1.1 Scientific Contributions<br/>1.2 Publications<br/>1.3 Software Releases<br>1.4 Collaborations<br/>1.5 Notation<br/>1.6 Outline</br></p>
 <p style="padding-left: 30px;"><a href="/downloads/2021_Sample-efficient Reinforcement Learning in Robotic Table Tennis.pdf">2021_Sample-efficient Reinforcement Learning in Robotic Table Tennis.pdf</a></p>
 <h2>建立可攜系統</h2>
 <p><a href="https://drive.google.com/file/d/1RcTirRKBe3Zc0LZ5GlZ1v8UHUBjrXRS9/view?usp=sharing">Python 3.9.5</a> (下載 203MB, 解開壓縮 880MB) - 主要執行 Leo Editor 進行程式開發.</p>
