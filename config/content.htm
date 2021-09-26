@@ -158,7 +158,11 @@ TIMEOUTclose = 0
 <p>並以命令列中的 stunnel 啟動 stunnel 伺服器, 假如 stunnel 並沒有載入最新更改的 stunnel.conf, 可以利用 configuration 下拉式功能表中的 reload configuration 重新讀取設定後啟動.</p>
 <p>完成上列設定後, 使用者就可以從 <a href="https://localhost">https://localhost</a> 看到 Fossil SCM 倉儲伺服後的網際介面.</p>
 <h4>操作練習三:</h4>
-<p>一旦對 Fossil SCM 的網際介面有所了解後, 就可以再設法綁入 <a href="https://github.com/mdecourse/fossilapp">https://github.com/mdecourse/fossilapp</a> 與 <a href="https://github.com/mdecourse/fossiloauth">https://github.com/mdecourse/fossiloauth</a> 等兩個應用.</p>
+<p>假如希望將上述在 localhost 設定的 Fossil SCM 與 Stunnel 伺服器提升為聯外服務, 則除了要將 Stunnel 中的設定 IP 以電腦的外部 IPv4 或 IPv6 位址設定外, 還必須將兩個指令設為 Windows 10 的 service, 最方便的做法為使用 <a href="https://nssm.cc/,">https://nssm.cc/,</a> 下載後解開壓縮檔案, 就可以利用 nssm install "服務名稱" 設定 service, 並以 nssm remove "服務名稱" 移除 service.</p>
+<p>由於在 Windows 建立 Fossil SCM 網際伺服器, 必須執行 stunnel 與 fossil, 因此必須利用 nssm 建立兩個 service, 一個執行 stunnel.exe, 無需額外的設定參數, 而執行 fossil.exe 時則需要以 "server -P 127.0.0.1:9000 --https y:\tmp\pj2022.fossil" 作為設定參數, 只是 nssm.exe 並無法認得以 command subst 建立的 y:, 因此所有與 nssm 相關的設定, 必須直接使用 c:\ 的路徑.</p>
+<p>以上兩個 service 建立好之後, 可以透過滑鼠右鍵點擊設定後, 選擇電腦管理中的服務與應用程式, 就可以將上述兩個 service 設定為隨機器自動啟動, 如此應該就可以在 Windows 提供 Fossil SCM 的網際伺服.</p>
+<h4>操作練習四:</h4>
+<p>一旦對 Fossil SCM 在 Windows 的網際介面有所了解後, 就可以再設法綁入 <a href="https://github.com/mdecourse/fossilapp">https://github.com/mdecourse/fossilapp</a> 與 <a href="https://github.com/mdecourse/fossiloauth">https://github.com/mdecourse/fossiloauth</a> 等兩個應用.</p>
 <p>最後則必須將上列所完成的各項伺服轉移至 Ubuntu server, 以隨機器啟動的方式執行服務.</p><h1>DRLKMR</h1>
 <p>四技專題題目</p>
 <h4><span style="background-color: #ffff99;">深度強化學習在行動機器人運動學上之應用</span></h4>
