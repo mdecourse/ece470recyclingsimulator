@@ -2,7 +2,7 @@
         <head>
         <title>PJ2022</title>
         <meta charset="utf-8">
-<meta property="head" content="H2">
+<meta property="head" content="H3">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700,900" rel="stylesheet">
         <link rel="stylesheet" href="./../cmsimde/static/chimper/fonts/icomoon/style.css">
@@ -139,16 +139,34 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">Pick and Place << <a href='Pick and Place.html'>Previous</a> <a href='Arduino.html'>Next</a> >> Arduino<br /><h1>CoppeliaSim</h1>
-<h4>Educational version:</h4>
-<h4>Windows:</h4>
-<p style="padding-left: 30px;"><a href="https://www.coppeliarobotics.com/files/CoppeliaSim_Edu_V4_1_0_Setup.exe">https://www.coppeliarobotics.com/files/CoppeliaSim_Edu_V4_1_0_Setup.exe</a></p>
-<p style="padding-left: 30px;"><a href="https://www.coppeliarobotics.com/files/CoppeliaSim_Edu_V4_1_0_Win.zip">https://www.coppeliarobotics.com/files/CoppeliaSim_Edu_V4_1_0_Win.zip</a></p>
-<h4>Mac:</h4>
-<p style="padding-left: 30px;"><a href="https://www.coppeliarobotics.com/files/CoppeliaSim_Edu_V4_1_0_Mac.zip">https://www.coppeliarobotics.com/files/CoppeliaSim_Edu_V4_1_0_Mac.zip</a></p>
-<h4>Ubuntu:</h4>
-<p style="padding-left: 30px;"><a href="https://www.coppeliarobotics.com/files/CoppeliaSim_Edu_V4_1_0_Ubuntu20_04.tar.xz">https://www.coppeliarobotics.com/files/CoppeliaSim_Edu_V4_1_0_Ubuntu20_04.tar.xz</a></p>
-<br />Pick and Place << <a href='Pick and Place.html'>Previous</a> <a href='Arduino.html'>Next</a> >> Arduino</div>
+    <div id="tipue_search_content">Win 操作 << <a href='Win 操作.html'>Previous</a> <a href='DRLKMR.html'>Next</a> >> DRLKMR<br /><h1>Multi_repo</h1>
+<p>在 Ubuntu 中部署多 Fossil SCM repository 的方法請參考: <a href="https://mde.tw/cd2021/blog/fossil-scm-on-ubuntu.html">https://mde.tw/cd2021/blog/fossil-scm-on-ubuntu.html</a>, 可直接以 fossil http 指令, 透過與 Stunnel 中的 exec 與 execargs 等參數設定後, 直接由 Stunnel 服務啟動即可.</p>
+<h4>Windows 10 部署多倉儲伺服器:</h4>
+<p>但是在 Windows 則無法透過 fossil http 直接結合 Stunnel 進行部署. 而是要採用 fossil server 透過 port 對應以 access 及 connect 兩個不同的服務啟動傳遞資料.</p>
+<p>此時以多個 Fossil SCM 倉儲啟動為例, 其中包括單一倉儲啟動 (port 9000 對應聯外 443) 與多倉儲啟動 (port 9001 對應聯外 5443), 則 Stunnel 中的 config/stunnel.conf 的設定檔案內容:</p>
+<pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">[https]
+; 啟動單一倉儲
+; 配合從此命令轉接資料: fossil.exe server -P 127.0.0.1:9000 --https y:\tmp\fossil\pj2022.fossil
+accept  = 443
+connect = 9000
+cert = localhost.crt
+key = localhost.key
+TIMEOUTclose = 0
+
+[https]
+; 啟動多倉儲目錄 y:\tmp\fossil, 並內定使用 test.fossil
+; fossil.exe server y:\tmp\fossil\ --port 9001 --https --notfound test
+accept = 5443
+connect = 9001
+cert = localhost.crt
+key = localhost.key
+TIMEOUTclose = 0
+</pre>
+<p>上述配置必須透過 <a href="https://nssm.cc/,">https://nssm.cc/</a> 建立三個服務, 其中包括 stunnel 以上述設定啟動的服務一, 以及兩個透過 fossil.exe 啟動, 服務二的 fossil.exe 執行參數為:</p>
+<pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">server -P 127.0.0.1:9000 --https y:\tmp\fossil\pj2022.fossil</pre>
+<p>而服務三也是透過 fossil.exe 啟動, 且執行參數為:</p>
+<pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">server y:\tmp\fossil\ --port 9001 --https --notfound test</pre>
+<p>設定完成後分別啟動上述三項服務, 就可以透過 443 連線至 pj2022.fossil, 而透過 5443 則內定連至 test.fossil, 也可以將 <a href="https://localhost:5443/test">https://localhost:5443/test</a> 改為 <a href="https://localhost:5443/pj2022">https://localhost:5443/pj2022</a> 連接至 pj2022.fossil 或其他位於 y:\tmp\fossil 目錄中的其他 Fossil SCM 倉儲檔案.</p><br />Win 操作 << <a href='Win 操作.html'>Previous</a> <a href='DRLKMR.html'>Next</a> >> DRLKMR</div>
         
     <!-- footer -->
       <div class="container">
