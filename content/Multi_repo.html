@@ -128,7 +128,7 @@ img.add_border {
                             <li><a href="./../blog/index.html">blog</a></li>
                         </ul>
                       </li>
-                     <li class='has-children'><a href='About.html'>About</a><ul class='dropdown'><li><a href='網際內容管理.html'>網際內容管理</a><li><a href='虛實整合.html'>虛實整合</a><li><a href='機器學習.html'>機器學習</a></li></ul><li class='has-children'><a href='AWCMS.html'>AWCMS</a><ul class='dropdown'><li class='has-children'><a href='Fossil SCM.html'>Fossil SCM</a><ul class='dropdown'><li><a href='Win 操作.html'>Win 操作</a><li><a href='Multi_repo.html'>Multi_repo</a></li></li></ul></ul><li class='has-children'><a href='DRLKMR.html'>DRLKMR</a><ul class='dropdown'><li><a href='研究方向.html'>研究方向</a><li><a href='建立可攜系統.html'>建立可攜系統</a><li class='has-children'><a href='下載可攜系統.html'>下載可攜系統</a><ul class='dropdown'><li><a href='Legacy Console Mode.html'>Legacy Console Mode</a><li><a href='PowerShell.html'>PowerShell</a></li></ul><li><a href='IK.html'>IK</a></li></ul><li class='has-children'><a href='pj2022.html'>pj2022</a><ul class='dropdown'><li><a href='upgrade.html'>upgrade</a></li></ul><li><a href='強化學習.html'>強化學習</a><li class='has-children'><a href='相關技術.html'>相關技術</a><ul class='dropdown'><li><a href='X Window.html'>X Window</a><li class='has-children'><a href='RoboDK.html'>RoboDK</a><ul class='dropdown'><li><a href='RoboDK API.html'>RoboDK API</a><li><a href='Pick and Place.html'>Pick and Place</a></li></ul><li><a href='CoppeliaSim.html'>CoppeliaSim</a><li><a href='Arduino.html'>Arduino</a></li>
+                     <li class='has-children'><a href='About.html'>About</a><ul class='dropdown'><li><a href='網際內容管理.html'>網際內容管理</a><li><a href='虛實整合.html'>虛實整合</a><li><a href='機器學習.html'>機器學習</a></li></ul><li class='has-children'><a href='AWCMS.html'>AWCMS</a><ul class='dropdown'><li class='has-children'><a href='Fossil SCM.html'>Fossil SCM</a><ul class='dropdown'><li><a href='Win 操作.html'>Win 操作</a><li><a href='Multi_repo.html'>Multi_repo</a><li><a href='waitress.html'>waitress</a></li></li></ul></ul><li class='has-children'><a href='DRLKMR.html'>DRLKMR</a><ul class='dropdown'><li><a href='研究方向.html'>研究方向</a><li><a href='建立可攜系統.html'>建立可攜系統</a><li class='has-children'><a href='下載可攜系統.html'>下載可攜系統</a><ul class='dropdown'><li><a href='Legacy Console Mode.html'>Legacy Console Mode</a><li><a href='PowerShell.html'>PowerShell</a></li></ul><li><a href='IK.html'>IK</a></li></ul><li class='has-children'><a href='pj2022.html'>pj2022</a><ul class='dropdown'><li><a href='upgrade.html'>upgrade</a></li></ul><li><a href='強化學習.html'>強化學習</a><li class='has-children'><a href='相關技術.html'>相關技術</a><ul class='dropdown'><li><a href='X Window.html'>X Window</a><li class='has-children'><a href='RoboDK.html'>RoboDK</a><ul class='dropdown'><li><a href='RoboDK API.html'>RoboDK API</a><li><a href='Pick and Place.html'>Pick and Place</a></li></ul><li><a href='CoppeliaSim.html'>CoppeliaSim</a><li><a href='Arduino.html'>Arduino</a></li>
                       </ul>
                 </nav>
               </div>
@@ -139,7 +139,7 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">Win 操作 << <a href='Win 操作.html'>Previous</a> <a href='DRLKMR.html'>Next</a> >> DRLKMR<br /><h1>Multi_repo</h1>
+    <div id="tipue_search_content">Win 操作 << <a href='Win 操作.html'>Previous</a> <a href='waitress.html'>Next</a> >> waitress<br /><h1>Multi_repo</h1>
 <p>在 Ubuntu 中部署多 Fossil SCM repository 的方法請參考: <a href="https://mde.tw/cd2021/blog/fossil-scm-on-ubuntu.html">https://mde.tw/cd2021/blog/fossil-scm-on-ubuntu.html</a>, 可直接以 fossil http 指令, 透過與 Stunnel 中的 exec 與 execargs 等參數設定後, 直接由 Stunnel 服務啟動即可.</p>
 <h4>Windows 10 部署多倉儲伺服器:</h4>
 <p>但是在 Windows 則無法透過 fossil http 直接結合 Stunnel 進行部署. 而是要採用 fossil server 透過 port 對應以 access 及 connect 兩個不同的服務啟動傳遞資料.</p>
@@ -166,7 +166,8 @@ TIMEOUTclose = 0
 <pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">server -P 127.0.0.1:9000 --https y:\tmp\fossil\pj2022.fossil</pre>
 <p>而服務三也是透過 fossil.exe 啟動, 且執行參數為:</p>
 <pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">server y:\tmp\fossil\ --port 9001 --https --notfound test</pre>
-<p>設定完成後分別啟動上述三項服務, 就可以透過 443 連線至 pj2022.fossil, 而透過 5443 則內定連至 test.fossil, 也可以將 <a href="https://localhost:5443/test">https://localhost:5443/test</a> 改為 <a href="https://localhost:5443/pj2022">https://localhost:5443/pj2022</a> 連接至 pj2022.fossil 或其他位於 y:\tmp\fossil 目錄中的其他 Fossil SCM 倉儲檔案.</p><br />Win 操作 << <a href='Win 操作.html'>Previous</a> <a href='DRLKMR.html'>Next</a> >> DRLKMR</div>
+<p>設定完成後分別啟動上述三項服務, 就可以透過 443 連線至 pj2022.fossil, 而透過 5443 則內定連至 test.fossil, 也可以將 <a href="https://localhost:5443/test">https://localhost:5443/test</a> 改為 <a href="https://localhost:5443/pj2022">https://localhost:5443/pj2022</a> 連接至 pj2022.fossil 或其他位於 y:\tmp\fossil 目錄中的其他 Fossil SCM 倉儲檔案.</p>
+<br />Win 操作 << <a href='Win 操作.html'>Previous</a> <a href='waitress.html'>Next</a> >> waitress</div>
         
     <!-- footer -->
       <div class="container">

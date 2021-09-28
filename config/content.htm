@@ -193,7 +193,21 @@ TIMEOUTclose = 0
 <pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">server -P 127.0.0.1:9000 --https y:\tmp\fossil\pj2022.fossil</pre>
 <p>而服務三也是透過 fossil.exe 啟動, 且執行參數為:</p>
 <pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">server y:\tmp\fossil\ --port 9001 --https --notfound test</pre>
-<p>設定完成後分別啟動上述三項服務, 就可以透過 443 連線至 pj2022.fossil, 而透過 5443 則內定連至 test.fossil, 也可以將 <a href="https://localhost:5443/test">https://localhost:5443/test</a> 改為 <a href="https://localhost:5443/pj2022">https://localhost:5443/pj2022</a> 連接至 pj2022.fossil 或其他位於 y:\tmp\fossil 目錄中的其他 Fossil SCM 倉儲檔案.</p><h1>DRLKMR</h1>
+<p>設定完成後分別啟動上述三項服務, 就可以透過 443 連線至 pj2022.fossil, 而透過 5443 則內定連至 test.fossil, 也可以將 <a href="https://localhost:5443/test">https://localhost:5443/test</a> 改為 <a href="https://localhost:5443/pj2022">https://localhost:5443/pj2022</a> 連接至 pj2022.fossil 或其他位於 y:\tmp\fossil 目錄中的其他 Fossil SCM 倉儲檔案.</p>
+<h3>waitress</h3>
+<p>先前我們已經<a href="https://mde.tw/lab/blog/2020-lab-get-started.html">知道</a>可以利用 <a href="https://uwsgi-docs.readthedocs.io/en/latest/index.html">uwsgi</a> 在 Ubuntu 平台配置 <a href="https://github.com/mdecourse/cmsimde">CMSiMDE</a> 動態網站. 至於在 Windows 希望採 Production 方式部署 Flask 網際程式, 則可以使用 <a href="https://docs.pylonsproject.org/projects/waitress/en/latest/">waitress</a>. 因為在 Windows 上若希望使用 <a href="https://uwsgi-docs.readthedocs.io/en/latest/index.html">uwsgi</a>, 只能透過老舊的 <a href="https://uwsgi-docs.readthedocs.io/en/latest/SupportedPlatforms.html?highlight=windows">Cygwin</a>.</p>
+<p>因為在近端啟動 <a href="https://github.com/mdecourse/cmsimde">CMSiMDE</a> 動態網站, 可以透過 python cmsimde/wsgi.py 執行. 若要在 cmsimde 目錄中使用 <a href="https://docs.pylonsproject.org/projects/waitress/en/latest/">waitress</a>, 則需要先以 pip install waitress 安裝模組, 之後另外建一個啟動檔案 waitress_server.py:</p>
+<pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"># pip install waitress
+# this is cmsimde/waitress_server.py
+from waitress import serve
+
+# under cmsimde directory import flaskapp
+import flaskapp
+
+# run cmsimde dynamic site with production waitress
+serve(flaskapp.app, host='0.0.0.0', port=8080)</pre>
+<p>並且採用 python cmsimde/waitress_server.py 啟動. (若在近端啟動 <a href="https://github.com/mdecourse/cmsimde">CMSiMDE</a> 動態網站進行多人協同, 也可以透過 <a href="https://docs.pylonsproject.org/projects/waitress/en/latest/">waitress</a>.)</p>
+<p>接下來應該可以利用上述的方式部署 <a href="https://github.com/mdecourse/fossilapp">https://github.com/mdecourse/fossilapp</a> 與 <a href="https://github.com/mdecourse/fossiloauth">https://github.com/mdecourse/fossiloauth</a> 等兩個應用, 設法與前面的 Fossil SCM 結合啟用. 所能得到的結果是, 使用者可以利用 Gmail 帳號登入 Fossil SCM 網際伺服器參與 Forum 討論, 或者登入後自行在多 repository 的 Fossil SCM 網際伺服器上建立所需要的倉儲. 當然也可以將 <a href="https://github.com/mdecourse/cmsimde">CMSiMDE</a> 靜態網站的資料同步到 Windows 平台上的 Fossil SCM 網際伺服器.</p><h1>DRLKMR</h1>
 <p>四技專題題目</p>
 <h4><span style="background-color: #ffff99;">深度強化學習在行動機器人運動學上之應用</span></h4>
 <h4>Application of Deep Reinforcement Learning in Kinematics of Mobile Robots (DRLKMR)</h4>
