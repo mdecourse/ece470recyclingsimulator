@@ -206,8 +206,41 @@ import flaskapp
 
 # run cmsimde dynamic site with production waitress
 serve(flaskapp.app, host='0.0.0.0', port=8080)</pre>
-<p>並且採用 python cmsimde/waitress_server.py 啟動.</p>
-<p>接下來應該可以利用上述的方式部署 <a href="https://github.com/mdecourse/fossilapp">https://github.com/mdecourse/fossilapp</a> 與 <a href="https://github.com/mdecourse/fossiloauth">https://github.com/mdecourse/fossiloauth</a> 等兩個應用, 設法與前面的 Fossil SCM 結合啟用. 所能得到的結果是, 使用者可以利用 Gmail 帳號登入 Fossil SCM 網際伺服器參與 Forum 討論, 或者登入後自行在多 repository 的 Fossil SCM 網際伺服器上建立所需要的倉儲. 當然也可以將 <a href="https://github.com/mdecourse/cmsimde">CMSiMDE</a> 靜態網站的資料同步到 Windows 平台上的 Fossil SCM 網際伺服器.</p><h1>DRLKMR</h1>
+<p>並且採用 python cmsimde/waitress_server.py 啟動. (若在近端啟動 <a href="https://github.com/mdecourse/cmsimde">CMSiMDE</a> 動態網站進行多人協同, 也可以透過 <a href="https://docs.pylonsproject.org/projects/waitress/en/latest/">waitress</a>.)</p>
+<p>接下來應該可以利用上述的方式部署 <a href="https://github.com/mdecourse/fossilapp">https://github.com/mdecourse/fossilapp</a> 與 <a href="https://github.com/mdecourse/fossiloauth">https://github.com/mdecourse/fossiloauth</a> 等兩個應用, 設法與前面的 Fossil SCM 結合啟用. 所能得到的結果是, 使用者可以利用 Gmail 帳號登入 Fossil SCM 網際伺服器參與 Forum 討論, 或者登入後自行在多 repository 的 Fossil SCM 網際伺服器上建立所需要的倉儲. 當然也可以將 <a href="https://github.com/mdecourse/cmsimde">CMSiMDE</a> 靜態網站的資料同步到 Windows 平台上的 Fossil SCM 網際伺服器.</p>
+<h3>fossilapp</h3>
+<p>在 Ubuntu 中<a href="https://mde.tw/cd2021/blog/fossil-scm-on-ubuntu.html">設定 Stunnel</a> 作為 http 網際服務的 https reverse proxy 時, 必須將 /etc/environment 中的 HTTPS 設為 on.</p>
+<p>而在 Windows 同樣以 Stunnel 作為 <a href="https://github.com/mdecourse/fossilapp">fossilapp</a> 應用程式的 reverse proxy 時, 假如以 <a href="https://docs.pylonsproject.org/projects/waitress/en/latest/">waitress</a> 啟動 Flask 程式, 則可以利用 <a href="https://docs.pylonsproject.org/projects/waitress/en/latest/">waitress</a> 中的 <a href="https://docs.pylonsproject.org/projects/waitress/en/stable/reverse-proxy.html">url_scheme='https'</a> 設定, 達到相同目的.</p>
+<p>在 Windows 操作系統配置 <a href="https://github.com/mdecourse/fossilapp">fossilapp</a>, 所需要的 <a href="https://docs.pylonsproject.org/projects/waitress/en/latest/">waitress</a> 伺服程式如下:</p>
+<pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"># pip install waitress
+# this is waitress_server.py
+from waitress import serve
+
+# under cmsimde import fossilapp
+import fossilapp
+
+# run cmsimde dynamic site with production waitress
+serve(fossilapp.app, host='0.0.0.0', port=5000, url_scheme='https')</pre>
+<p>表示與 fossilapp.py 在相同目錄的 waitress_server.py, 採 <a href="https://docs.pylonsproject.org/projects/waitress/en/latest/">waitress</a> production 模式啟動. 透過 http 在 port 5000 啟動, 並且由 reverse proxy https 的協定接受外部 requests. 至於聯外的 port 必須在 Stunnel 中設定.</p>
+<p>接著配合的 Stunnel reverse proxy 設定如下:</p>
+<pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">[https]
+accept = 8443
+connect = 5000
+cert = localhost.crt
+key = localhost.key
+TIMEOUTclose = 0</pre>
+<p>而在 <a href="https://console.developers.google.com">https://console.developers.google.com</a> 中的 Oauth 2.0 client 設定為:</p>
+<pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">Authorized JavaScript origins
+For use with requests from a browser
+URIs *		
+https://server_domain_name:8443
+
+Authorized redirect URIs
+For use with requests from a web server
+URIs *		
+https://server_domain_name:8443/login/google/
+</pre>
+<p></p><h3>fossiloauth</h3><h1>DRLKMR</h1>
 <p>四技專題題目</p>
 <h4><span style="background-color: #ffff99;">深度強化學習在行動機器人運動學上之應用</span></h4>
 <h4>Application of Deep Reinforcement Learning in Kinematics of Mobile Robots (DRLKMR)</h4>

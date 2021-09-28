@@ -2,7 +2,7 @@
         <head>
         <title>PJ2022</title>
         <meta charset="utf-8">
-<meta property="head" content="H2">
+<meta property="head" content="H3">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700,900" rel="stylesheet">
         <link rel="stylesheet" href="./../cmsimde/static/chimper/fonts/icomoon/style.css">
@@ -139,9 +139,39 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">建立可攜系統 << <a href='建立可攜系統.html'>Previous</a> <a href='Legacy Console Mode.html'>Next</a> >> Legacy Console Mode<br /><h1>下載可攜系統</h1>
-<p><a href="https://drive.google.com/file/d/1FUIXqDmcmuyKRq6iJCPkPKpJWk_xQhtd/view?usp=sharing">start and stop batch</a> - 啟動關閉與設定檔案.</p>
-<br />建立可攜系統 << <a href='建立可攜系統.html'>Previous</a> <a href='Legacy Console Mode.html'>Next</a> >> Legacy Console Mode</div>
+    <div id="tipue_search_content">waitress << <a href='waitress.html'>Previous</a> <a href='fossiloauth.html'>Next</a> >> fossiloauth<br /><h1>fossilapp</h1>
+<p>在 Ubuntu 中<a href="https://mde.tw/cd2021/blog/fossil-scm-on-ubuntu.html">設定 Stunnel</a> 作為 http 網際服務的 https reverse proxy 時, 必須將 /etc/environment 中的 HTTPS 設為 on.</p>
+<p>而在 Windows 同樣以 Stunnel 作為 <a href="https://github.com/mdecourse/fossilapp">fossilapp</a> 應用程式的 reverse proxy 時, 假如以 <a href="https://docs.pylonsproject.org/projects/waitress/en/latest/">waitress</a> 啟動 Flask 程式, 則可以利用 <a href="https://docs.pylonsproject.org/projects/waitress/en/latest/">waitress</a> 中的 <a href="https://docs.pylonsproject.org/projects/waitress/en/stable/reverse-proxy.html">url_scheme='https'</a> 設定, 達到相同目的.</p>
+<p>在 Windows 操作系統配置 <a href="https://github.com/mdecourse/fossilapp">fossilapp</a>, 所需要的 <a href="https://docs.pylonsproject.org/projects/waitress/en/latest/">waitress</a> 伺服程式如下:</p>
+<pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false"># pip install waitress
+# this is waitress_server.py
+from waitress import serve
+
+# under cmsimde import fossilapp
+import fossilapp
+
+# run cmsimde dynamic site with production waitress
+serve(fossilapp.app, host='0.0.0.0', port=5000, url_scheme='https')</pre>
+<p>表示與 fossilapp.py 在相同目錄的 waitress_server.py, 採 <a href="https://docs.pylonsproject.org/projects/waitress/en/latest/">waitress</a> production 模式啟動. 透過 http 在 port 5000 啟動, 並且由 reverse proxy https 的協定接受外部 requests. 至於聯外的 port 必須在 Stunnel 中設定.</p>
+<p>接著配合的 Stunnel reverse proxy 設定如下:</p>
+<pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">[https]
+accept = 8443
+connect = 5000
+cert = localhost.crt
+key = localhost.key
+TIMEOUTclose = 0</pre>
+<p>而在 <a href="https://console.developers.google.com">https://console.developers.google.com</a> 中的 Oauth 2.0 client 設定則為:</p>
+<pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">Authorized JavaScript origins
+For use with requests from a browser
+URIs *		
+https://server_domain_name:8443
+
+Authorized redirect URIs
+For use with requests from a web server
+URIs *		
+https://server_domain_name:8443/login/google/
+</pre>
+<p></p><br />waitress << <a href='waitress.html'>Previous</a> <a href='fossiloauth.html'>Next</a> >> fossiloauth</div>
         
     <!-- footer -->
       <div class="container">
