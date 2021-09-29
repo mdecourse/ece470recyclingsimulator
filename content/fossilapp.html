@@ -171,6 +171,159 @@ For use with requests from a web server
 URIs *		
 https://server_domain_name:8443/login/google/
 </pre>
+<p>利用 nssm 建立能夠執行 python waitress_server.py 的 Windows 服務, 可以利用 nssm install "fossilapp" 配置名稱為 fossilapp 的系統服務. 該服務的執行主體為 C:\compile_copsim_for_cad2021\data\python395\python.exe, 執行所在目錄必須選擇 Ｃ:\compile_copsim_for_cad2021\data\tmp\fossil\fossilapp, 也就是 fossilapp.py 所在目錄, 且給定執行參數 C:\compile_copsim_for_cad2021\data\tmp\fossil\fossilapp\waitress_server.py.</p>
+<p>另外, 為了讓 nssm 所建立的 service 可以正常啟動, fossilapp.py 中讀取 secret file 的路徑也必須使用絕對路徑, 或者必須將該目錄列入 Python 程式執行搜尋目錄, 例如:</p>
+<pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">with open(r'C:\compile_copsim_for_cad2021\data\tmp\fossil\scrum1_client_secret.txt', 'r') as f:
+    key = f.read().splitlines()</pre>
+<p>以下則為 Windows 環境下 fossilapp 程式中的 login 函式:</p>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">@app.route('/login/&lt;provider_name&gt;/', methods=['GET', 'POST'])
+def login(provider_name):
+    
+    # We need response object for the WerkzeugAdapter.
+    response = make_response()
+    
+    # Log the user in, pass it the adapter and the provider name.
+    result = authomatic.login(WerkzeugAdapter(request, response), provider_name)
+    
+    # If there is no LoginResult object, the login procedure is still pending.
+    if result:
+        if result.user:
+            # We need to update the user to get more info.
+            result.user.update()
+
+        # only get the string before @
+        loginUser = result.user.email.split("@")[0]
+        loginDomain = result.user.email.split("@")[1]
+
+        # only @gm.nfu.edu.tw can login
+        if loginDomain == "gm.nfu.edu.tw":
+            session["user"] = loginUser
+            session["login"] = True
+            template_lookup = TemplateLookup(directories=[template_root_dir])
+            loginTemplate = template_lookup.get_template("login.html")
+    
+            return loginTemplate.render(result=result, CALLBACK_URL=CALLBACK_URL)
+        else:
+            return "Sorry, you are not allowed to login."
+
+    # Don't forget to return the response.
+    return response
+</pre>
+<p>Windows 環境下 fossilapp 中的 getAccount 函式 因為修改 template.fossil copy 方式, 必須 import <code class="py plain">shutil</code>:</p>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">@app.route('/genAccount', methods=['POST'])
+@login_required
+def genAccount():
+
+    """Generate Fossil SCM account
+    """
+    # get user input account and password
+    #account = request.form["account"]
+    # get user student number from session
+    loginUser = session.get('user')
+    account = loginUser
+    password = request.form["password"]
+    password2 = request.form["password2"]
+    
+    # Check if two password matched
+    if password != password2:
+        warning = "Passwords  do not match!&lt;br \&gt;"
+        warning += "Please go back and retype!"
+        return warning
+    
+    # To avoid shell command injection, accept only numbers for Account
+    '''
+    # get user account from session
+    if account.isdigit():
+        pass
+    else:
+        return "Accept only numbers for Account!"
+    '''
+    
+    # To avoid shell command injection, no special characters allowed for Password
+    for i in range(len(password)):
+        if password[i] in ["&amp;", "|", ";", "$","&gt;", "&lt;", "`", "\\","!"]:
+            return "No special characters allowed for Password!"
+    
+    # repository location path
+    #path = "/home/account/repository/u/"
+    path = "C:/compile_copsim_for_cad2021/data/tmp/fossil/"
+    
+    output = ""
+    
+    # copy fossil repository from template.fossil
+    # for Ubuntu
+    #command1 = "cp " + path + "template.fossil "  + path + account + ".fossil"
+    # for Windows
+    command1 = "copy " + path + "template.fossil "  + path + account + ".fossil"
+    
+    output += command1 + "&lt;br /&gt;"
+    
+    # add account as the repository user which need to force user use student number as account
+    command2 = "C:/compile_copsim_for_cad2021/data/fossil user new " + account + " " + account + "@gm.nfu.edu.tw " + password + " -R " + path + account + ".fossil"
+    
+    output += command2 + "&lt;br /&gt;"
+    
+    # set account to be administrator which capability is "s" (setup)
+    command3 = "C:/compile_copsim_for_cad2021/data/fossil user capabilities " + account + " s"  + " -R " + path + account + ".fossil"
+    
+    output += command3 + "&lt;br /&gt;"
+    
+    # change the origin "cd" account capabilities to none which is a vacant string " "
+    command4 = "C:/compile_copsim_for_cad2021/data/fossil user capabilities  cd  '' "  + " -R " + path + account + ".fossil"
+    
+    output += command4 + "&lt;br /&gt;"
+    
+    output += "&lt;br\&gt;&lt;br \&gt;"
+    
+    # change directory to user repository path
+    os.system("cd " + path)
+    
+    # execute command1
+    #os.system(command1)
+    # copy repository
+    shutil.copyfile(path + "template.fossil", path + account + ".fossil")
+    
+    # wait for 0.1 second
+    time.sleep(0.1)
+    
+    # execute command2
+    try:
+        os.system(command2)
+        output += "command2 completed &lt;br /&gt;"
+    except:
+        output += "command2 failed&lt;br \&gt;"
+    
+    # wait for 0.1 second
+    time.sleep(0.1)
+    
+    # execute command3
+    try:
+        os.system(command3)
+        output += "command3 completed &lt;br /&gt;"
+    except:
+        output += "command3 failed &lt;br \&gt;"
+    
+    # wait for 0.1 second
+    time.sleep(0.1)
+    
+    # execute command4
+    try:
+        os.system(command4)
+        output += "command4 completed &lt;br /&gt;"
+    except:
+        output += "command4 failed&lt;br \&gt;"
+    
+    # return command for debug
+    #return output
+    
+    return "Repository: " + account + " created!&lt;br /&gt;&lt;br \&gt;" + \
+    "Link to repository: &lt;a href='https://server_domain_name:5443/" +account + "'&gt;" + \
+    account + "&lt;/a&gt;"
+
+    '''
+    return "account:" + account+"&lt;br /&gt;" \
+    + "password:" + password
+    '''</pre>
 <p></p><br />waitress << <a href='waitress.html'>Previous</a> <a href='fossiloauth.html'>Next</a> >> fossiloauth</div>
         
     <!-- footer -->
