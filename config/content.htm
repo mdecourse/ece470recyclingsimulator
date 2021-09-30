@@ -393,7 +393,49 @@ def genAccount():
     + "password:" + password
     '''</pre>
 <p></p><h3>fossiloauth</h3>
-<p><a href="https://github.com/mdecourse/fossiloauth">fossiloauth</a> 的部署與 <a href="https://mde.tw/pj2022/content/fossilapp.html">fossilapp 部署</a>類似, 但 <a href="https://github.com/mdecourse/fossiloauth">fossiloauth</a> 編寫目的是要讓使用者透過 @gm 帳號登入後, 可以直接用學號參與 Fossil SCM forum 的討論.</p><h1>DRLKMR</h1>
+<p><a href="https://github.com/mdecourse/fossiloauth">fossiloauth</a> 的部署與 <a href="https://mde.tw/pj2022/content/fossilapp.html">fossilapp 部署</a>類似, 但 <a href="https://github.com/mdecourse/fossiloauth">fossiloauth</a> 編寫目的是要讓使用者透過 @gm 帳號登入後, 可以直接用學號參與 Fossil SCM forum 的討論.</p>
+<p>由於 fossiloauth 程式利用 session 在 Fossil SCM 與 Flask 程式交換帳號登入內容, 因此在 Ubuntu 主機中需要利用 <a href="https://certbot.eff.org/lets-encrypt/ubuntufocal-nginx">https://certbot.eff.org/lets-encrypt/ubuntufocal-nginx</a> 進行主機數位簽章認證.</p>
+<p>在 Ubuntu 中採 nginx 以 certbot 擷取認證檔案 fullchain4.pem 與 privkey4.pem, 也就是一般 stunnel 設定檔案中的 localhost.crt 與 localhost.key. 而在 Windows 環境中, 主機也應該要透過 <a href="https://certbot.eff.org/lets-encrypt/windows-nginx">https://certbot.eff.org/lets-encrypt/windows-nginx</a> 取得數位簽章認證檔案.</p>
+<p>Windows 安裝 nginx</p>
+<p>從 <a href="https://nginx.org/en/download.html">https://nginx.org/en/download.html</a> 下載 nginx-1.21.3.zip 並啟動 nginx.</p>
+<p>從 <a href="https://dl.eff.org/certbot-beta-installer-win32.exe">https://dl.eff.org/certbot-beta-installer-win32.exe</a> 下載 certbot 並安裝.</p>
+<p>以下為啟動 nginx 後, 安裝 certbot 後, 執行 certbot certonly --webroot 的紀錄過程:</p>
+<pre class="brush:js;auto-links:false;toolbar:false" contenteditable="false">C:\WINDOWS\system32&gt;certbot certonly --webroot
+Saving debug log to C:\Certbot\log\letsencrypt.log
+Enter email address (used for urgent renewal and security notices)
+ (Enter 'c' to cancel): the_registered_email@domain.name
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Please read the Terms of Service at
+https://letsencrypt.org/documents/LE-SA-v1.2-November-15-2017.pdf. You must
+agree in order to register with the ACME server. Do you agree?
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(Y)es/(N)o: Y
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Would you be willing, once your first certificate is successfully issued, to
+share your email address with the Electronic Frontier Foundation, a founding
+partner of the Let's Encrypt project and the non-profit organization that
+develops Certbot? We'd like to send you email about our work encrypting the web,
+EFF news, campaigns, and ways to support digital freedom.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+(Y)es/(N)o: N
+Account registered.
+Please enter the domain name(s) you would like on your certificate (comma and/or
+space separated) (Enter 'c' to cancel): your_server_domain_name
+Requesting a certificate for your_server_domain_name
+Input the webroot for your_server_domain_name: (Enter 'c' to cancel): C:\nginx-1.21.3\html
+
+Successfully received certificate.
+Certificate is saved at: C:\Certbot\live\your_server_domain_name\fullchain.pem
+Key is saved at:         C:\Certbot\live\your_server_domain_name\privkey.pem
+This certificate expires on 2021-12-29.
+These files will be updated when the certificate renews.
+Certbot has set up a scheduled task to automatically renew this certificate in the background.
+</pre>
+<p>目前在 Windows 採用 Stunnel 結合 Flask  fossiloauth 與 Fossil SCM 無法在 Fossil SCM 與 Flask 程式之間交換登入 session, 因為在 Ubuntu Flask 採用 uwsgi 啟動, 且 https 透過 nginx 設置時與 Fossil SCM + Stunnel (採 exec 與 execargs 設置) 可以交換登入 session.</p>
+<p>但根據 <a href="https://linux.die.net/man/8/stunnel">https://linux.die.net/man/8/stunnel</a> 中的說明, Stunnel exec 與 execargs 設置只限於 Linux. 因此若需要 Windows 部署 fossiloauth, 必須設法找出能夠順利在 Fossil SCM 與 Flask 程式之間交換登入 session 的方法.</p>
+<p></p><h1>DRLKMR</h1>
 <p>四技專題題目</p>
 <h4><span style="background-color: #ffff99;">深度強化學習在行動機器人運動學上之應用</span></h4>
 <h4>Application of Deep Reinforcement Learning in Kinematics of Mobile Robots (DRLKMR)</h4>
