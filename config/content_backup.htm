@@ -110,11 +110,12 @@
 <p style="padding-left: 60px;">設法吸引校友透過 Gmail 帳號登入五專科學會 <a href="https://www.fossil-scm.org">Fossil SCM</a> 網站, 提供教學研究與升學相關經驗與指導.</p>
 <p style="padding-left: 60px;">設法配置 <a href="https://jitsi.org/">https://jitsi.org/</a> 與 <a href="https://obsproject.com/">OBS</a> 及 <a href="https://www.youtube.com/channel/UC4R8DWoMoI7CAwX8_LjQHig/all">Youtube 直播</a>結合, 建立校友線上 meeting 與互動系統.</p>
 <h2>Fossil SCM</h2>
+<p>為何要使用 Fossil SCM 或其他分散式版次管理: <a href="https://www.fossil-scm.org/home/doc/trunk/www/whyusefossil.wiki">https://www.fossil-scm.org/home/doc/trunk/www/whyusefossil.wiki</a></p>
 <p>在 Ubuntu 20.04 主機上安裝 Fossil SCM:</p>
 <p>觀念一: Fossil SCM 的 client 與 server 在 Ubuntu 都是 fossil, 而在 Windows 則是 fossil.exe.</p>
 <p>sudo apt install fossil</p>
 <p>在 Ubuntu 中 fossil 檔案約為 7MB.</p>
-<h3>Win 操作</h3>
+<p>Fossil SCM 客製化: <a href="https://www.fossil-scm.org/home/doc/trunk/www/customskin.md">https://www.fossil-scm.org/home/doc/trunk/www/customskin.md</a></p><h3>Win 操作</h3>
 <p>在 Ubuntu 伺服器中建立 Fossil SCM 服務之前, 可以先透過 Windows 上的操作, 熟悉 Fossil SCM 的各項指令功能後, 再設法將配置流程轉換到 Ubuntu.</p>
 <p>step1: 從 <a href="https://www.fossil-scm.org/home/uv/download.html">https://www.fossil-scm.org/home/uv/download.html</a> 下載最新的 fossil.exe</p>
 <p>step2: 從 <a href="https://www.stunnel.org/downloads.html">https://www.stunnel.org/downloads.html</a> 下載 Windows 安裝檔案後, 利用 7zip 解開壓縮後, 將 stunnel.exe 所在目錄設為可攜系統的 path 即可.</p>
@@ -393,6 +394,7 @@ def genAccount():
     + "password:" + password
     '''</pre>
 <p></p><h3>fossiloauth</h3>
+<p><a href="https://github.com/mdecourse/fossiloauth">fossiloauth</a> 能夠利用 Gmail 的 Oauth2 架構登入, 主要根據 <a href="https://www.fossil-scm.org/home/doc/trunk/www/password.wiki">https://www.fossil-scm.org/home/doc/trunk/www/password.wiki</a> 中的說明, 當使用者的密碼欄位資料並非 40 字元的 SHA1 hash, 在認證流程中該密碼就會被視為明碼. 因此當 Flask 網際程式利用 Oauth2 讓使用者登入後, 可將使用者的登入帳號與電子郵箱存入 sessions, 之後再利用 SQLite 語法以使用者帳號進入 Fossil SCM 倉儲查核, 若倉儲中已經有該帳號, 則以亂碼更新帳號密碼, 若倉儲中尚無該帳號, 則以登入帳號建立 user, 且以亂碼作為密碼. 接著再根據程式中所暫存的用戶帳號與密碼, 以 ajax post 方式登入目標倉儲後, 將登入後的 sessions 轉到網際 Fossil SCM 伺服器, 開啟 Forum 連結. 這時所顯示的 Forum 狀態即顯示該用戶已經登入. 可以在 Forum 模組中發言.</p>
 <p><a href="https://github.com/mdecourse/fossiloauth">fossiloauth</a> 的部署與 <a href="https://mde.tw/pj2022/content/fossilapp.html">fossilapp 部署</a>類似, 但 <a href="https://github.com/mdecourse/fossiloauth">fossiloauth</a> 編寫目的是要讓使用者透過 @gm 帳號登入後, 可以直接用學號參與 Fossil SCM forum 的討論.</p>
 <p>由於 fossiloauth 程式利用 session 在 Fossil SCM 與 Flask 程式交換帳號登入內容, 因此在 Ubuntu 主機中需要利用 <a href="https://certbot.eff.org/lets-encrypt/ubuntufocal-nginx">https://certbot.eff.org/lets-encrypt/ubuntufocal-nginx</a> 進行主機數位簽章認證.</p>
 <p>在 Ubuntu 中採 nginx 以 certbot 擷取認證檔案 fullchain4.pem 與 privkey4.pem, 也就是一般 stunnel 設定檔案中的 localhost.crt 與 localhost.key. 而在 Windows 環境中, 主機也應該要透過 <a href="https://certbot.eff.org/lets-encrypt/windows-nginx">https://certbot.eff.org/lets-encrypt/windows-nginx</a> 取得數位簽章認證檔案.</p>
@@ -433,8 +435,11 @@ This certificate expires on 2021-12-29.
 These files will be updated when the certificate renews.
 Certbot has set up a scheduled task to automatically renew this certificate in the background.
 </pre>
-<p>目前在 Windows 採用 Stunnel 結合 Flask  fossiloauth 與 Fossil SCM 無法在 Fossil SCM 與 Flask 程式之間交換登入 session, 因為在 Ubuntu Flask 採用 uwsgi 啟動, 且 https 透過 nginx 設置時與 Fossil SCM + Stunnel (採 exec 與 execargs 設置) 可以交換登入 session.</p>
-<p>但根據 <a href="https://linux.die.net/man/8/stunnel">https://linux.die.net/man/8/stunnel</a> 中的說明, Stunnel exec 與 execargs 設置只限於 Linux. 因此若需要 Windows 部署 fossiloauth, 必須設法找出能夠順利在 Fossil SCM 與 Flask 程式之間交換登入 session 的方法.</p>
+<p>目前在 Windows 採用 Stunnel 結合 Flask  fossiloauth, <a href="https://nssm.cc/">NSSM</a> (source codes: <a href="https://github.com/kirillkovalenko/nssm">https://github.com/kirillkovalenko/nssm</a>) 與 Fossil SCM 已經可以完成採 Gmail 登入 Fossil SCM 論壇的網際主機.</p>
+<p>fossiloauth login.html 最後登出 Gmail 帳號並 redirect 至 fossiloauth forum 函式的設定:</p>
+<pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false">&lt;script type="text/javascript"&gt;
+window.location="https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=https://${site[0]}:${site[1]}/forum";
+&lt;/script&gt;</pre>
 <p></p><h1>DRLKMR</h1>
 <p>四技專題題目</p>
 <h4><span style="background-color: #ffff99;">深度強化學習在行動機器人運動學上之應用</span></h4>
