@@ -433,6 +433,8 @@ This certificate expires on 2021-12-29.
 These files will be updated when the certificate renews.
 Certbot has set up a scheduled task to automatically renew this certificate in the background.
 </pre>
+<p>目前在 Windows 採用 Stunnel 結合 Flask  fossiloauth 與 Fossil SCM 無法在 Fossil SCM 與 Flask 程式之間交換登入 session, 因為在 Ubuntu Flask 採用 uwsgi 啟動, 且 https 透過 nginx 設置時與 Fossil SCM + Stunnel (採 exec 與 execargs 設置) 可以交換登入 session.</p>
+<p>但根據 <a href="https://linux.die.net/man/8/stunnel">https://linux.die.net/man/8/stunnel</a> 中的說明, Stunnel exec 與 execargs 設置只限於 Linux. 因此若需要 Windows 部署 fossiloauth, 必須設法找出能夠順利在 Fossil SCM 與 Flask 程式之間交換登入 session 的方法.</p>
 <p></p><h1>DRLKMR</h1>
 <p>四技專題題目</p>
 <h4><span style="background-color: #ffff99;">深度強化學習在行動機器人運動學上之應用</span></h4>
